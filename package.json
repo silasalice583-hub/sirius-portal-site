@@ -1,0 +1,9 @@
+{
+  "name": "sirius-portal-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "天狼星门户静态网站服务器",
+  "scripts": {
+    "start": "node server.js"
+  }
+}
