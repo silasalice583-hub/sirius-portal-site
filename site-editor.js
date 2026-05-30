@@ -20,6 +20,9 @@
     logoImage: "logo抠图.png",
     logoMotion: "strong",
     backgroundImage: "",
+    motionBackgroundImage: "",
+    articleBannerImage: "assets/articles-banner-art.png",
+    aboutImage: "assets/about-footer-art.png",
     hotSpeed: 4500,
     articlesPerPage: 7,
   };
@@ -82,14 +85,17 @@
       pageHomeLatestTitle: page.homeLatestTitle,
       pageMotionEyebrow: page.motionEyebrow,
       pageMotionTitle: page.motionTitle,
+      pageMotionBackgroundImage: page.motionBackgroundImage || page.footerImage,
       pagePopularEyebrow: page.popularEyebrow,
       pagePopularTitle: page.popularTitle,
+      pageArticleBannerImage: page.articleBannerImage || page.heroBanner || defaultPage.articleBannerImage,
       pageLatestEyebrow: page.latestEyebrow,
       pageAllArticlesTitle: page.allArticlesTitle,
       pageArticlesPerPage: page.articlesPerPage || 7,
       pageAboutEyebrow: page.aboutEyebrow,
       pageAboutTitle: page.aboutTitle,
       pageAboutText: page.aboutText,
+      pageAboutImage: page.aboutImage || page.footerImage || defaultPage.aboutImage,
       pageLogoImage: page.logoImage || defaultPage.logoImage,
       pageLogoMotion: page.logoMotion || defaultPage.logoMotion,
       pageBackgroundImage: page.backgroundImage,
@@ -133,14 +139,17 @@
       homeLatestTitle: $("#pageHomeLatestTitle").value.trim() || defaultPage.homeLatestTitle,
       motionEyebrow: $("#pageMotionEyebrow").value.trim() || defaultPage.motionEyebrow,
       motionTitle: $("#pageMotionTitle").value.trim() || defaultPage.motionTitle,
+      motionBackgroundImage: $("#pageMotionBackgroundImage").value.trim(),
       popularEyebrow: $("#pagePopularEyebrow").value.trim() || defaultPage.popularEyebrow,
       popularTitle: $("#pagePopularTitle").value.trim() || defaultPage.popularTitle,
+      articleBannerImage: $("#pageArticleBannerImage").value.trim() || defaultPage.articleBannerImage,
       latestEyebrow: $("#pageLatestEyebrow").value.trim() || defaultPage.latestEyebrow,
       allArticlesTitle: $("#pageAllArticlesTitle").value.trim() || defaultPage.allArticlesTitle,
       articlesPerPage: Number($("#pageArticlesPerPage").value || 7),
       aboutEyebrow: $("#pageAboutEyebrow").value.trim() || defaultPage.aboutEyebrow,
       aboutTitle: $("#pageAboutTitle").value.trim() || defaultPage.aboutTitle,
       aboutText: $("#pageAboutText").value.trim() || defaultPage.aboutText,
+      aboutImage: $("#pageAboutImage").value.trim() || defaultPage.aboutImage,
       logoImage: $("#pageLogoImage").value.trim() || defaultPage.logoImage,
       logoMotion: $("#pageLogoMotion").value || defaultPage.logoMotion,
       backgroundImage: $("#pageBackgroundImage").value.trim(),
@@ -213,7 +222,8 @@
         outline-offset: -3px !important;
         box-shadow: 0 0 0 9999px rgba(6, 24, 22, .16) !important;
       }
-      body * { cursor: crosshair; }
+      html, body, body * { cursor: auto !important; }
+      a, button, input, textarea, select, [role="button"] { cursor: pointer !important; }
     `;
     doc.head.appendChild(style);
     doc.addEventListener("click", (event) => {
@@ -248,6 +258,9 @@
   });
   $("#pageLogoImageFile").addEventListener("change", (event) => setMediaField("pageLogoImage", event.target.files[0]));
   $("#pageBackgroundImageFile").addEventListener("change", (event) => setMediaField("pageBackgroundImage", event.target.files[0]));
+  $("#pageMotionBackgroundImageFile").addEventListener("change", (event) => setMediaField("pageMotionBackgroundImage", event.target.files[0]));
+  $("#pageArticleBannerImageFile").addEventListener("change", (event) => setMediaField("pageArticleBannerImage", event.target.files[0]));
+  $("#pageAboutImageFile").addEventListener("change", (event) => setMediaField("pageAboutImage", event.target.files[0]));
   $("#siteMusic").addEventListener("input", (event) => {
     $("#siteMusicPreview").src = event.target.value || defaultMusic;
   });

@@ -20,6 +20,9 @@
     logoImage: "logo抠图.png",
     logoMotion: "strong",
     backgroundImage: "",
+    motionBackgroundImage: "",
+    articleBannerImage: "assets/articles-banner-art.png",
+    aboutImage: "assets/about-footer-art.png",
     hotSpeed: 4500,
     articlesPerPage: 7,
   };
@@ -88,6 +91,23 @@
     });
     const heroLogo = document.getElementById("heroLogoImage");
     if (heroLogo) heroLogo.src = page.logoImage || defaultPage.logoImage;
+    const motionBand = $(".motion-band");
+    if (motionBand) {
+      const motionImage = page.motionBackgroundImage || page.footerImage;
+      if (motionImage) {
+        motionBand.style.backgroundImage = `linear-gradient(135deg, rgba(7, 27, 35, .86), rgba(11, 16, 23, .82)), url("${motionImage}")`;
+        motionBand.style.backgroundSize = "cover";
+        motionBand.style.backgroundPosition = "center";
+      } else {
+        motionBand.style.backgroundImage = "";
+        motionBand.style.backgroundSize = "";
+        motionBand.style.backgroundPosition = "";
+      }
+    }
+    const articleBanner = document.getElementById("articleBannerImage");
+    if (articleBanner) articleBanner.src = page.articleBannerImage || page.heroBanner || defaultPage.articleBannerImage;
+    const aboutVisual = document.getElementById("aboutVisualImage");
+    if (aboutVisual) aboutVisual.src = page.aboutImage || page.footerImage || defaultPage.aboutImage;
   }
 
   function articleText(article) {
