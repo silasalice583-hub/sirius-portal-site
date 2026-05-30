@@ -44,15 +44,17 @@ https://你的-railway后端域名/api/health
 
 返回 `{ "ok": true }` 即正常。
 
-## 3. 配置前端 API 地址
+## 3. 配置 Cloudflare API 代理
 
-打开前端根目录的 `config.js`，把 Railway 后端地址填进去：
+前端会请求同域 `/api/*`，再由 Cloudflare Pages Functions 转发到 Railway 后端。
 
-```js
-window.SIRIUS_API_BASE = "https://你的-railway后端域名";
+在 Cloudflare Pages 项目的环境变量中添加：
+
+```text
+RAILWAY_API_BASE=https://你的-railway后端域名
 ```
 
-不要在末尾加 `/`。
+不要填写 PostgreSQL 地址；这里必须是 Railway 后端 Web Service 的公网域名，例如 `https://xxx.up.railway.app`。
 
 ## 4. 部署 Cloudflare Pages 前端
 
@@ -68,11 +70,21 @@ Build output directory: /
 
 如果仓库根目录不是当前网站目录，就把 Root directory 设为当前网站目录。
 
+部署完成后访问：
+
+```text
+https://你的-pages域名/index.html
+https://你的-pages域名/publisher.html
+https://你的-pages域名/site-editor.html
+https://你的-pages域名/api/health
+```
+
 ## 5. 数据流
 
-- 网站读取：Cloudflare Pages 前端请求 Railway `/api/state`
-- 发布文章：后台编辑器请求 Railway `/api/articles`
-- 页面设置：后台编辑器请求 Railway `/api/settings`
+- 网站读取：Cloudflare Pages 前端请求同域 `/api/state`
+- Cloudflare Pages Function 将 `/api/*` 转发到 Railway 后端
+- 发布文章：后台编辑器请求同域 `/api/articles`，最终写入 Railway PostgreSQL
+- 页面设置：页面编辑器请求同域 `/api/settings`，最终写入 Railway PostgreSQL
 - 用户评论：前台提交到 Railway，默认 `approved=false`
 - 评论审核：后台评论管理勾选“展示评论”后才会显示
 

@@ -8,7 +8,11 @@
   }
 
   function hasApi() {
-    return Boolean(apiBase());
+    return Boolean(apiBase() || window.SIRIUS_USE_SAME_ORIGIN_API);
+  }
+
+  function canUseLocalFallback() {
+    return !hasApi() || Boolean(window.SIRIUS_ALLOW_LOCAL_FALLBACK);
   }
 
   async function request(path, options = {}) {
@@ -33,13 +37,27 @@
     };
   }
 
+  async function migrateLocalToApi() {
+    if (!hasApi()) throw new Error("API is not configured");
+    const state = localState();
+    if (state.articles.length) await saveArticles(state.articles);
+    if (Object.keys(state.settings).length) await saveSettings(state.settings);
+    await Promise.all(Object.entries(state.comments).map(([articleId, comments]) => saveComments(articleId, comments)));
+    return {
+      articles: state.articles.length,
+      settings: Object.keys(state.settings).length ? 1 : 0,
+      comments: Object.values(state.comments).reduce((total, comments) => total + comments.length, 0),
+    };
+  }
+
   async function loadState() {
     if (!hasApi()) return localState();
     try {
       return { ...(await request("/api/state")), source: "api" };
     } catch (error) {
       console.warn("Using local state because API failed:", error);
-      return localState();
+      if (canUseLocalFallback()) return localState();
+      return { ...localState(), source: "api-error", apiError: error.message };
     }
   }
 
@@ -98,5 +116,6 @@
     saveSettings,
     submitComment,
     saveComments,
+    migrateLocalToApi,
   };
 })();

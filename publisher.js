@@ -245,15 +245,23 @@
     };
   }
 
-  function saveArticle() {
+  async function saveArticle() {
     const next = makeArticle();
+    const previousArticles = savedArticlesState;
     savedArticlesState = [next, ...getSavedArticles().filter((article) => article.id !== next.id)];
-    window.SiriusAPI.saveArticle(next).catch((error) => console.warn("保存文章失败", error));
-    editingId = next.id;
-    renderManager();
-    renderCategoryOptions();
-    renderHotPicker();
-    alert("已保存。门户首页刷新后会显示最新内容。");
+    try {
+      await window.SiriusAPI.saveArticle(next);
+      editingId = next.id;
+      renderManager();
+      renderCategoryOptions();
+      renderHotPicker();
+      alert("已保存。门户首页刷新后会显示最新内容。");
+    } catch (error) {
+      savedArticlesState = previousArticles;
+      renderManager();
+      console.warn("保存文章失败", error);
+      alert("保存失败：没有连接到公网后端数据库。请检查 Cloudflare Pages 的 RAILWAY_API_BASE 环境变量和 Railway 后端服务。");
+    }
   }
 
   function autoSaveArticle() {
@@ -521,6 +529,28 @@
     reader.readAsText(file, "utf-8");
   }
 
+  async function syncLocalDrafts() {
+    if (!window.SiriusAPI.hasApi()) {
+      alert("当前没有连接公网后端，本地预览模式不需要同步。");
+      return;
+    }
+    if (!confirm("将当前浏览器里旧的本机草稿、设置和评论同步到公网数据库吗？")) return;
+    try {
+      const result = await window.SiriusAPI.migrateLocalToApi();
+      const nextState = await window.SiriusAPI.loadState();
+      savedArticlesState = nextState.articles || [];
+      settingsState = nextState.settings || {};
+      commentsState = nextState.comments || {};
+      renderManager();
+      renderCategoryOptions();
+      renderHotPicker();
+      alert(`同步完成：文章 ${result.articles} 篇，设置 ${result.settings} 组，评论 ${result.comments} 条。`);
+    } catch (error) {
+      console.warn("同步本机草稿失败", error);
+      alert("同步失败：请检查 Cloudflare Pages 的 RAILWAY_API_BASE 环境变量和 Railway 后端服务。");
+    }
+  }
+
   function showPanel(panelId) {
     document.querySelectorAll(".admin-tab").forEach((tab) => {
       tab.classList.toggle("active", tab.dataset.panel === panelId);
@@ -578,6 +608,7 @@
   document.getElementById("exportButton").addEventListener("click", exportJSON);
   document.getElementById("importButton").addEventListener("click", () => document.getElementById("importJsonInput").click());
   document.getElementById("importJsonInput").addEventListener("change", (event) => importJSON(event.target.files[0]));
+  document.getElementById("syncLocalButton").addEventListener("click", syncLocalDrafts);
   document.getElementById("clearButton").addEventListener("click", newArticle);
   document.getElementById("newPostButton").addEventListener("click", newArticle);
   document.getElementById("saveCommentsButton").addEventListener("click", saveCurrentComments);
