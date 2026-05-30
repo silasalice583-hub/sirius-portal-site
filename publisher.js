@@ -499,7 +499,7 @@
   function importJSON(file) {
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = () => {
+    reader.onload = async () => {
       try {
         const data = JSON.parse(reader.result);
         const imported = Array.isArray(data) ? data : [data];
@@ -514,16 +514,17 @@
           commentMode: article.commentMode || "all",
           html: article.html || (article.paragraphs || []).map((p) => `<p>${escapeHTML(p)}</p>`).join(""),
         }));
+        const saved = await window.SiriusAPI.saveArticles(normalized);
         const existing = getSavedArticles().filter((article) => !normalized.some((item) => item.id === article.id));
-        savedArticlesState = [...normalized, ...existing];
-        window.SiriusAPI.saveArticles(normalized).catch((error) => console.warn("导入文章保存失败", error));
+        savedArticlesState = [...(saved || normalized), ...existing];
         renderManager();
         renderCategoryOptions();
         renderHotPicker();
-        if (normalized[0]) loadArticle(normalized[0]);
+        if ((saved || normalized)[0]) loadArticle((saved || normalized)[0]);
         alert(`已导入 ${normalized.length} 篇文章。`);
       } catch (error) {
-        alert("JSON 文件格式不正确，无法导入。");
+        console.warn("导入文章失败", error);
+        alert(`导入失败：${error.message || "JSON 文件格式不正确或文章过大，无法保存到后端。"}`);
       }
     };
     reader.readAsText(file, "utf-8");

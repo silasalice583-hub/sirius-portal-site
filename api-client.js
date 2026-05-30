@@ -40,6 +40,37 @@
     };
   }
 
+  function saveArticleLocal(article) {
+    const saved = JSON.parse(localStorage.getItem(articleKey) || "[]").filter((item) => item.id !== article.id);
+    localStorage.setItem(articleKey, JSON.stringify([article, ...saved]));
+    return article;
+  }
+
+  async function saveLargeArticle(article) {
+    const payload = JSON.stringify(article);
+    const chunkSize = 480000;
+    const uploadId = `article-${article.id || Date.now()}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    const total = Math.ceil(payload.length / chunkSize);
+    await request("/api/articles/chunked/init", {
+      method: "POST",
+      body: JSON.stringify({ uploadId }),
+    });
+    for (let index = 0; index < total; index += 1) {
+      await request("/api/articles/chunked/part", {
+        method: "POST",
+        body: JSON.stringify({
+          uploadId,
+          index,
+          chunk: payload.slice(index * chunkSize, (index + 1) * chunkSize),
+        }),
+      });
+    }
+    return request("/api/articles/chunked/complete", {
+      method: "POST",
+      body: JSON.stringify({ uploadId, total }),
+    });
+  }
+
   async function migrateLocalToApi() {
     if (!hasApi()) throw new Error("API is not configured");
     const state = localState();
@@ -69,14 +100,20 @@
   }
 
   async function saveArticle(article) {
-    if (hasApi()) return request("/api/articles", { method: "POST", body: JSON.stringify(article) });
-    const saved = JSON.parse(localStorage.getItem(articleKey) || "[]").filter((item) => item.id !== article.id);
-    localStorage.setItem(articleKey, JSON.stringify([article, ...saved]));
-    return article;
+    if (hasApi()) {
+      const payload = JSON.stringify(article);
+      if (payload.length > 900000) return saveLargeArticle(article);
+      return request("/api/articles", { method: "POST", body: payload });
+    }
+    return saveArticleLocal(article);
   }
 
   async function saveArticles(articles) {
-    if (hasApi()) return request("/api/articles/bulk", { method: "POST", body: JSON.stringify({ articles }) });
+    if (hasApi()) {
+      const saved = [];
+      for (const article of articles) saved.push(await saveArticle(article));
+      return saved;
+    }
     const existing = JSON.parse(localStorage.getItem(articleKey) || "[]").filter((item) => !articles.some((article) => article.id === item.id));
     localStorage.setItem(articleKey, JSON.stringify([...articles, ...existing]));
     return articles;

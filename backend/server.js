@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const { Pool } = require("pg");
+const crypto = require("node:crypto");
 
 const app = express();
 const port = Number(process.env.PORT || 3000);
@@ -45,6 +46,14 @@ async function initDb() {
       updated_at timestamptz not null default now(),
       primary key (article_id, id)
     );
+
+    create table if not exists article_upload_chunks (
+      upload_id text not null,
+      part_index integer not null,
+      data text not null,
+      created_at timestamptz not null default now(),
+      primary key (upload_id, part_index)
+    );
   `);
 }
 
@@ -68,6 +77,15 @@ function normalizeArticle(article) {
     html: article.html || "",
     deleted: Boolean(article.deleted),
   };
+}
+
+async function upsertArticle(article) {
+  await pool.query(
+    `insert into articles (id, data, updated_at)
+     values ($1, $2, now())
+     on conflict (id) do update set data = excluded.data, updated_at = now()`,
+    [article.id, article],
+  );
 }
 
 app.get("/api/health", (req, res) => {
@@ -101,15 +119,80 @@ app.get("/api/state", async (req, res, next) => {
 app.post("/api/articles", async (req, res, next) => {
   try {
     const article = normalizeArticle(req.body || {});
+    await upsertArticle(article);
+    res.json(article);
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.post("/api/articles/chunked/init", async (req, res, next) => {
+  try {
+    const uploadId = req.body.uploadId || crypto.randomUUID();
+    await pool.query("delete from article_upload_chunks where upload_id = $1", [uploadId]);
+    res.json({ uploadId });
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.post("/api/articles/chunked/part", async (req, res, next) => {
+  try {
+    const { uploadId, index, chunk } = req.body || {};
+    if (!uploadId || !Number.isInteger(index) || typeof chunk !== "string") {
+      res.status(400).json({ error: "Invalid chunk payload" });
+      return;
+    }
     await pool.query(
+      `insert into article_upload_chunks (upload_id, part_index, data, created_at)
+       values ($1, $2, $3, now())
+       on conflict (upload_id, part_index) do update set data = excluded.data, created_at = now()`,
+      [uploadId, index, chunk],
+    );
+    res.json({ ok: true, uploadId, index });
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.post("/api/articles/chunked/complete", async (req, res, next) => {
+  const client = await pool.connect();
+  let inTransaction = false;
+  try {
+    const { uploadId, total } = req.body || {};
+    if (!uploadId || !Number.isInteger(total) || total < 1) {
+      res.status(400).json({ error: "Invalid upload completion payload" });
+      return;
+    }
+    const result = await client.query(
+      "select part_index, data from article_upload_chunks where upload_id = $1 order by part_index asc",
+      [uploadId],
+    );
+    if (result.rows.length !== total) {
+      res.status(400).json({ error: `Missing chunks: received ${result.rows.length}, expected ${total}` });
+      return;
+    }
+    result.rows.forEach((row, expectedIndex) => {
+      if (row.part_index !== expectedIndex) throw new Error(`Chunk index mismatch at ${expectedIndex}`);
+    });
+    const article = normalizeArticle(JSON.parse(result.rows.map((row) => row.data).join("")));
+    await client.query("begin");
+    inTransaction = true;
+    await client.query(
       `insert into articles (id, data, updated_at)
        values ($1, $2, now())
        on conflict (id) do update set data = excluded.data, updated_at = now()`,
       [article.id, article],
     );
+    await client.query("delete from article_upload_chunks where upload_id = $1", [uploadId]);
+    await client.query("commit");
+    inTransaction = false;
     res.json(article);
   } catch (error) {
+    if (inTransaction) await client.query("rollback");
     next(error);
+  } finally {
+    client.release();
   }
 });
 
