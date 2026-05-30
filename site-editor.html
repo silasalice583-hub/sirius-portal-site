@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>页面编辑器 · 天狼星门户</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="site-editor-page">
+    <header class="site-editor-toolbar">
+      <a class="brand" href="site-editor.html" aria-label="页面编辑器首页">
+        <img data-site-logo src="logo抠图.png" alt="天狼星门户 logo" />
+        <span>页面编辑器</span>
+      </a>
+      <nav class="top-nav" aria-label="编辑器导航">
+        <a href="index.html">查看网站</a>
+        <a href="publisher.html">文章编辑器</a>
+      </nav>
+      <div class="site-editor-actions">
+        <select id="previewPage" title="选择预览页面">
+          <option value="index.html">首页</option>
+          <option value="articles.html">文章页</option>
+          <option value="about.html">关于页</option>
+        </select>
+        <button id="saveSiteButton" type="button">保存页面</button>
+      </div>
+    </header>
+
+    <main class="site-editor-shell">
+      <section class="site-editor-frame-wrap" aria-label="网站实时预览">
+        <div class="site-editor-hint">点击预览中的区域即可编辑文字、图片、背景、音乐和分类设置。</div>
+        <iframe id="sitePreviewFrame" title="网站页面预览" src="index.html"></iframe>
+      </section>
+
+      <aside class="plugin-editor-panel">
+        <div class="section-head small-head">
+          <div>
+            <p class="eyebrow">Visual Plugin</p>
+            <h1>区域设置</h1>
+          </div>
+        </div>
+
+        <div class="plugin-region-list" id="regionList">
+          <button class="active" data-region="global" type="button">全站</button>
+          <button data-region="hero" type="button">首页首屏</button>
+          <button data-region="home" type="button">首页内容</button>
+          <button data-region="articles" type="button">文章页</button>
+          <button data-region="about" type="button">关于页</button>
+        </div>
+
+        <div class="region-fields active" data-region-panel="global">
+          <h2>全站设置</h2>
+          <div class="form-grid one-column">
+            <label>网站名称<input id="pageBrandName" type="text" /></label>
+            <label>网站 logo 图片<input id="pageLogoImageFile" type="file" accept="image/*" /></label>
+            <label>网站 logo 图片地址<input id="pageLogoImage" type="text" placeholder="图片 URL、本地路径或上传后自动填充" /></label>
+            <label>网站背景图片<input id="pageBackgroundImageFile" type="file" accept="image/*" /></label>
+            <label>网站背景图片地址<input id="pageBackgroundImage" type="text" placeholder="留空则使用当前动态背景" /></label>
+            <label>背景音乐地址<input id="siteMusic" type="text" placeholder="MP3 地址或本地路径" /></label>
+          </div>
+          <audio id="siteMusicPreview" controls></audio>
+        </div>
+
+        <div class="region-fields" data-region-panel="hero">
+          <h2>首页首屏</h2>
+          <div class="form-grid one-column">
+            <label>首屏小标题<input id="pageHeroEyebrow" type="text" /></label>
+            <label>首屏标题<input id="pageHeroTitle" type="text" /></label>
+            <label>首页 logo 动效强度
+              <select id="pageLogoMotion">
+                <option value="strong">明显</option>
+                <option value="calm">柔和</option>
+                <option value="still">静止</option>
+              </select>
+            </label>
+            <label>首屏介绍<textarea id="pageHeroDescription"></textarea></label>
+          </div>
+        </div>
+
+        <div class="region-fields" data-region-panel="home">
+          <h2>首页内容</h2>
+          <div class="form-grid one-column">
+            <label>最新文章小标题<input id="pageHomeLatestEyebrow" type="text" /></label>
+            <label>最新文章标题<input id="pageHomeLatestTitle" type="text" /></label>
+            <label>底部提示小标题<input id="pageMotionEyebrow" type="text" /></label>
+            <label>底部提示文字<textarea id="pageMotionTitle"></textarea></label>
+          </div>
+        </div>
+
+        <div class="region-fields" data-region-panel="articles">
+          <h2>文章页设置</h2>
+          <div class="form-grid one-column">
+            <label>热门区小标题<input id="pagePopularEyebrow" type="text" /></label>
+            <label>热门区标题<input id="pagePopularTitle" type="text" /></label>
+            <label>文章区小标题<input id="pageLatestEyebrow" type="text" /></label>
+            <label>全部文章标题<input id="pageAllArticlesTitle" type="text" /></label>
+            <label>每页文章数<input id="pageArticlesPerPage" type="number" min="1" value="7" /></label>
+            <label>自动轮播速度（毫秒）<input id="pageHotSpeed" type="number" min="1200" step="100" /></label>
+            <label>文章分类<textarea id="pageCategories" placeholder="每行一个分类"></textarea></label>
+          </div>
+          <div class="page-editor-block compact">
+            <h2>热门文章</h2>
+            <p>勾选后会优先作为热门轮播；未选择时按热门权重自动排序。</p>
+            <div class="hot-picker" id="hotPicker"></div>
+          </div>
+        </div>
+
+        <div class="region-fields" data-region-panel="about">
+          <h2>关于页设置</h2>
+          <div class="form-grid one-column">
+            <label>关于区小标题<input id="pageAboutEyebrow" type="text" /></label>
+            <label>关于区标题<input id="pageAboutTitle" type="text" /></label>
+            <label>关于门户内容<textarea id="pageAboutText"></textarea></label>
+          </div>
+        </div>
+
+        <p class="site-editor-status" id="siteEditorStatus">尚未保存</p>
+      </aside>
+    </main>
+
+    <script src="articles-data.js"></script>
+    <script src="config.js"></script>
+    <script src="api-client.js"></script>
+    <script src="site-editor.js"></script>
+  </body>
+</html>

@@ -6,17 +6,16 @@
     <title>天狼星门户</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body>
+  <body class="page-home">
     <header class="site-header">
-      <a class="brand" href="#home" aria-label="天狼星门户首页">
-        <img src="logo抠图.png" alt="天狼星门户 logo" />
+      <a class="brand" href="index.html" aria-label="天狼星门户首页">
+        <img data-site-logo src="logo抠图.png" alt="天狼星门户 logo" />
         <span data-site="brandName">天狼星门户</span>
       </a>
       <nav class="top-nav" aria-label="主导航">
-        <a href="#home">首页</a>
-        <a href="#popular">热门</a>
-        <a href="#articles">文章</a>
-        <a href="#about">关于</a>
+        <a href="index.html" class="active">首页</a>
+        <a href="articles.html">文章</a>
+        <a href="about.html">关于</a>
       </nav>
       <button class="music-pill" id="musicToggle" type="button" title="背景音乐">
         <span>♪</span><b>背景音乐</b>
@@ -24,7 +23,7 @@
     </header>
 
     <main>
-      <section class="hero" id="home">
+      <section class="hero home-hero" id="home">
         <div class="hero-inner">
           <div class="hero-copy">
             <p class="eyebrow" id="heroEyebrow">Sirius Portal Journal</p>
@@ -32,79 +31,34 @@
             <p id="heroDescription">以博客杂志的方式整理门户更新、访谈、指南与观察。清晰分类、沉浸阅读、音乐伴随，让每篇文章都更容易被看见和收藏。</p>
             <form class="search-panel" id="searchForm">
               <input id="searchInput" type="search" placeholder="搜索文章标题、简介、正文或分类" autocomplete="off" />
-              <button type="submit">搜索</button>
+              <button type="submit">搜索文章</button>
             </form>
           </div>
-          <div class="hero-mark" aria-hidden="true">
-            <img src="logo抠图.png" alt="" />
+          <div class="hero-art-card">
+            <img id="heroLogoImage" src="logo抠图.png" alt="天狼星门户 logo 抠图" />
           </div>
-          <div class="hero-media" id="heroMedia" hidden></div>
         </div>
       </section>
 
-      <section class="hot-showcase" id="popular">
+      <section class="home-section">
         <div class="section-head">
           <div>
-            <p class="eyebrow" id="popularEyebrow">Popular</p>
-            <h2 id="popularTitle">热门文章</h2>
+            <p class="eyebrow" id="homeLatestEyebrow">Signal</p>
+            <h2 id="homeLatestTitle">最新文章</h2>
           </div>
+          <a class="text-link" href="articles.html">查看全部</a>
         </div>
-        <div class="hot-carousel-wrap">
-          <button class="hot-arrow hot-prev" id="hotPrev" type="button" aria-label="上一篇热门文章">‹</button>
-          <div class="hot-carousel" id="hotCarousel"></div>
-          <button class="hot-arrow hot-next" id="hotNext" type="button" aria-label="下一篇热门文章">›</button>
-        </div>
-        <div class="hot-dots" id="hotDots"></div>
+        <div class="home-feature-grid" id="homeFeatureGrid"></div>
       </section>
 
-      <section class="article-area article-band" id="articles">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow" id="latestEyebrow">Latest Articles</p>
-            <h2 id="listTitle">全部文章</h2>
-          </div>
-          <span id="articleCount"></span>
+      <section class="motion-band">
+        <div>
+          <p class="eyebrow" id="motionEyebrow">Portal Motion</p>
+          <h2 id="motionTitle">阅读、音乐、评论与编辑，被整理为一个可发布的门户系统。</h2>
         </div>
-        <div class="article-filter-row">
-          <div class="category-tabs" id="categoryList"></div>
-          <input id="articleSearchInput" class="inline-search" type="search" placeholder="搜索标题或正文" />
-        </div>
-        <div class="sort-row">
-          <label>排序
-            <select id="sortSelect">
-              <option value="newest">按时间：最新优先</option>
-              <option value="oldest">按时间：最早优先</option>
-            </select>
-          </label>
-        </div>
-        <div class="article-grid article-list" id="articleGrid"></div>
-        <div class="pagination" id="pagination"></div>
+        <a class="primary-link" href="articles.html">进入文章页</a>
       </section>
-
-      <article class="reader" id="reader" hidden>
-        <button class="back-button" id="backButton" type="button">返回文章列表</button>
-        <div class="reader-hero">
-          <img id="readerCover" alt="" />
-          <div>
-            <p class="eyebrow" id="readerMeta"></p>
-            <h2 id="readerTitle"></h2>
-            <p id="readerExcerpt"></p>
-          </div>
-        </div>
-        <div id="inlineMusic"></div>
-        <div class="reader-body" id="readerBody"></div>
-        <section class="comments" id="comments"></section>
-      </article>
     </main>
-
-    <footer class="site-footer" id="about">
-      <div>
-        <p class="eyebrow" id="aboutEyebrow">About</p>
-        <h2 id="aboutTitle">关于门户</h2>
-      </div>
-      <p id="aboutText">这里收录 10 篇已排版文章，并支持通过独立后台继续发布和编辑。前台只保留阅读入口，避免读者误入编辑区。</p>
-      <div class="footer-media" id="footerMedia" hidden></div>
-    </footer>
 
     <audio id="backgroundAudio" loop></audio>
     <script src="articles-data.js"></script>

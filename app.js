@@ -10,14 +10,16 @@
     popularTitle: "热门文章",
     latestEyebrow: "Latest Articles",
     allArticlesTitle: "全部文章",
+    homeLatestEyebrow: "Signal",
+    homeLatestTitle: "最新文章",
+    motionEyebrow: "Portal Motion",
+    motionTitle: "阅读、音乐、评论与编辑，被整理为一个可发布的门户系统。",
     aboutEyebrow: "About",
     aboutTitle: "关于门户",
     aboutText: "这里收录 10 篇已排版文章，并支持通过独立后台继续发布和编辑。前台只保留阅读入口，避免读者误入编辑区。",
+    logoImage: "logo抠图.png",
+    logoMotion: "strong",
     backgroundImage: "",
-    heroBanner: "",
-    heroVideo: "",
-    footerImage: "",
-    aboutVideo: "",
     hotSpeed: 4500,
     articlesPerPage: 7,
   };
@@ -33,33 +35,19 @@
     ...baseArticles.map((article) => savedMap.get(article.id) || article),
   ].filter((article) => !article.deleted);
 
-  const configuredCategories = settings.categories || [];
-  const allCategories = configuredCategories.length
-    ? configuredCategories
-    : [...new Set(articles.map((article) => article.category))];
   let currentCategory = "全部";
-  let currentQuery = "";
+  let currentQuery = new URLSearchParams(location.search).get("q") || "";
   let currentPage = 1;
   let sortOrder = "newest";
   let hotIndex = 0;
   let hotTimer = null;
 
-  const grid = document.getElementById("articleGrid");
-  const categoryList = document.getElementById("categoryList");
-  const hotCarousel = document.getElementById("hotCarousel");
-  const hotDots = document.getElementById("hotDots");
-  const hotPrev = document.getElementById("hotPrev");
-  const hotNext = document.getElementById("hotNext");
-  const listTitle = document.getElementById("listTitle");
-  const articleCount = document.getElementById("articleCount");
-  const articleSearchInput = document.getElementById("articleSearchInput");
-  const sortSelect = document.getElementById("sortSelect");
-  const pagination = document.getElementById("pagination");
-  const reader = document.getElementById("reader");
-  const articleBand = document.querySelector(".article-band");
-  const hotShowcase = document.querySelector(".hot-showcase");
-  const backgroundAudio = document.getElementById("backgroundAudio");
-  backgroundAudio.src = settings.siteMusic || defaultMusic;
+  const configuredCategories = settings.categories || [];
+  const allCategories = configuredCategories.length ? configuredCategories : [...new Set(articles.map((article) => article.category))];
+
+  const $ = (selector) => document.querySelector(selector);
+  const backgroundAudio = $("#backgroundAudio");
+  if (backgroundAudio) backgroundAudio.src = settings.siteMusic || defaultMusic;
 
   function escapeHTML(value) {
     return String(value || "").replace(/[&<>"']/g, (char) => ({
@@ -87,29 +75,19 @@
     if (/youtube\.com|youtu\.be|bilibili\.com|vimeo\.com/i.test(url)) {
       return `<iframe src="${escapeHTML(url)}" title="${escapeHTML(title || "视频")}" loading="lazy" allowfullscreen></iframe>`;
     }
-    if (isVideoSource(url)) {
-      return `<video src="${escapeHTML(url)}" controls playsinline></video>`;
-    }
+    if (isVideoSource(url)) return `<video src="${escapeHTML(url)}" controls playsinline></video>`;
     return `<img src="${escapeHTML(url)}" alt="${escapeHTML(title || "页面图片")}" loading="lazy" />`;
   }
 
   function applyPageVisuals() {
     document.body.style.backgroundImage = page.backgroundImage ? `url("${page.backgroundImage}")` : "";
     document.body.classList.toggle("custom-background", Boolean(page.backgroundImage));
-
-    const heroMedia = document.getElementById("heroMedia");
-    const heroSource = page.heroVideo || page.heroBanner;
-    if (heroSource) {
-      heroMedia.hidden = false;
-      heroMedia.innerHTML = mediaHTML(heroSource, page.heroTitle);
-    }
-
-    const footerMedia = document.getElementById("footerMedia");
-    const footerSource = page.aboutVideo || page.footerImage;
-    if (footerSource) {
-      footerMedia.hidden = false;
-      footerMedia.innerHTML = mediaHTML(footerSource, page.aboutTitle);
-    }
+    document.documentElement.dataset.logoMotion = page.logoMotion || "strong";
+    document.querySelectorAll("[data-site-logo]").forEach((image) => {
+      image.src = page.logoImage || defaultPage.logoImage;
+    });
+    const heroLogo = document.getElementById("heroLogoImage");
+    if (heroLogo) heroLogo.src = page.logoImage || defaultPage.logoImage;
   }
 
   function articleText(article) {
@@ -129,13 +107,29 @@
   }
 
   function hotArticles() {
-    const selected = (settings.hotArticleIds || [])
-      .map((id) => articles.find((article) => article.id === id))
-      .filter(Boolean);
+    const selected = (settings.hotArticleIds || []).map((id) => articles.find((article) => article.id === id)).filter(Boolean);
     return selected.length ? selected : [...articles].sort((a, b) => (b.hot || 0) - (a.hot || 0)).slice(0, 5);
   }
 
+  function renderHomeFeatures() {
+    const grid = $("#homeFeatureGrid");
+    if (!grid) return;
+    grid.innerHTML = [...articles]
+      .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0))
+      .slice(0, 3)
+      .map((article) => `
+        <a class="home-feature-card" href="articles.html?article=${encodeURIComponent(article.id)}">
+          <img src="${escapeHTML(article.cover)}" alt="${escapeHTML(article.title)}" />
+          <span>${escapeHTML(article.category)} · ${escapeHTML(article.date)}</span>
+          <h3>${escapeHTML(article.title)}</h3>
+          <p>${escapeHTML(article.excerpt || "暂无简介")}</p>
+        </a>
+      `).join("");
+  }
+
   function renderCategories() {
+    const categoryList = $("#categoryList");
+    if (!categoryList) return;
     const categories = ["全部", ...allCategories];
     categoryList.innerHTML = categories.map((category) => (
       `<button type="button" class="${category === currentCategory ? "active" : ""}" data-category="${escapeHTML(category)}">${escapeHTML(category)}</button>`
@@ -143,6 +137,9 @@
   }
 
   function renderHotShowcase() {
+    const hotCarousel = $("#hotCarousel");
+    const hotDots = $("#hotDots");
+    if (!hotCarousel || !hotDots) return;
     const hot = hotArticles();
     if (!hot.length) {
       hotCarousel.innerHTML = "";
@@ -183,6 +180,11 @@
   }
 
   function renderGrid() {
+    const grid = $("#articleGrid");
+    const listTitle = $("#listTitle");
+    const articleCount = $("#articleCount");
+    const pagination = $("#pagination");
+    if (!grid || !listTitle || !articleCount || !pagination) return;
     const result = filteredArticles();
     const perPage = Math.max(1, Number(page.articlesPerPage || 7));
     const totalPages = Math.max(1, Math.ceil(result.length / perPage));
@@ -204,6 +206,8 @@
   }
 
   function renderPagination(totalPages) {
+    const pagination = $("#pagination");
+    if (!pagination) return;
     if (totalPages <= 1) {
       pagination.innerHTML = "";
       return;
@@ -233,15 +237,13 @@
   }
 
   function renderComments(article) {
-    const box = document.getElementById("comments");
+    const box = $("#comments");
+    if (!box) return;
     if (article.commentMode === "closed") {
       box.innerHTML = "<h3>评论区未开启</h3><p>本文当前不开放评论。</p>";
       return;
     }
-    const visible = getComments(article.id).filter((comment) => {
-      if (!comment.approved) return false;
-      return article.commentMode === "all" || comment.featured;
-    });
+    const visible = getComments(article.id).filter((comment) => comment.approved && (article.commentMode === "all" || comment.featured));
     box.innerHTML = `
       <h3>${article.commentMode === "featured" ? "精选评论" : "评论区"}</h3>
       ${visible.map((comment) => `
@@ -256,12 +258,12 @@
         <button type="submit">提交评论</button>
       </form>
     `;
-    document.getElementById("commentForm").addEventListener("submit", async (event) => {
+    $("#commentForm").addEventListener("submit", async (event) => {
       event.preventDefault();
       await saveComment(article.id, {
         id: Date.now().toString(),
-        name: document.getElementById("commentName").value,
-        body: document.getElementById("commentBody").value,
+        name: $("#commentName").value,
+        body: $("#commentBody").value,
         featured: false,
         approved: false,
       });
@@ -275,137 +277,152 @@
 
   function showArticle(id) {
     const article = articles.find((item) => item.id === id);
-    if (!article) return;
+    const reader = $("#reader");
+    const articleBand = $(".article-band");
+    const hotShowcase = $(".hot-showcase");
+    if (!article || !reader || !articleBand || !hotShowcase) return;
     articleBand.hidden = true;
     hotShowcase.hidden = true;
     reader.hidden = false;
-    document.getElementById("readerCover").src = article.cover;
-    document.getElementById("readerCover").alt = article.title;
-    document.getElementById("readerMeta").textContent = `${article.category} · ${article.date}`;
-    document.getElementById("readerTitle").textContent = article.title;
-    document.getElementById("readerExcerpt").textContent = article.excerpt;
-    document.getElementById("readerBody").innerHTML = (article.html || (article.paragraphs || []).map((p) => `<p>${escapeHTML(p)}</p>`).join("")) +
+    $("#readerCover").src = article.cover;
+    $("#readerCover").alt = article.title;
+    $("#readerMeta").textContent = `${article.category} · ${article.date}`;
+    $("#readerTitle").textContent = article.title;
+    $("#readerExcerpt").textContent = article.excerpt;
+    $("#readerBody").innerHTML = (article.html || (article.paragraphs || []).map((p) => `<p>${escapeHTML(p)}</p>`).join("")) +
       (article.images || []).slice(1).map((src) => `<img src="${escapeHTML(src)}" alt="${escapeHTML(article.title)} 配图" loading="lazy" />`).join("");
-    document.getElementById("inlineMusic").innerHTML = article.music
-      ? `<div class="audio-card"><p class="eyebrow">Article Music</p><audio src="${escapeHTML(article.music)}" controls></audio></div>`
-      : "";
-    if (article.video) {
-      document.getElementById("inlineMusic").innerHTML += `<div class="audio-card media-card"><p class="eyebrow">Article Video</p>${mediaHTML(article.video, article.title)}</div>`;
-    }
+    $("#inlineMusic").innerHTML = article.music ? `<div class="audio-card"><p class="eyebrow">Article Music</p><audio src="${escapeHTML(article.music)}" controls></audio></div>` : "";
+    if (article.video) $("#inlineMusic").innerHTML += `<div class="audio-card media-card"><p class="eyebrow">Article Video</p>${mediaHTML(article.video, article.title)}</div>`;
     renderComments(article);
-    location.hash = `article-${id}`;
+    history.replaceState(null, "", `articles.html?article=${encodeURIComponent(id)}`);
     reader.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
-  categoryList.addEventListener("click", (event) => {
-    const button = event.target.closest("button[data-category]");
-    if (!button) return;
-    currentCategory = button.dataset.category;
-    currentPage = 1;
-    renderCategories();
-    renderGrid();
-  });
-
-  hotCarousel.addEventListener("click", (event) => {
-    const slide = event.target.closest("[data-id]");
-    if (slide) showArticle(slide.dataset.id);
-  });
-
-  hotDots.addEventListener("click", (event) => {
-    const button = event.target.closest("[data-hot-index]");
-    if (!button) return;
-    hotIndex = Number(button.dataset.hotIndex);
-    renderHotShowcase();
-    startHotRotation();
-  });
-
-  hotPrev.addEventListener("click", () => shiftHot(-1));
-  hotNext.addEventListener("click", () => shiftHot(1));
-
-  grid.addEventListener("click", (event) => {
-    const card = event.target.closest(".article-card");
-    if (card) showArticle(card.dataset.id);
-  });
-
-  grid.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") showArticle(event.target.closest(".article-card")?.dataset.id);
-  });
-
-  document.getElementById("backButton").addEventListener("click", () => {
-    exitReader();
-    location.hash = "articles";
-  });
-
   function exitReader() {
-    reader.hidden = true;
-    articleBand.hidden = false;
-    hotShowcase.hidden = false;
+    const reader = $("#reader");
+    const articleBand = $(".article-band");
+    const hotShowcase = $(".hot-showcase");
+    if (reader) reader.hidden = true;
+    if (articleBand) articleBand.hidden = false;
+    if (hotShowcase) hotShowcase.hidden = false;
   }
 
-  document.querySelector(".top-nav").addEventListener("click", (event) => {
-    const link = event.target.closest("a[href^='#']");
-    if (!link) return;
-    event.preventDefault();
-    exitReader();
-    const target = document.querySelector(link.getAttribute("href"));
-    if (target) {
-      target.scrollIntoView({ behavior: "smooth", block: "start" });
-      history.replaceState(null, "", link.getAttribute("href"));
-    }
-  });
+  function bindEvents() {
+    $("#searchForm")?.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const query = $("#searchInput")?.value.trim() || "";
+      location.href = `articles.html?q=${encodeURIComponent(query)}`;
+    });
 
-  document.getElementById("searchForm").addEventListener("submit", (event) => {
-    event.preventDefault();
-    currentQuery = document.getElementById("searchInput").value.trim();
-    articleSearchInput.value = currentQuery;
-    currentPage = 1;
-    exitReader();
-    renderGrid();
-    document.getElementById("articles").scrollIntoView({ behavior: "smooth" });
-  });
+    $("#musicToggle")?.addEventListener("click", async () => {
+      if (!backgroundAudio) return;
+      if (backgroundAudio.paused) {
+        await backgroundAudio.play();
+        $("#musicToggle").classList.add("playing");
+      } else {
+        backgroundAudio.pause();
+        $("#musicToggle").classList.remove("playing");
+      }
+    });
 
-  document.getElementById("searchInput").addEventListener("input", (event) => {
-    currentQuery = event.target.value.trim();
-    articleSearchInput.value = currentQuery;
-    currentPage = 1;
-    renderGrid();
-  });
+    $("#categoryList")?.addEventListener("click", (event) => {
+      const button = event.target.closest("button[data-category]");
+      if (!button) return;
+      currentCategory = button.dataset.category;
+      currentPage = 1;
+      renderCategories();
+      renderGrid();
+    });
 
-  articleSearchInput.addEventListener("input", (event) => {
-    currentQuery = event.target.value.trim();
-    document.getElementById("searchInput").value = currentQuery;
-    currentPage = 1;
-    renderGrid();
-  });
+    $("#hotCarousel")?.addEventListener("click", (event) => {
+      const slide = event.target.closest("[data-id]");
+      if (slide) showArticle(slide.dataset.id);
+    });
 
-  sortSelect.addEventListener("change", (event) => {
-    sortOrder = event.target.value;
-    currentPage = 1;
-    renderGrid();
-  });
+    $("#hotDots")?.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-hot-index]");
+      if (!button) return;
+      hotIndex = Number(button.dataset.hotIndex);
+      renderHotShowcase();
+      startHotRotation();
+    });
 
-  pagination.addEventListener("click", (event) => {
-    const button = event.target.closest("button[data-page]");
-    if (!button || button.disabled) return;
-    currentPage = Number(button.dataset.page);
-    renderGrid();
-    document.getElementById("articles").scrollIntoView({ behavior: "smooth", block: "start" });
-  });
+    $("#hotPrev")?.addEventListener("click", () => shiftHot(-1));
+    $("#hotNext")?.addEventListener("click", () => shiftHot(1));
 
-  document.getElementById("musicToggle").addEventListener("click", async () => {
-    if (backgroundAudio.paused) {
-      await backgroundAudio.play();
-      document.getElementById("musicToggle").classList.add("playing");
-    } else {
-      backgroundAudio.pause();
-      document.getElementById("musicToggle").classList.remove("playing");
-    }
-  });
+    $("#articleGrid")?.addEventListener("click", (event) => {
+      const card = event.target.closest(".article-card");
+      if (card) showArticle(card.dataset.id);
+    });
+
+    $("#backButton")?.addEventListener("click", () => {
+      exitReader();
+      history.replaceState(null, "", "articles.html");
+    });
+
+    $("#articleSearchInput")?.addEventListener("input", (event) => {
+      currentQuery = event.target.value.trim();
+      currentPage = 1;
+      renderGrid();
+    });
+
+    $("#sortSelect")?.addEventListener("change", (event) => {
+      sortOrder = event.target.value;
+      currentPage = 1;
+      renderGrid();
+    });
+
+    $("#pagination")?.addEventListener("click", (event) => {
+      const button = event.target.closest("button[data-page]");
+      if (!button || button.disabled) return;
+      currentPage = Number(button.dataset.page);
+      renderGrid();
+      $("#articles")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
+
+  function bindPointerEffects() {
+    let lastMove = 0;
+    const icons = ["🐬", "🐋", "⚜"];
+    const root = document.documentElement;
+
+    document.addEventListener("pointermove", (event) => {
+      const now = performance.now();
+      if (now - lastMove < 24) return;
+      lastMove = now;
+      root.style.setProperty("--mouse-x", `${event.clientX}px`);
+      root.style.setProperty("--mouse-y", `${event.clientY}px`);
+    }, { passive: true });
+
+    document.addEventListener("click", (event) => {
+      if (event.target.closest("input, textarea, select, [contenteditable='true']")) return;
+      const icon = document.createElement("span");
+      icon.className = "click-icon";
+      icon.textContent = icons[Math.floor(Math.random() * icons.length)];
+      icon.style.left = `${event.clientX}px`;
+      icon.style.top = `${event.clientY}px`;
+      icon.style.setProperty("--drift-x", `${Math.round(Math.random() * 46 - 23)}px`);
+      icon.style.setProperty("--drift-y", `${Math.round(-34 - Math.random() * 34)}px`);
+      icon.style.setProperty("--spin", `${Math.round(Math.random() * 40 - 20)}deg`);
+      document.body.appendChild(icon);
+      icon.addEventListener("animationend", () => icon.remove(), { once: true });
+    });
+  }
 
   applyPageText();
   applyPageVisuals();
+  renderHomeFeatures();
   renderCategories();
   renderHotShowcase();
   startHotRotation();
   renderGrid();
+  bindEvents();
+  bindPointerEffects();
+
+  const params = new URLSearchParams(location.search);
+  if ($("#articleSearchInput") && currentQuery) {
+    $("#articleSearchInput").value = currentQuery;
+    renderGrid();
+  }
+  if (params.get("article")) showArticle(params.get("article"));
 })();

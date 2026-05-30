@@ -14,6 +14,8 @@
     aboutEyebrow: "About",
     aboutTitle: "关于门户",
     aboutText: "这里收录 10 篇已排版文章，并支持通过独立后台继续发布和编辑。前台只保留阅读入口，避免读者误入编辑区。",
+    logoImage: "logo抠图.png",
+    logoMotion: "strong",
     backgroundImage: "",
     heroBanner: "",
     heroVideo: "",
@@ -384,6 +386,10 @@
   function loadPageEditor() {
     const settings = getSettings();
     const page = { ...defaultPage, ...(settings.page || {}) };
+    document.documentElement.dataset.logoMotion = page.logoMotion || defaultPage.logoMotion;
+    document.querySelectorAll("[data-site-logo]").forEach((image) => {
+      image.src = page.logoImage || defaultPage.logoImage;
+    });
     const map = {
       pageBrandName: page.brandName,
       pageHeroEyebrow: page.heroEyebrow,
@@ -397,6 +403,8 @@
       pageAboutEyebrow: page.aboutEyebrow,
       pageAboutTitle: page.aboutTitle,
       pageAboutText: page.aboutText,
+      pageLogoImage: page.logoImage || defaultPage.logoImage,
+      pageLogoMotion: page.logoMotion || defaultPage.logoMotion,
       pageBackgroundImage: page.backgroundImage,
       pageHeroBanner: page.heroBanner,
       pageHeroVideo: page.heroVideo,
@@ -429,6 +437,8 @@
       aboutEyebrow: document.getElementById("pageAboutEyebrow").value.trim() || defaultPage.aboutEyebrow,
       aboutTitle: document.getElementById("pageAboutTitle").value.trim() || defaultPage.aboutTitle,
       aboutText: document.getElementById("pageAboutText").value.trim() || defaultPage.aboutText,
+      logoImage: document.getElementById("pageLogoImage").value.trim() || defaultPage.logoImage,
+      logoMotion: document.getElementById("pageLogoMotion").value || defaultPage.logoMotion,
       backgroundImage: document.getElementById("pageBackgroundImage").value.trim(),
       heroBanner: document.getElementById("pageHeroBanner").value.trim(),
       heroVideo: document.getElementById("pageHeroVideo").value.trim(),
@@ -442,9 +452,11 @@
   }
 
   function renderHotPicker() {
+    const picker = document.getElementById("hotPicker");
+    if (!picker) return;
     const settings = getSettings();
     const selected = new Set(settings.hotArticleIds || []);
-    document.getElementById("hotPicker").innerHTML = allArticles().map((article) => `
+    picker.innerHTML = allArticles().map((article) => `
       <label>
         <input type="checkbox" value="${article.id}" ${selected.has(article.id) ? "checked" : ""} />
         <span>${escapeHTML(article.title)}</span>
@@ -560,11 +572,6 @@
   });
   document.getElementById("coverInput").addEventListener("change", (event) => setCover(event.target.files[0]));
   ["coverUrl", "postTitle", "postExcerpt"].forEach((id) => document.getElementById(id).addEventListener("input", refreshPreview));
-  document.getElementById("pageBackgroundImageFile").addEventListener("change", (event) => setMediaField("pageBackgroundImage", event.target.files[0]));
-  document.getElementById("pageHeroBannerFile").addEventListener("change", (event) => setMediaField("pageHeroBanner", event.target.files[0]));
-  document.getElementById("pageHeroVideoFile").addEventListener("change", (event) => setMediaField("pageHeroVideo", event.target.files[0]));
-  document.getElementById("pageFooterImageFile").addEventListener("change", (event) => setMediaField("pageFooterImage", event.target.files[0]));
-  document.getElementById("pageAboutVideoFile").addEventListener("change", (event) => setMediaField("pageAboutVideo", event.target.files[0]));
   editor.addEventListener("input", refreshPreview);
   document.getElementById("previewButton").addEventListener("click", refreshPreview);
   document.getElementById("publishButton").addEventListener("click", saveArticle);
@@ -573,12 +580,7 @@
   document.getElementById("importJsonInput").addEventListener("change", (event) => importJSON(event.target.files[0]));
   document.getElementById("clearButton").addEventListener("click", newArticle);
   document.getElementById("newPostButton").addEventListener("click", newArticle);
-  document.getElementById("saveSettingsButton").addEventListener("click", saveSettings);
-  document.getElementById("savePageButton").addEventListener("click", savePage);
   document.getElementById("saveCommentsButton").addEventListener("click", saveCurrentComments);
-  document.getElementById("siteMusic").addEventListener("input", (event) => {
-    document.getElementById("siteMusicPreview").src = event.target.value || defaultMusic;
-  });
 
   document.getElementById("articleManager").addEventListener("click", (event) => {
     const editId = event.target.dataset.edit;
@@ -611,7 +613,5 @@
 
   renderManager();
   renderCategoryOptions();
-  loadPageEditor();
-  loadSettings();
   newArticle();
 })();
