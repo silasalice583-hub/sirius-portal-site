@@ -1,10 +1,24 @@
 export async function onRequest(context) {
-  const upstream = (context.env.RAILWAY_API_BASE || context.env.SIRIUS_API_BASE || "").replace(/\/$/, "");
-  if (!upstream) {
-    return Response.json({ error: "RAILWAY_API_BASE is not configured" }, { status: 500 });
+  const sourceUrl = new URL(context.request.url);
+  const corsHeaders = {
+    "Access-Control-Allow-Origin": sourceUrl.origin,
+    "Access-Control-Allow-Methods": "GET, POST, PUT, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    "Vary": "Origin",
+  };
+
+  if (context.request.method === "OPTIONS") {
+    return new Response(null, { status: 204, headers: corsHeaders });
   }
 
-  const sourceUrl = new URL(context.request.url);
+  const upstream = (context.env.RAILWAY_API_BASE || context.env.SIRIUS_API_BASE || "").replace(/\/$/, "");
+  if (!upstream) {
+    return Response.json({ error: "RAILWAY_API_BASE is not configured in Cloudflare Pages" }, {
+      status: 500,
+      headers: corsHeaders,
+    });
+  }
+
   const targetUrl = new URL(`${upstream}/api/${context.params.path || ""}`);
   targetUrl.search = sourceUrl.search;
 
@@ -23,11 +37,22 @@ export async function onRequest(context) {
     redirect: "manual",
   };
 
-  const response = await fetch(targetUrl.toString(), init);
+  let response;
+  try {
+    response = await fetch(targetUrl.toString(), init);
+  } catch (error) {
+    return Response.json({
+      error: "Could not reach Railway API",
+      upstream,
+      message: error.message,
+    }, {
+      status: 502,
+      headers: corsHeaders,
+    });
+  }
   const outputHeaders = new Headers(response.headers);
   outputHeaders.set("Cache-Control", "no-store");
-  outputHeaders.set("Access-Control-Allow-Origin", sourceUrl.origin);
-  outputHeaders.set("Vary", "Origin");
+  Object.entries(corsHeaders).forEach(([key, value]) => outputHeaders.set(key, value));
 
   return new Response(response.body, {
     status: response.status,

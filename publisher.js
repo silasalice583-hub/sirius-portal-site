@@ -260,7 +260,7 @@
       savedArticlesState = previousArticles;
       renderManager();
       console.warn("保存文章失败", error);
-      alert("保存失败：没有连接到公网后端数据库。请检查 Cloudflare Pages 的 RAILWAY_API_BASE 环境变量和 Railway 后端服务。");
+      alert(`保存失败：没有连接到公网后端数据库。\n\n具体错误：${error.message}\n\n请检查 Cloudflare Pages 的 RAILWAY_API_BASE 环境变量、最新部署是否包含 Functions，以及 Railway 后端服务。`);
     }
   }
 
@@ -547,7 +547,7 @@
       alert(`同步完成：文章 ${result.articles} 篇，设置 ${result.settings} 组，评论 ${result.comments} 条。`);
     } catch (error) {
       console.warn("同步本机草稿失败", error);
-      alert("同步失败：请检查 Cloudflare Pages 的 RAILWAY_API_BASE 环境变量和 Railway 后端服务。");
+      alert(`同步失败：${error.message}\n\n请检查 Cloudflare Pages 的 RAILWAY_API_BASE 环境变量、最新部署是否包含 Functions，以及 Railway 后端服务。`);
     }
   }
 

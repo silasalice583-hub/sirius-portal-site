@@ -24,7 +24,10 @@
       },
       ...options,
     });
-    if (!response.ok) throw new Error(`API ${response.status}`);
+    if (!response.ok) {
+      const message = await response.text().catch(() => "");
+      throw new Error(`API ${response.status}${message ? `: ${message.slice(0, 220)}` : ""}`);
+    }
     return response.status === 204 ? null : response.json();
   }
 
