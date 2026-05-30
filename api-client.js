@@ -43,11 +43,15 @@
   async function migrateLocalToApi() {
     if (!hasApi()) throw new Error("API is not configured");
     const state = localState();
-    if (state.articles.length) await saveArticles(state.articles);
+    let articleCount = 0;
+    for (const article of state.articles) {
+      await saveArticle(article);
+      articleCount += 1;
+    }
     if (Object.keys(state.settings).length) await saveSettings(state.settings);
     await Promise.all(Object.entries(state.comments).map(([articleId, comments]) => saveComments(articleId, comments)));
     return {
-      articles: state.articles.length,
+      articles: articleCount,
       settings: Object.keys(state.settings).length ? 1 : 0,
       comments: Object.values(state.comments).reduce((total, comments) => total + comments.length, 0),
     };

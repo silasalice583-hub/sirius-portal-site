@@ -205,7 +205,11 @@ app.put("/api/articles/:articleId/comments", async (req, res, next) => {
 
 app.use((error, req, res, next) => {
   console.error(error);
-  res.status(500).json({ error: "服务器错误" });
+  const showDetail = process.env.NODE_ENV !== "production" || process.env.SHOW_ERROR_DETAIL === "true";
+  res.status(error.status || 500).json({
+    error: "服务器错误",
+    ...(showDetail ? { detail: error.message } : {}),
+  });
 });
 
 initDb().then(() => {
