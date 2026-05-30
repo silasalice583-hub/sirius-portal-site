@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>天狼星门户 · 后台编辑器</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="publisher-page">
+    <header class="site-header">
+      <a class="brand" href="publisher.html">
+        <img src="logo抠图.png" alt="天狼星门户 logo" />
+        <span>后台编辑器</span>
+      </a>
+      <nav class="top-nav" aria-label="主导航">
+        <a href="#articlesPanel" data-panel-link="articlesPanel">文章</a>
+        <a href="#pagePanel" data-panel-link="pagePanel">页面</a>
+        <a href="#settingsPanel" data-panel-link="settingsPanel">设置</a>
+      </nav>
+    </header>
+
+    <main class="admin-shell">
+      <aside class="admin-sidebar">
+        <button class="admin-tab active" data-panel="articlesPanel" type="button">文章管理</button>
+        <button class="admin-tab" data-panel="pagePanel" type="button">页面编辑</button>
+        <button class="admin-tab" data-panel="settingsPanel" type="button">站点设置</button>
+        <button id="newPostButton" type="button">新建文章</button>
+      </aside>
+
+      <section class="admin-panel" id="articlesPanel">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Article Admin</p>
+            <h1>文章管理</h1>
+          </div>
+          <button id="publishButton" type="button">保存文章</button>
+        </div>
+
+        <div class="article-manager" id="articleManager"></div>
+
+        <div class="form-grid">
+          <label>文章标题<input id="postTitle" type="text" placeholder="输入文章标题" /></label>
+          <label>分类<input id="postCategory" type="text" list="categoryOptions" placeholder="例如：访谈 / 指南 / 科普" /></label>
+          <datalist id="categoryOptions"></datalist>
+          <label>标题图片<input id="coverInput" type="file" accept="image/*" /></label>
+          <label>标题图片地址<input id="coverUrl" type="text" placeholder="也可以填写图片 URL 或本地路径" /></label>
+          <label>文中音乐<input id="articleMusic" type="text" placeholder="MP3 地址或本地路径" /></label>
+          <label>文中视频<input id="articleVideo" type="text" placeholder="MP4 / WebM / 视频页面地址" /></label>
+          <label>发布时间<input id="postDate" type="date" /></label>
+          <label>热门权重<input id="hotScore" type="number" min="0" max="100" value="80" /></label>
+          <label class="full-field">文章简介<textarea id="postExcerpt" placeholder="用于首页横排文章和热门轮播展示"></textarea></label>
+          <label>评论方式
+            <select id="commentMode">
+              <option value="all">展示全部评论</option>
+              <option value="featured">仅展示精选评论</option>
+              <option value="closed">不开启评论区</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="toolbar" aria-label="排版工具栏">
+          <select id="fontName" title="字体">
+            <option value="Microsoft YaHei">微软雅黑</option>
+            <option value="SimSun">宋体</option>
+            <option value="KaiTi">楷体</option>
+            <option value="Arial">Arial</option>
+          </select>
+          <select id="fontSize" title="字号">
+            <option value="3">正文</option>
+            <option value="4">较大</option>
+            <option value="5">标题</option>
+            <option value="6">大标题</option>
+          </select>
+          <button id="undoButton" type="button" title="撤销">↶</button>
+          <button id="redoButton" type="button" title="重做">↷</button>
+          <button id="formatBrushButton" type="button" title="格式刷">刷</button>
+          <button data-command="bold" type="button" title="加粗">B</button>
+          <button data-command="italic" type="button" title="斜体">I</button>
+          <button data-command="insertUnorderedList" type="button" title="项目列表">•</button>
+          <button data-command="justifyLeft" type="button" title="左对齐">⇤</button>
+          <button data-command="justifyCenter" type="button" title="居中">≡</button>
+          <button data-command="justifyRight" type="button" title="右对齐">⇥</button>
+          <label class="color-control" title="字体颜色"><span>颜色</span><input id="fontColor" type="color" value="#17211d" /></label>
+          <button id="paragraphButton" type="button" title="段落">¶</button>
+          <button id="imageButton" type="button" title="插入图片">▣</button>
+          <button id="videoButton" type="button" title="插入视频">▶</button>
+          <button id="audioButton" type="button" title="插入音乐">♪</button>
+          <input id="bodyImageInput" type="file" accept="image/*" hidden />
+        </div>
+
+        <div class="editor" id="editor" contenteditable="true">
+          <h2>在这里输入文章正文</h2>
+          <p>可以设置字体、字号、段落、对齐方式，也可以插入图片和文中播放音乐。</p>
+        </div>
+
+        <div class="publisher-actions">
+          <button id="previewButton" type="button">刷新预览</button>
+          <button id="exportButton" type="button">导出 JSON</button>
+          <button id="importButton" type="button">导入 JSON</button>
+          <input id="importJsonInput" type="file" accept="application/json,.json" hidden />
+          <button id="clearButton" type="button">清空草稿</button>
+        </div>
+
+        <div class="comment-admin" id="commentAdmin" hidden>
+          <div class="section-head small-head">
+            <div>
+              <p class="eyebrow">Comments</p>
+              <h2>评论管理</h2>
+            </div>
+            <button id="saveCommentsButton" type="button">保存评论</button>
+          </div>
+          <div id="commentEditorList"></div>
+        </div>
+      </section>
+
+      <section class="admin-panel" id="pagePanel" hidden>
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Page Editor</p>
+            <h1>网站页面编辑器</h1>
+          </div>
+          <button id="savePageButton" type="button">保存页面</button>
+        </div>
+
+        <div class="visual-editor">
+          <div class="site-map">
+            <button class="editable-region active" data-region="global" type="button">全站背景</button>
+            <button class="editable-region" data-region="hero" type="button">首屏横幅</button>
+            <button class="editable-region" data-region="popular" type="button">热门轮播</button>
+            <button class="editable-region" data-region="articles" type="button">文章区域</button>
+            <button class="editable-region" data-region="footer" type="button">底部关于</button>
+          </div>
+
+          <div class="region-editor">
+            <div class="region-fields active" data-region-panel="global">
+              <h2>全站背景</h2>
+              <div class="form-grid one-column">
+                <label>网站名称<input id="pageBrandName" type="text" /></label>
+                <label>网站背景图片<input id="pageBackgroundImageFile" type="file" accept="image/*" /></label>
+                <label>网站背景图片地址<input id="pageBackgroundImage" type="text" placeholder="图片 URL、本地路径或上传后自动填充" /></label>
+              </div>
+            </div>
+
+            <div class="region-fields" data-region-panel="hero">
+              <h2>首屏横幅</h2>
+              <div class="form-grid">
+                <label>首屏小标题<input id="pageHeroEyebrow" type="text" /></label>
+                <label>首屏标题<input id="pageHeroTitle" type="text" /></label>
+                <label>横幅图片<input id="pageHeroBannerFile" type="file" accept="image/*" /></label>
+                <label>横幅图片地址<input id="pageHeroBanner" type="text" /></label>
+                <label>横幅视频<input id="pageHeroVideoFile" type="file" accept="video/*" /></label>
+                <label>横幅视频地址<input id="pageHeroVideo" type="text" placeholder="MP4 / WebM / 视频页面地址" /></label>
+                <label class="full-field">首屏介绍<textarea id="pageHeroDescription"></textarea></label>
+              </div>
+            </div>
+
+            <div class="region-fields" data-region-panel="popular">
+              <h2>热门轮播</h2>
+              <div class="form-grid">
+                <label>热门区小标题<input id="pagePopularEyebrow" type="text" /></label>
+                <label>热门区标题<input id="pagePopularTitle" type="text" /></label>
+                <label>自动轮播速度（毫秒）<input id="pageHotSpeed" type="number" min="1200" step="100" /></label>
+              </div>
+              <div class="page-editor-block compact">
+                <h2>热门文章选择</h2>
+                <p>勾选后会优先作为首页热门轮播；未选择时自动按热门权重排序。</p>
+                <div class="hot-picker" id="hotPicker"></div>
+              </div>
+            </div>
+
+            <div class="region-fields" data-region-panel="articles">
+              <h2>文章区域</h2>
+              <div class="form-grid">
+                <label>文章区小标题<input id="pageLatestEyebrow" type="text" /></label>
+                <label>全部文章标题<input id="pageAllArticlesTitle" type="text" /></label>
+                <label>每页文章数<input id="pageArticlesPerPage" type="number" min="1" value="7" /></label>
+                <label class="full-field">文章分类<textarea id="pageCategories" placeholder="每行一个分类，删除一行即可删减分类"></textarea></label>
+              </div>
+            </div>
+
+            <div class="region-fields" data-region-panel="footer">
+              <h2>底部关于</h2>
+              <div class="form-grid">
+                <label>关于区小标题<input id="pageAboutEyebrow" type="text" /></label>
+                <label>关于区标题<input id="pageAboutTitle" type="text" /></label>
+                <label>底部边栏图片<input id="pageFooterImageFile" type="file" accept="image/*" /></label>
+                <label>底部边栏图片地址<input id="pageFooterImage" type="text" /></label>
+                <label>底部视频<input id="pageAboutVideoFile" type="file" accept="video/*" /></label>
+                <label>底部视频地址<input id="pageAboutVideo" type="text" placeholder="MP4 / WebM / 视频页面地址" /></label>
+                <label class="full-field">关于门户内容<textarea id="pageAboutText"></textarea></label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="admin-panel" id="settingsPanel" hidden>
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Settings</p>
+            <h1>站点设置</h1>
+          </div>
+          <button id="saveSettingsButton" type="button">保存设置</button>
+        </div>
+        <div class="form-grid one-column">
+          <label>背景音乐地址<input id="siteMusic" type="text" placeholder="MP3 地址或本地路径" /></label>
+        </div>
+        <audio id="siteMusicPreview" controls></audio>
+      </section>
+
+      <aside class="preview-panel">
+        <p class="eyebrow">Preview</p>
+        <h2 id="previewTitle">文章预览</h2>
+        <img id="previewCover" src="logo抠图.png" alt="标题图片预览" />
+        <p id="previewExcerpt"></p>
+        <div id="previewBody"></div>
+      </aside>
+    </main>
+
+    <script src="articles-data.js"></script>
+    <script src="config.js"></script>
+    <script src="api-client.js"></script>
+    <script src="publisher.js"></script>
+  </body>
+</html>
