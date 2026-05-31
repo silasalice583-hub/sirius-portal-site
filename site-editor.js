@@ -20,9 +20,10 @@
     logoImage: "logo抠图.png",
     logoMotion: "strong",
     backgroundImage: "",
-    motionBackgroundImage: "",
-    articleBannerImage: "assets/articles-banner-art.png",
-    aboutImage: "assets/about-footer-art.png",
+    motionBackgroundImage: "assets/home-footer-emerald.jpg",
+    articleBannerImage: "assets/articles-emerald.jpg",
+    aboutImage: "assets/about-emerald.jpg",
+    fontFamily: "modern",
     hotSpeed: 4500,
     articlesPerPage: 7,
   };
@@ -33,6 +34,7 @@
   }
   let settingsState = state.settings || {};
   let currentRegion = "global";
+  let previewEditing = true;
   const $ = (selector) => document.querySelector(selector);
   const frame = $("#sitePreviewFrame");
   const status = $("#siteEditorStatus");
@@ -79,7 +81,11 @@
   }
 
   function pageSettings() {
-    return { ...defaultPage, ...(settingsState.page || {}) };
+    const page = { ...defaultPage, ...(settingsState.page || {}) };
+    if (!page.motionBackgroundImage) page.motionBackgroundImage = defaultPage.motionBackgroundImage;
+    if (page.articleBannerImage === "assets/articles-banner-art.png") page.articleBannerImage = defaultPage.articleBannerImage;
+    if (page.aboutImage === "assets/about-footer-art.png") page.aboutImage = defaultPage.aboutImage;
+    return page;
   }
 
   function loadForm() {
@@ -107,6 +113,7 @@
       pageLogoImage: page.logoImage || defaultPage.logoImage,
       pageLogoMotion: page.logoMotion || defaultPage.logoMotion,
       pageBackgroundImage: page.backgroundImage,
+      pageFontFamily: page.fontFamily || defaultPage.fontFamily,
       pageHotSpeed: page.hotSpeed || 4500,
       pageCategories: articleCategories().join("\n"),
       siteMusic: settingsState.siteMusic || defaultMusic,
@@ -161,6 +168,7 @@
       logoImage: $("#pageLogoImage").value.trim() || defaultPage.logoImage,
       logoMotion: $("#pageLogoMotion").value || defaultPage.logoMotion,
       backgroundImage: $("#pageBackgroundImage").value.trim(),
+      fontFamily: $("#pageFontFamily").value || defaultPage.fontFamily,
       hotSpeed: Number($("#pageHotSpeed").value || 4500),
     };
     return {
@@ -217,9 +225,50 @@
     doc.querySelectorAll(".site-editor-selected-region").forEach((node) => {
       node.classList.remove("site-editor-selected-region");
     });
+    if (!currentRegion) return;
     doc.querySelectorAll(previewSelector(currentRegion)).forEach((node) => {
       node.classList.add("site-editor-selected-region");
     });
+  }
+
+  const directTextFields = {
+    brandName: "pageBrandName",
+    heroEyebrow: "pageHeroEyebrow",
+    heroTitle: "pageHeroTitle",
+    heroDescription: "pageHeroDescription",
+    homeLatestEyebrow: "pageHomeLatestEyebrow",
+    homeLatestTitle: "pageHomeLatestTitle",
+    motionEyebrow: "pageMotionEyebrow",
+    motionTitle: "pageMotionTitle",
+    popularEyebrow: "pagePopularEyebrow",
+    popularTitle: "pagePopularTitle",
+    latestEyebrow: "pageLatestEyebrow",
+    aboutEyebrow: "pageAboutEyebrow",
+    aboutTitle: "pageAboutTitle",
+    aboutText: "pageAboutText",
+  };
+
+  function editableFieldFor(element) {
+    if (!element) return "";
+    const key = element.id || element.dataset.site;
+    return directTextFields[key] || "";
+  }
+
+  function resetPreviewSelection() {
+    currentRegion = "";
+    document.querySelectorAll("#regionList button").forEach((button) => button.classList.remove("active"));
+    document.querySelectorAll(".plugin-editor-panel .region-fields").forEach((panel) => panel.classList.remove("active"));
+    const doc = frame.contentDocument;
+    if (!doc) return;
+    doc.querySelectorAll(".site-editor-selected-region").forEach((node) => node.classList.remove("site-editor-selected-region"));
+    doc.querySelectorAll("[contenteditable='true']").forEach((node) => node.removeAttribute("contenteditable"));
+  }
+
+  function updatePreviewMode() {
+    const button = $("#togglePreviewMode");
+    button.textContent = previewEditing ? "浏览页面" : "编辑页面";
+    button.classList.toggle("active", !previewEditing);
+    if (!previewEditing) resetPreviewSelection();
   }
 
   function injectPreviewTools() {
@@ -230,16 +279,38 @@
       .site-editor-selected-region {
         outline: 3px solid rgba(45, 212, 191, .95) !important;
         outline-offset: -3px !important;
-        box-shadow: 0 0 0 9999px rgba(6, 24, 22, .16) !important;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .7), 0 0 22px rgba(45, 212, 191, .26) !important;
       }
       html, body, body * { cursor: auto !important; }
       a, button, input, textarea, select, [role="button"] { cursor: pointer !important; }
+      [contenteditable="true"] {
+        cursor: text !important;
+        outline: 2px dashed rgba(251, 191, 36, .95) !important;
+        outline-offset: 4px !important;
+      }
     `;
     doc.head.appendChild(style);
     doc.addEventListener("click", (event) => {
+      if (!previewEditing) return;
       event.preventDefault();
       event.stopPropagation();
       selectRegion(regionFromElement(event.target));
+      const fieldId = editableFieldFor(event.target);
+      if (fieldId) {
+        event.target.setAttribute("contenteditable", "true");
+        event.target.focus();
+      }
+    }, true);
+    doc.addEventListener("input", (event) => {
+      if (!previewEditing) return;
+      const fieldId = editableFieldFor(event.target);
+      if (fieldId) setField(fieldId, event.target.textContent.trim());
+    }, true);
+    doc.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        resetPreviewSelection();
+      }
     }, true);
     markPreviewRegion();
   }
@@ -262,6 +333,11 @@
     });
   });
   $("#previewPage").addEventListener("change", reloadPreview);
+  $("#togglePreviewMode").addEventListener("click", () => {
+    previewEditing = !previewEditing;
+    updatePreviewMode();
+  });
+  $("#clearPreviewSelection").addEventListener("click", resetPreviewSelection);
   $("#regionList").addEventListener("click", (event) => {
     const button = event.target.closest("button[data-region]");
     if (button) selectRegion(button.dataset.region);
@@ -278,4 +354,5 @@
 
   loadForm();
   selectRegion("global");
+  updatePreviewMode();
 })();

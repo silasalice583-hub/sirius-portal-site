@@ -20,9 +20,10 @@
     logoImage: "logo抠图.png",
     logoMotion: "strong",
     backgroundImage: "",
-    motionBackgroundImage: "",
-    articleBannerImage: "assets/articles-banner-art.png",
-    aboutImage: "assets/about-footer-art.png",
+    motionBackgroundImage: "assets/home-footer-emerald.jpg",
+    articleBannerImage: "assets/articles-emerald.jpg",
+    aboutImage: "assets/about-emerald.jpg",
+    fontFamily: "modern",
     hotSpeed: 4500,
     articlesPerPage: 7,
   };
@@ -30,6 +31,9 @@
   const state = await window.SiriusAPI.loadState();
   const settings = state.settings || {};
   const page = { ...defaultPage, ...(settings.page || {}) };
+  if (!page.motionBackgroundImage) page.motionBackgroundImage = defaultPage.motionBackgroundImage;
+  if (page.articleBannerImage === "assets/articles-banner-art.png") page.articleBannerImage = defaultPage.articleBannerImage;
+  if (page.aboutImage === "assets/about-footer-art.png") page.aboutImage = defaultPage.aboutImage;
   const savedArticles = state.articles || [];
   let commentsState = state.comments || {};
   const savedMap = new Map(savedArticles.map((article) => [article.id, article]));
@@ -85,6 +89,7 @@
   function applyPageVisuals() {
     document.body.style.backgroundImage = page.backgroundImage ? `url("${page.backgroundImage}")` : "";
     document.body.classList.toggle("custom-background", Boolean(page.backgroundImage));
+    document.body.dataset.siteFont = page.fontFamily || defaultPage.fontFamily;
     document.documentElement.dataset.logoMotion = page.logoMotion || "strong";
     document.querySelectorAll("[data-site-logo]").forEach((image) => {
       image.src = page.logoImage || defaultPage.logoImage;
@@ -95,7 +100,7 @@
     if (motionBand) {
       const motionImage = page.motionBackgroundImage || page.footerImage;
       if (motionImage) {
-        motionBand.style.backgroundImage = `linear-gradient(135deg, rgba(7, 27, 35, .86), rgba(11, 16, 23, .82)), url("${motionImage}")`;
+        motionBand.style.backgroundImage = `linear-gradient(135deg, rgba(6, 95, 78, .68), rgba(10, 63, 59, .56)), url("${motionImage}")`;
         motionBand.style.backgroundSize = "cover";
         motionBand.style.backgroundPosition = "center";
       } else {
@@ -403,7 +408,7 @@
 
   function bindPointerEffects() {
     let lastMove = 0;
-    const icons = ["🐬", "🐋", "⚜"];
+    const icons = ["\u{1F42C}", "\u{1F40B}", "\u269C", "\u{1F981}"];
     const root = document.documentElement;
 
     document.addEventListener("pointermove", (event) => {
