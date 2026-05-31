@@ -18,6 +18,7 @@
   async function request(path, options = {}) {
     if (!hasApi()) throw new Error("API is not configured");
     const response = await fetch(`${apiBase()}${path}`, {
+      cache: "no-store",
       headers: {
         "Content-Type": "application/json",
         ...(options.headers || {}),
@@ -93,10 +94,46 @@
     try {
       return { ...(await request("/api/state")), source: "api" };
     } catch (error) {
-      console.warn("Using local state because API failed:", error);
+      console.warn("API state load failed:", error);
       if (canUseLocalFallback()) return localState();
-      return { ...localState(), source: "api-error", apiError: error.message };
+      return {
+        articles: [],
+        settings: {},
+        comments: {},
+        source: "api-error",
+        apiError: error.message,
+      };
     }
+  }
+
+  async function loadVersion() {
+    if (!hasApi()) return null;
+    return request(`/api/version?ts=${Date.now()}`);
+  }
+
+  function watchVersion(initialRevision, onChange, intervalMs = 8000) {
+    if (!hasApi()) return () => {};
+    let revision = Number(initialRevision || 0);
+    let stopped = false;
+    const timer = setInterval(async () => {
+      if (stopped || document.hidden) return;
+      try {
+        const next = await loadVersion();
+        const nextRevision = Number(next?.revision || 0);
+        if (revision && nextRevision > revision) {
+          revision = nextRevision;
+          onChange(next);
+          return;
+        }
+        if (nextRevision) revision = nextRevision;
+      } catch (error) {
+        console.warn("Version check failed:", error);
+      }
+    }, intervalMs);
+    return () => {
+      stopped = true;
+      clearInterval(timer);
+    };
   }
 
   async function saveArticle(article) {
@@ -154,6 +191,8 @@
   window.SiriusAPI = {
     hasApi,
     loadState,
+    loadVersion,
+    watchVersion,
     saveArticle,
     saveArticles,
     hideArticle,

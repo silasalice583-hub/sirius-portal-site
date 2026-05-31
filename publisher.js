@@ -28,6 +28,18 @@
   const editor = document.getElementById("editor");
   const previewCover = document.getElementById("previewCover");
   const state = await window.SiriusAPI.loadState();
+  const backendStatus = document.getElementById("publisherBackendStatus");
+  if (state.source === "api-error") {
+    backendStatus.textContent = "公网数据库连接失败：当前内容不会发布";
+    backendStatus.className = "backend-status error";
+    alert(`公网数据库连接失败，当前不会读取本浏览器缓存作为网站数据。\n\n具体错误：${state.apiError}\n\n请先修复 Cloudflare /api 代理或 Railway 后端。`);
+  } else if (state.source === "api") {
+    backendStatus.textContent = `已连接公网内容库 · 版本 ${state.revision || 1}`;
+    backendStatus.className = "backend-status online";
+  } else {
+    backendStatus.textContent = "本地预览模式 · 内容仅保存在当前浏览器";
+    backendStatus.className = "backend-status local";
+  }
   let savedArticlesState = state.articles || [];
   let settingsState = state.settings || {};
   let commentsState = state.comments || {};
@@ -255,6 +267,8 @@
       renderManager();
       renderCategoryOptions();
       renderHotPicker();
+      backendStatus.textContent = `已发布到公网内容库 · ${new Date().toLocaleTimeString()}`;
+      backendStatus.className = "backend-status online";
       alert("已保存。门户首页刷新后会显示最新内容。");
     } catch (error) {
       savedArticlesState = previousArticles;

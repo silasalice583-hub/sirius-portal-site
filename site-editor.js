@@ -28,11 +28,19 @@
   };
 
   const state = await window.SiriusAPI.loadState();
+  if (state.source === "api-error") {
+    alert(`公网数据库连接失败，页面编辑不会读取本浏览器缓存作为网站数据。\n\n具体错误：${state.apiError}\n\n请先修复 Cloudflare /api 代理或 Railway 后端。`);
+  }
   let settingsState = state.settings || {};
   let currentRegion = "global";
   const $ = (selector) => document.querySelector(selector);
   const frame = $("#sitePreviewFrame");
   const status = $("#siteEditorStatus");
+  if (state.source === "api") {
+    status.textContent = `已连接公网内容库 · 版本 ${state.revision || 1}`;
+  } else if (state.source === "local") {
+    status.textContent = "本地预览模式 · 设置仅保存在当前浏览器";
+  }
 
   function allArticles() {
     const saved = state.articles || [];
@@ -166,8 +174,10 @@
 
   async function saveSettings() {
     settingsState = collectSettings();
-    await window.SiriusAPI.saveSettings(settingsState);
-    status.textContent = `已保存：${new Date().toLocaleTimeString()}`;
+    const saved = await window.SiriusAPI.saveSettings(settingsState);
+    status.textContent = window.SiriusAPI.hasApi()
+      ? `已发布到公网内容库 · 版本 ${saved.revision || "最新"} · ${new Date().toLocaleTimeString()}`
+      : `已保存到当前浏览器 · ${new Date().toLocaleTimeString()}`;
     reloadPreview();
   }
 

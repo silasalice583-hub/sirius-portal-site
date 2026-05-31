@@ -1443,6 +1443,16 @@ button { cursor: pointer; }
   color: var(--muted);
 }
 
+.backend-status {
+  margin: 8px 0 0;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.backend-status.online { color: var(--accent); }
+.backend-status.local { color: var(--gold); }
+.backend-status.error { color: #be123c; }
+
 .site-editor-page {
   min-height: 100vh;
 }

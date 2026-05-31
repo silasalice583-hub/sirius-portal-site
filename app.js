@@ -445,4 +445,8 @@
     renderGrid();
   }
   if (params.get("article")) showArticle(params.get("article"));
+
+  window.SiriusAPI.watchVersion(state.revision, () => {
+    location.reload();
+  });
 })();

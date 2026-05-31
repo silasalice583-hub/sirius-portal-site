@@ -54,6 +54,17 @@ async function initDb() {
       created_at timestamptz not null default now(),
       primary key (upload_id, part_index)
     );
+
+    create table if not exists site_state_meta (
+      id integer primary key default 1,
+      revision bigint not null default 1,
+      updated_at timestamptz not null default now(),
+      constraint single_state_meta_row check (id = 1)
+    );
+
+    insert into site_state_meta (id, revision)
+    values (1, 1)
+    on conflict (id) do nothing;
   `);
 }
 
@@ -88,14 +99,40 @@ async function upsertArticle(article) {
   );
 }
 
-app.get("/api/health", (req, res) => {
-  res.json({ ok: true });
+async function bumpRevision(client = pool) {
+  const result = await client.query(
+    `insert into site_state_meta (id, revision, updated_at)
+     values (1, 1, now())
+     on conflict (id) do update set revision = site_state_meta.revision + 1, updated_at = now()
+     returning revision, updated_at`,
+  );
+  return result.rows[0];
+}
+
+app.get("/api/health", async (req, res, next) => {
+  try {
+    await pool.query("select 1");
+    res.set("Cache-Control", "no-store");
+    res.json({ ok: true });
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.get("/api/version", async (req, res, next) => {
+  try {
+    const result = await pool.query("select revision, updated_at from site_state_meta where id = 1");
+    res.set("Cache-Control", "no-store");
+    res.json(result.rows[0] || { revision: 1 });
+  } catch (error) {
+    next(error);
+  }
 });
 
 app.get("/api/state", async (req, res, next) => {
   try {
     const [articlesResult, settingsResult, commentsResult] = await Promise.all([
-      pool.query("select data from articles order by coalesce((data->>'date')::date, '1970-01-01'::date) desc"),
+      pool.query("select data from articles order by updated_at desc"),
       pool.query("select data from site_settings where id = 1"),
       pool.query("select article_id, data from comments order by created_at asc"),
     ]);
@@ -106,10 +143,13 @@ app.get("/api/state", async (req, res, next) => {
       comments[row.article_id].push(row.data);
     }
 
+    const versionResult = await pool.query("select revision, updated_at from site_state_meta where id = 1");
+    res.set("Cache-Control", "no-store");
     res.json({
       articles: articlesResult.rows.map((row) => row.data),
       settings: settingsResult.rows[0]?.data || {},
       comments,
+      revision: Number(versionResult.rows[0]?.revision || 1),
     });
   } catch (error) {
     next(error);
@@ -120,7 +160,8 @@ app.post("/api/articles", async (req, res, next) => {
   try {
     const article = normalizeArticle(req.body || {});
     await upsertArticle(article);
-    res.json(article);
+    const meta = await bumpRevision();
+    res.json({ ...article, revision: Number(meta.revision) });
   } catch (error) {
     next(error);
   }
@@ -185,9 +226,10 @@ app.post("/api/articles/chunked/complete", async (req, res, next) => {
       [article.id, article],
     );
     await client.query("delete from article_upload_chunks where upload_id = $1", [uploadId]);
+    const meta = await bumpRevision(client);
     await client.query("commit");
     inTransaction = false;
-    res.json(article);
+    res.json({ ...article, revision: Number(meta.revision) });
   } catch (error) {
     if (inTransaction) await client.query("rollback");
     next(error);
@@ -209,6 +251,7 @@ app.post("/api/articles/bulk", async (req, res, next) => {
         [article.id, article],
       );
     }
+    await bumpRevision(client);
     await client.query("commit");
     res.json(articles);
   } catch (error) {
@@ -228,7 +271,8 @@ app.put("/api/settings", async (req, res, next) => {
        on conflict (id) do update set data = excluded.data, updated_at = now()`,
       [settings],
     );
-    res.json(settings);
+    const meta = await bumpRevision();
+    res.json({ ...settings, revision: Number(meta.revision) });
   } catch (error) {
     next(error);
   }
@@ -250,6 +294,7 @@ app.post("/api/articles/:articleId/comments", async (req, res, next) => {
        on conflict (article_id, id) do update set data = excluded.data, updated_at = now()`,
       [articleId, comment.id, comment],
     );
+    await bumpRevision();
     res.json(comment);
   } catch (error) {
     next(error);
@@ -276,6 +321,7 @@ app.put("/api/articles/:articleId/comments", async (req, res, next) => {
         [articleId, item.id, item],
       );
     }
+    await bumpRevision(client);
     await client.query("commit");
     res.json(comments);
   } catch (error) {
