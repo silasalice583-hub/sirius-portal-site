@@ -7,9 +7,15 @@ const app = express();
 const port = Number(process.env.PORT || 3000);
 const apiVersion = 3;
 const allowedOrigins = (process.env.CORS_ORIGIN || "*").split(",").map((item) => item.trim());
+const databaseUrl = process.env.DATABASE_URL;
+
+if (!databaseUrl) {
+  console.error("DATABASE_URL is missing. Add a Railway variable reference from the Postgres service to this API service.");
+  process.exit(1);
+}
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: databaseUrl,
   ssl: process.env.PGSSLMODE === "disable" ? false : { rejectUnauthorized: false },
 });
 
