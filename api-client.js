@@ -140,7 +140,12 @@
     if (hasApi()) {
       const payload = JSON.stringify(article);
       if (payload.length > 900000) return saveLargeArticle(article);
-      return request("/api/articles", { method: "POST", body: payload });
+      try {
+        return await request("/api/articles", { method: "POST", body: payload });
+      } catch (error) {
+        if (/API (413|500|502|503)/.test(error.message)) return saveLargeArticle(article);
+        throw error;
+      }
     }
     return saveArticleLocal(article);
   }

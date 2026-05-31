@@ -516,7 +516,8 @@
     reader.onload = async () => {
       try {
         const data = JSON.parse(reader.result);
-        const imported = Array.isArray(data) ? data : [data];
+        const imported = Array.isArray(data) ? data : Array.isArray(data.articles) ? data.articles : [data];
+        if (!imported.length) throw new Error("JSON 文件中没有可导入的文章。");
         const normalized = imported.map((article) => ({
           ...article,
           id: article.id || `import-${Date.now()}-${Math.random().toString(16).slice(2)}`,

@@ -68,6 +68,33 @@ async function initDb() {
   `);
 }
 
+async function ensureMetaSchema(client = pool) {
+  await client.query(`
+    create table if not exists site_state_meta (
+      id integer primary key default 1,
+      revision bigint not null default 1,
+      updated_at timestamptz not null default now(),
+      constraint single_state_meta_row check (id = 1)
+    );
+
+    insert into site_state_meta (id, revision)
+    values (1, 1)
+    on conflict (id) do nothing;
+  `);
+}
+
+async function ensureChunkSchema(client = pool) {
+  await client.query(`
+    create table if not exists article_upload_chunks (
+      upload_id text not null,
+      part_index integer not null,
+      data text not null,
+      created_at timestamptz not null default now(),
+      primary key (upload_id, part_index)
+    );
+  `);
+}
+
 function normalizeArticle(article) {
   const now = new Date().toISOString().slice(0, 10);
   return {
@@ -100,6 +127,7 @@ async function upsertArticle(article) {
 }
 
 async function bumpRevision(client = pool) {
+  await ensureMetaSchema(client);
   const result = await client.query(
     `insert into site_state_meta (id, revision, updated_at)
      values (1, 1, now())
@@ -121,6 +149,7 @@ app.get("/api/health", async (req, res, next) => {
 
 app.get("/api/version", async (req, res, next) => {
   try {
+    await ensureMetaSchema();
     const result = await pool.query("select revision, updated_at from site_state_meta where id = 1");
     res.set("Cache-Control", "no-store");
     res.json(result.rows[0] || { revision: 1 });
@@ -131,6 +160,7 @@ app.get("/api/version", async (req, res, next) => {
 
 app.get("/api/state", async (req, res, next) => {
   try {
+    await ensureMetaSchema();
     const [articlesResult, settingsResult, commentsResult] = await Promise.all([
       pool.query("select data from articles order by updated_at desc"),
       pool.query("select data from site_settings where id = 1"),
@@ -169,6 +199,7 @@ app.post("/api/articles", async (req, res, next) => {
 
 app.post("/api/articles/chunked/init", async (req, res, next) => {
   try {
+    await ensureChunkSchema();
     const uploadId = req.body.uploadId || crypto.randomUUID();
     await pool.query("delete from article_upload_chunks where upload_id = $1", [uploadId]);
     res.json({ uploadId });
@@ -179,6 +210,7 @@ app.post("/api/articles/chunked/init", async (req, res, next) => {
 
 app.post("/api/articles/chunked/part", async (req, res, next) => {
   try {
+    await ensureChunkSchema();
     const { uploadId, index, chunk } = req.body || {};
     if (!uploadId || !Number.isInteger(index) || typeof chunk !== "string") {
       res.status(400).json({ error: "Invalid chunk payload" });
@@ -200,6 +232,7 @@ app.post("/api/articles/chunked/complete", async (req, res, next) => {
   const client = await pool.connect();
   let inTransaction = false;
   try {
+    await ensureChunkSchema(client);
     const { uploadId, total } = req.body || {};
     if (!uploadId || !Number.isInteger(total) || total < 1) {
       res.status(400).json({ error: "Invalid upload completion payload" });
@@ -337,6 +370,7 @@ app.use((error, req, res, next) => {
   const showDetail = process.env.NODE_ENV !== "production" || process.env.SHOW_ERROR_DETAIL === "true";
   res.status(error.status || 500).json({
     error: "服务器错误",
+    code: error.code || "INTERNAL_ERROR",
     ...(showDetail ? { detail: error.message } : {}),
   });
 });
