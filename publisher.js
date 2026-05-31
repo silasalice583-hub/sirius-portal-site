@@ -1,6 +1,6 @@
 (async function () {
   const baseArticles = window.SIRIUS_ARTICLES || [];
-  const defaultCover = "logo抠图.png";
+  const defaultCover = "assets/logo-cutout-web.png";
   const defaultMusic = "1-8月，让它发生/12 21.mp3";
   const defaultPage = {
     brandName: "天狼星门户",
@@ -14,7 +14,7 @@
     aboutEyebrow: "About",
     aboutTitle: "关于门户",
     aboutText: "这里收录 10 篇已排版文章，并支持通过独立后台继续发布和编辑。前台只保留阅读入口，避免读者误入编辑区。",
-    logoImage: "logo抠图.png",
+    logoImage: "assets/logo-cutout-web.png",
     logoMotion: "strong",
     backgroundImage: "",
     heroBanner: "",

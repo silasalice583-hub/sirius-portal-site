@@ -17,7 +17,7 @@
     aboutEyebrow: "About",
     aboutTitle: "关于门户",
     aboutText: "这里收录 10 篇已排版文章，并支持通过独立后台继续发布和编辑。前台只保留阅读入口，避免读者误入编辑区。",
-    logoImage: "logo抠图.png",
+    logoImage: "assets/logo-cutout-web.png",
     logoMotion: "strong",
     backgroundImage: "",
     motionBackgroundImage: "assets/home-footer-emerald.jpg",
@@ -31,6 +31,7 @@
   const state = await window.SiriusAPI.loadState();
   const settings = state.settings || {};
   const page = { ...defaultPage, ...(settings.page || {}) };
+  if (page.logoImage === "logo抠图.png") page.logoImage = defaultPage.logoImage;
   if (!page.motionBackgroundImage) page.motionBackgroundImage = defaultPage.motionBackgroundImage;
   if (page.articleBannerImage === "assets/articles-banner-art.png") page.articleBannerImage = defaultPage.articleBannerImage;
   if (page.aboutImage === "assets/about-footer-art.png") page.aboutImage = defaultPage.aboutImage;
@@ -144,7 +145,7 @@
       .slice(0, 3)
       .map((article) => `
         <a class="home-feature-card" href="articles.html?article=${encodeURIComponent(article.id)}">
-          <img src="${escapeHTML(article.cover)}" alt="${escapeHTML(article.title)}" />
+          <img src="${escapeHTML(article.cover)}" alt="${escapeHTML(article.title)}" loading="lazy" decoding="async" />
           <span>${escapeHTML(article.category)} · ${escapeHTML(article.date)}</span>
           <h3>${escapeHTML(article.title)}</h3>
           <p>${escapeHTML(article.excerpt || "暂无简介")}</p>
@@ -173,7 +174,7 @@
     }
     hotCarousel.innerHTML = hot.map((article, index) => `
       <article class="hot-slide ${index === hotIndex ? "active" : ""}" data-id="${article.id}">
-        <img src="${escapeHTML(article.cover)}" alt="${escapeHTML(article.title)}" />
+        <img src="${escapeHTML(article.cover)}" alt="${escapeHTML(article.title)}" loading="${index === hotIndex ? "eager" : "lazy"}" decoding="async" />
         <div class="hot-overlay">
           <span>${escapeHTML(article.category)} · ${escapeHTML(article.date)}</span>
           <h3>${escapeHTML(article.title)}</h3>

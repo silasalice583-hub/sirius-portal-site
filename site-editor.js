@@ -17,7 +17,7 @@
     aboutEyebrow: "About",
     aboutTitle: "关于门户",
     aboutText: "这里收录 10 篇已排版文章，并支持通过独立后台继续发布和编辑。前台只保留阅读入口，避免读者误入编辑区。",
-    logoImage: "logo抠图.png",
+    logoImage: "assets/logo-cutout-web.png",
     logoMotion: "strong",
     backgroundImage: "",
     motionBackgroundImage: "assets/home-footer-emerald.jpg",
@@ -82,6 +82,7 @@
 
   function pageSettings() {
     const page = { ...defaultPage, ...(settingsState.page || {}) };
+    if (page.logoImage === "logo抠图.png") page.logoImage = defaultPage.logoImage;
     if (!page.motionBackgroundImage) page.motionBackgroundImage = defaultPage.motionBackgroundImage;
     if (page.articleBannerImage === "assets/articles-banner-art.png") page.articleBannerImage = defaultPage.articleBannerImage;
     if (page.aboutImage === "assets/about-footer-art.png") page.aboutImage = defaultPage.aboutImage;
