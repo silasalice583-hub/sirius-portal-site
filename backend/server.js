@@ -5,6 +5,7 @@ const crypto = require("node:crypto");
 
 const app = express();
 const port = Number(process.env.PORT || 3000);
+const apiVersion = 3;
 const allowedOrigins = (process.env.CORS_ORIGIN || "*").split(",").map((item) => item.trim());
 
 const pool = new Pool({
@@ -141,10 +142,15 @@ app.get("/api/health", async (req, res, next) => {
   try {
     await pool.query("select 1");
     res.set("Cache-Control", "no-store");
-    res.json({ ok: true });
+    res.json({ ok: true, apiVersion, chunkedUploads: true, revisions: true });
   } catch (error) {
     next(error);
   }
+});
+
+app.get("/api/capabilities", (req, res) => {
+  res.set("Cache-Control", "no-store");
+  res.json({ apiVersion, chunkedUploads: true, revisions: true });
 });
 
 app.get("/api/version", async (req, res, next) => {

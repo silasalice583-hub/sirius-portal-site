@@ -40,9 +40,11 @@ CORS_ORIGIN=*
 
 ```text
 https://你的-railway后端域名/api/health
+https://你的-railway后端域名/api/capabilities
+https://你的-railway后端域名/api/version
 ```
 
-返回 `{ "ok": true }` 即正常。
+新版后端的健康接口应返回包含 `apiVersion: 3`、`chunkedUploads: true` 和 `revisions: true` 的 JSON。若 `/api/version` 或 `/api/capabilities` 返回 404，说明 Railway 仍在运行旧版后端，需要重新部署 `backend` 目录。
 
 ## 3. 配置 Cloudflare API 代理
 

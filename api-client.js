@@ -52,6 +52,12 @@
     const chunkSize = 480000;
     const uploadId = `article-${article.id || Date.now()}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
     const total = Math.ceil(payload.length / chunkSize);
+    try {
+      const capabilities = await request("/api/capabilities");
+      if (!capabilities.chunkedUploads) throw new Error("Railway API does not support chunked uploads");
+    } catch (error) {
+      throw new Error(`Railway 后端版本过旧，无法导入较大文章。请重新部署 backend 目录后再试。原始错误：${error.message}`);
+    }
     await request("/api/articles/chunked/init", {
       method: "POST",
       body: JSON.stringify({ uploadId }),
