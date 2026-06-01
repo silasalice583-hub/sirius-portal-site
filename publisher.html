@@ -9,7 +9,7 @@
   <body class="publisher-page">
     <header class="site-header">
       <a class="brand" href="publisher.html">
-        <img data-site-logo src="assets/logo-cutout-web.png" alt="天狼星门户 logo" decoding="async" />
+        <img data-site-logo src="assets/logo-vector-web.png" alt="天狼星门户 logo" decoding="async" />
         <span>后台编辑器</span>
       </a>
       <nav class="top-nav" aria-label="主导航">
@@ -38,12 +38,19 @@
 
         <div class="form-grid">
           <label>文章标题<input id="postTitle" type="text" placeholder="输入文章标题" /></label>
+          <label>内容类型
+            <select id="contentType">
+              <option value="article">普通文章</option>
+              <option value="meditation">冥想合集</option>
+            </select>
+          </label>
           <label>分类<input id="postCategory" type="text" list="categoryOptions" placeholder="例如：访谈 / 指南 / 科普" /></label>
           <datalist id="categoryOptions"></datalist>
           <label>标题图片<input id="coverInput" type="file" accept="image/*" /></label>
           <label>标题图片地址<input id="coverUrl" type="text" placeholder="也可以填写图片 URL 或本地路径" /></label>
           <label>文中音乐<input id="articleMusic" type="text" placeholder="MP3 地址或本地路径" /></label>
           <label>文中视频<input id="articleVideo" type="text" placeholder="MP4 / WebM / 视频页面地址" /></label>
+          <label>冥想时长<input id="meditationDuration" type="text" placeholder="例如：20 分钟" /></label>
           <label>发布时间<input id="postDate" type="date" /></label>
           <label>热门权重<input id="hotScore" type="number" min="0" max="100" value="80" /></label>
           <label class="full-field">文章简介<textarea id="postExcerpt" placeholder="用于首页横排文章和热门轮播展示"></textarea></label>
@@ -115,7 +122,7 @@
       <aside class="preview-panel">
         <p class="eyebrow">Preview</p>
         <h2 id="previewTitle">文章预览</h2>
-        <img id="previewCover" src="assets/logo-cutout-web.png" alt="标题图片预览" decoding="async" />
+        <img id="previewCover" src="assets/logo-vector-web.png" alt="标题图片预览" decoding="async" />
         <p id="previewExcerpt"></p>
         <div id="previewBody"></div>
       </aside>

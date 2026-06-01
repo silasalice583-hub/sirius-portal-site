@@ -17,7 +17,8 @@
     aboutEyebrow: "About",
     aboutTitle: "关于门户",
     aboutText: "这里收录 10 篇已排版文章，并支持通过独立后台继续发布和编辑。前台只保留阅读入口，避免读者误入编辑区。",
-    logoImage: "assets/logo-cutout-web.png",
+    logoImage: "assets/logo-vector-web.png",
+    heroLogoImage: "assets/logo-render-web.png",
     logoMotion: "strong",
     backgroundImage: "",
     motionBackgroundImage: "assets/home-footer-emerald.jpg",
@@ -35,6 +36,8 @@
   let settingsState = state.settings || {};
   let currentRegion = "global";
   let previewEditing = true;
+  let siteMusicPlaylistState = [];
+  let meditationScheduleState = [];
   const $ = (selector) => document.querySelector(selector);
   const frame = $("#sitePreviewFrame");
   const status = $("#siteEditorStatus");
@@ -82,7 +85,10 @@
 
   function pageSettings() {
     const page = { ...defaultPage, ...(settingsState.page || {}) };
-    if (page.logoImage === "logo抠图.png") page.logoImage = defaultPage.logoImage;
+    if (page.logoImage === "logo抠图.png" || page.logoImage === "assets/logo-cutout-web.png") page.logoImage = defaultPage.logoImage;
+    if (!page.heroLogoImage || page.heroLogoImage === "logo抠图.png" || page.heroLogoImage === "assets/logo-cutout-web.png") {
+      page.heroLogoImage = defaultPage.heroLogoImage;
+    }
     if (!page.motionBackgroundImage) page.motionBackgroundImage = defaultPage.motionBackgroundImage;
     if (page.articleBannerImage === "assets/articles-banner-art.png") page.articleBannerImage = defaultPage.articleBannerImage;
     if (page.aboutImage === "assets/about-footer-art.png") page.aboutImage = defaultPage.aboutImage;
@@ -112,15 +118,24 @@
       pageAboutText: page.aboutText,
       pageAboutImage: page.aboutImage || page.footerImage || defaultPage.aboutImage,
       pageLogoImage: page.logoImage || defaultPage.logoImage,
+      pageHeroLogoImage: page.heroLogoImage || defaultPage.heroLogoImage,
       pageLogoMotion: page.logoMotion || defaultPage.logoMotion,
       pageBackgroundImage: page.backgroundImage,
       pageFontFamily: page.fontFamily || defaultPage.fontFamily,
       pageHotSpeed: page.hotSpeed || 4500,
       pageCategories: articleCategories().join("\n"),
-      siteMusic: settingsState.siteMusic || defaultMusic,
     };
     Object.entries(map).forEach(([id, value]) => setField(id, value));
-    $("#siteMusicPreview").src = settingsState.siteMusic || defaultMusic;
+    siteMusicPlaylistState = (settingsState.siteMusicPlaylist || [])
+      .map((item, index) => typeof item === "string" ? { title: `背景音乐 ${index + 1}`, url: item } : item)
+      .filter((item) => item?.url);
+    if (!siteMusicPlaylistState.length) {
+      siteMusicPlaylistState = [{ title: "背景音乐", url: settingsState.siteMusic || defaultMusic }];
+    }
+    meditationScheduleState = (settingsState.collectiveMeditationSchedule || []).map((item) => ({ ...item }));
+    renderSiteMusicPlaylist();
+    renderMeditationSchedule();
+    updateMusicPreview();
     document.querySelectorAll("[data-site-logo]").forEach((image) => {
       image.src = page.logoImage || defaultPage.logoImage;
     });
@@ -136,6 +151,54 @@
         <small>${escapeHTML(article.category)}</small>
       </label>
     `).join("");
+  }
+
+  function renderSiteMusicPlaylist() {
+    $("#siteMusicPlaylist").innerHTML = siteMusicPlaylistState.map((item, index) => `
+      <div class="playlist-row" data-music-index="${index}">
+        <span class="playlist-order">${index + 1}</span>
+        <input data-music-field="title" value="${escapeHTML(item.title || `背景音乐 ${index + 1}`)}" placeholder="音乐名称" />
+        <input data-music-field="url" value="${escapeHTML(item.url || "")}" placeholder="MP3 地址或本地路径" />
+        <button data-music-action="up" type="button" title="上移">↑</button>
+        <button data-music-action="down" type="button" title="下移">↓</button>
+        <button data-music-action="preview" type="button" title="试听">▶</button>
+        <button data-music-action="remove" type="button" title="删除">×</button>
+      </div>
+    `).join("");
+  }
+
+  function collectSiteMusicPlaylist() {
+    return Array.from(document.querySelectorAll(".playlist-row")).map((row, index) => ({
+      title: row.querySelector('[data-music-field="title"]').value.trim() || `背景音乐 ${index + 1}`,
+      url: row.querySelector('[data-music-field="url"]').value.trim(),
+    })).filter((item) => item.url);
+  }
+
+  function updateMusicPreview(url) {
+    $("#siteMusicPreview").src = url || collectSiteMusicPlaylist()[0]?.url || defaultMusic;
+  }
+
+  function renderMeditationSchedule() {
+    $("#meditationSchedule").innerHTML = meditationScheduleState.map((item, index) => `
+      <div class="schedule-row" data-schedule-index="${index}">
+        <input data-schedule-field="title" value="${escapeHTML(item.title || "")}" placeholder="冥想名称" />
+        <label>开始<input data-schedule-field="start" type="time" value="${escapeHTML(item.start || "20:00")}" /></label>
+        <label>结束<input data-schedule-field="end" type="time" value="${escapeHTML(item.end || "20:30")}" /></label>
+        <input data-schedule-field="music" value="${escapeHTML(item.music || "")}" placeholder="冥想音乐 MP3 地址" />
+        <input data-schedule-field="video" value="${escapeHTML(item.video || "")}" placeholder="可选：视频 MP4 地址" />
+        <button data-schedule-action="remove" type="button" title="删除时段">×</button>
+      </div>
+    `).join("") || "<p class=\"muted-text\">尚未设置实时播放时段。</p>";
+  }
+
+  function collectMeditationSchedule() {
+    return Array.from(document.querySelectorAll(".schedule-row")).map((row) => ({
+      title: row.querySelector('[data-schedule-field="title"]').value.trim() || "集体冥想",
+      start: row.querySelector('[data-schedule-field="start"]').value || "20:00",
+      end: row.querySelector('[data-schedule-field="end"]').value || "20:30",
+      music: row.querySelector('[data-schedule-field="music"]').value.trim(),
+      video: row.querySelector('[data-schedule-field="video"]').value.trim(),
+    }));
   }
 
   function collectSettings() {
@@ -167,6 +230,7 @@
       aboutText: $("#pageAboutText").value.trim() || defaultPage.aboutText,
       aboutImage: $("#pageAboutImage").value.trim() || defaultPage.aboutImage,
       logoImage: $("#pageLogoImage").value.trim() || defaultPage.logoImage,
+      heroLogoImage: $("#pageHeroLogoImage").value.trim() || defaultPage.heroLogoImage,
       logoMotion: $("#pageLogoMotion").value || defaultPage.logoMotion,
       backgroundImage: $("#pageBackgroundImage").value.trim(),
       fontFamily: $("#pageFontFamily").value || defaultPage.fontFamily,
@@ -177,7 +241,9 @@
       page,
       categories,
       hotArticleIds,
-      siteMusic: $("#siteMusic").value.trim(),
+      siteMusicPlaylist: collectSiteMusicPlaylist(),
+      siteMusic: collectSiteMusicPlaylist()[0]?.url || defaultMusic,
+      collectiveMeditationSchedule: collectMeditationSchedule(),
     };
   }
 
@@ -206,6 +272,7 @@
     if (element.closest(".home-hero")) return "hero";
     if (element.closest(".home-section, .motion-band")) return "home";
     if (element.closest(".archive-hero, .hot-showcase, .article-band, .reader")) return "articles";
+    if (element.closest(".meditation-hero, .collective-meditation, .meditation-archive, .meditation-reader")) return "meditation";
     if (element.closest(".about-page-hero, .about-cards, .site-footer")) return "about";
     return "global";
   }
@@ -216,6 +283,7 @@
       hero: ".home-hero",
       home: ".home-section, .motion-band",
       articles: ".archive-hero, .hot-showcase, .article-band",
+      meditation: ".meditation-hero, .collective-meditation, .meditation-archive",
       about: ".about-page-hero, .about-cards, .site-footer",
     }[region] || "body";
   }
@@ -344,12 +412,49 @@
     if (button) selectRegion(button.dataset.region);
   });
   $("#pageLogoImageFile").addEventListener("change", (event) => setMediaField("pageLogoImage", event.target.files[0]));
+  $("#pageHeroLogoImageFile").addEventListener("change", (event) => setMediaField("pageHeroLogoImage", event.target.files[0]));
   $("#pageBackgroundImageFile").addEventListener("change", (event) => setMediaField("pageBackgroundImage", event.target.files[0]));
   $("#pageMotionBackgroundImageFile").addEventListener("change", (event) => setMediaField("pageMotionBackgroundImage", event.target.files[0]));
   $("#pageArticleBannerImageFile").addEventListener("change", (event) => setMediaField("pageArticleBannerImage", event.target.files[0]));
   $("#pageAboutImageFile").addEventListener("change", (event) => setMediaField("pageAboutImage", event.target.files[0]));
-  $("#siteMusic").addEventListener("input", (event) => {
-    $("#siteMusicPreview").src = event.target.value || defaultMusic;
+  $("#addSiteMusic").addEventListener("click", () => {
+    siteMusicPlaylistState = collectSiteMusicPlaylist();
+    siteMusicPlaylistState.push({ title: `背景音乐 ${siteMusicPlaylistState.length + 1}`, url: "" });
+    renderSiteMusicPlaylist();
+  });
+  $("#siteMusicPlaylist").addEventListener("input", () => {
+    siteMusicPlaylistState = collectSiteMusicPlaylist();
+  });
+  $("#siteMusicPlaylist").addEventListener("click", (event) => {
+    const button = event.target.closest("[data-music-action]");
+    if (!button) return;
+    const row = button.closest(".playlist-row");
+    const index = Number(row.dataset.musicIndex);
+    const items = Array.from(document.querySelectorAll(".playlist-row")).map((item, itemIndex) => ({
+      title: item.querySelector('[data-music-field="title"]').value.trim() || `背景音乐 ${itemIndex + 1}`,
+      url: item.querySelector('[data-music-field="url"]').value.trim(),
+    }));
+    if (button.dataset.musicAction === "remove") items.splice(index, 1);
+    if (button.dataset.musicAction === "up" && index > 0) [items[index - 1], items[index]] = [items[index], items[index - 1]];
+    if (button.dataset.musicAction === "down" && index < items.length - 1) [items[index + 1], items[index]] = [items[index], items[index + 1]];
+    if (button.dataset.musicAction === "preview") updateMusicPreview(items[index]?.url);
+    siteMusicPlaylistState = items.length ? items : [{ title: "背景音乐", url: "" }];
+    renderSiteMusicPlaylist();
+  });
+  $("#addMeditationSchedule").addEventListener("click", () => {
+    meditationScheduleState = collectMeditationSchedule();
+    meditationScheduleState.push({ title: "集体冥想", start: "20:00", end: "20:30", music: "", video: "" });
+    renderMeditationSchedule();
+  });
+  $("#meditationSchedule").addEventListener("input", () => {
+    meditationScheduleState = collectMeditationSchedule();
+  });
+  $("#meditationSchedule").addEventListener("click", (event) => {
+    const button = event.target.closest("[data-schedule-action='remove']");
+    if (!button) return;
+    meditationScheduleState = collectMeditationSchedule();
+    meditationScheduleState.splice(Number(button.closest(".schedule-row").dataset.scheduleIndex), 1);
+    renderMeditationSchedule();
   });
   frame.addEventListener("load", injectPreviewTools);
 

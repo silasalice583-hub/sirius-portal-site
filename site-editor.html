@@ -9,7 +9,7 @@
   <body class="site-editor-page">
     <header class="site-editor-toolbar">
       <a class="brand" href="site-editor.html" aria-label="页面编辑器首页">
-        <img data-site-logo src="assets/logo-cutout-web.png" alt="天狼星门户 logo" decoding="async" />
+        <img data-site-logo src="assets/logo-vector-web.png" alt="天狼星门户 logo" decoding="async" />
         <span>页面编辑器</span>
       </a>
       <nav class="top-nav" aria-label="编辑器导航">
@@ -22,6 +22,7 @@
         <select id="previewPage" title="选择预览页面">
           <option value="index.html">首页</option>
           <option value="articles.html">文章页</option>
+          <option value="meditation.html">冥想页</option>
           <option value="about.html">关于页</option>
         </select>
         <button id="saveSiteButton" type="button">保存页面</button>
@@ -47,6 +48,7 @@
           <button data-region="hero" type="button">首页首屏</button>
           <button data-region="home" type="button">首页内容</button>
           <button data-region="articles" type="button">文章页</button>
+          <button data-region="meditation" type="button">冥想页</button>
           <button data-region="about" type="button">关于页</button>
         </div>
 
@@ -56,6 +58,9 @@
             <label>网站名称<input id="pageBrandName" type="text" /></label>
             <label>网站 logo 图片<input id="pageLogoImageFile" type="file" accept="image/*" /></label>
             <label>网站 logo 图片地址<input id="pageLogoImage" type="text" placeholder="图片 URL、本地路径或上传后自动填充" /></label>
+            <label>首页主视觉标志<input id="pageHeroLogoImageFile" type="file" accept="image/*" /></label>
+            <small class="media-guidance">用于首页标题旁的大标志。推荐透明 PNG，建议正方形，宽度至少 900px。</small>
+            <label>首页主视觉标志地址<input id="pageHeroLogoImage" type="text" placeholder="留空则使用默认渲染版标志" /></label>
             <label>网站背景图片<input id="pageBackgroundImageFile" type="file" accept="image/*" /></label>
             <small class="media-guidance">推荐比例：16:9 或可平铺纹理，建议宽度至少 1920px。</small>
             <label>网站背景图片地址<input id="pageBackgroundImage" type="text" placeholder="留空则使用当前动态背景" /></label>
@@ -67,7 +72,14 @@
                 <option value="clean">清爽圆体</option>
               </select>
             </label>
-            <label>背景音乐地址<input id="siteMusic" type="text" placeholder="MP3 地址或本地路径" /></label>
+            <div class="playlist-editor">
+              <div class="subsection-heading">
+                <h3>全站背景音乐播放列表</h3>
+                <button id="addSiteMusic" type="button">添加音乐</button>
+              </div>
+              <p>按列表顺序连续播放。可调整顺序，也可以只保留一首。</p>
+              <div id="siteMusicPlaylist"></div>
+            </div>
           </div>
           <audio id="siteMusicPreview" controls></audio>
         </div>
@@ -132,6 +144,16 @@
             <label>关于页标题背景图片地址<input id="pageAboutImage" type="text" /></label>
             <label>关于门户内容<textarea id="pageAboutText"></textarea></label>
           </div>
+        </div>
+
+        <div class="region-fields" data-region-panel="meditation">
+          <h2>集体冥想排期</h2>
+          <p class="media-guidance">以北京时间为准。跨越午夜的时间段同样支持，例如 23:30 - 00:30。</p>
+          <div class="subsection-heading">
+            <h3>实时播放时段</h3>
+            <button id="addMeditationSchedule" type="button">添加时段</button>
+          </div>
+          <div class="schedule-editor" id="meditationSchedule"></div>
         </div>
 
         <p class="site-editor-status" id="siteEditorStatus">尚未保存</p>

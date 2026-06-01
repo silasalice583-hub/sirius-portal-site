@@ -199,6 +199,14 @@
     return comments;
   }
 
+  async function collectiveHeartbeat(viewerId) {
+    if (hasApi()) return request("/api/collective-meditation/heartbeat", {
+      method: "POST",
+      body: JSON.stringify({ viewerId }),
+    });
+    return { count: 1 };
+  }
+
   window.SiriusAPI = {
     hasApi,
     loadState,
@@ -210,6 +218,7 @@
     saveSettings,
     submitComment,
     saveComments,
+    collectiveHeartbeat,
     migrateLocalToApi,
   };
 })();

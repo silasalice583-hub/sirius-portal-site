@@ -17,7 +17,8 @@
     aboutEyebrow: "About",
     aboutTitle: "关于门户",
     aboutText: "这里收录 10 篇已排版文章，并支持通过独立后台继续发布和编辑。前台只保留阅读入口，避免读者误入编辑区。",
-    logoImage: "assets/logo-cutout-web.png",
+    logoImage: "assets/logo-vector-web.png",
+    heroLogoImage: "assets/logo-render-web.png",
     logoMotion: "strong",
     backgroundImage: "",
     motionBackgroundImage: "assets/home-footer-emerald.jpg",
@@ -31,7 +32,10 @@
   const state = await window.SiriusAPI.loadState();
   const settings = state.settings || {};
   const page = { ...defaultPage, ...(settings.page || {}) };
-  if (page.logoImage === "logo抠图.png") page.logoImage = defaultPage.logoImage;
+  if (page.logoImage === "logo抠图.png" || page.logoImage === "assets/logo-cutout-web.png") page.logoImage = defaultPage.logoImage;
+  if (!page.heroLogoImage || page.heroLogoImage === "logo抠图.png" || page.heroLogoImage === "assets/logo-cutout-web.png") {
+    page.heroLogoImage = defaultPage.heroLogoImage;
+  }
   if (!page.motionBackgroundImage) page.motionBackgroundImage = defaultPage.motionBackgroundImage;
   if (page.articleBannerImage === "assets/articles-banner-art.png") page.articleBannerImage = defaultPage.articleBannerImage;
   if (page.aboutImage === "assets/about-footer-art.png") page.aboutImage = defaultPage.aboutImage;
@@ -41,7 +45,7 @@
   const articles = [
     ...savedArticles.filter((article) => !baseArticles.some((base) => base.id === article.id)),
     ...baseArticles.map((article) => savedMap.get(article.id) || article),
-  ].filter((article) => !article.deleted);
+  ].filter((article) => !article.deleted && article.contentType !== "meditation");
 
   let currentCategory = "全部";
   let currentQuery = new URLSearchParams(location.search).get("q") || "";
@@ -55,7 +59,12 @@
 
   const $ = (selector) => document.querySelector(selector);
   const backgroundAudio = $("#backgroundAudio");
-  if (backgroundAudio) backgroundAudio.src = settings.siteMusic || defaultMusic;
+  const siteMusicPlaylist = (settings.siteMusicPlaylist || [])
+    .map((item, index) => typeof item === "string" ? { title: `背景音乐 ${index + 1}`, url: item } : item)
+    .filter((item) => item?.url);
+  if (!siteMusicPlaylist.length) siteMusicPlaylist.push({ title: "背景音乐", url: settings.siteMusic || defaultMusic });
+  let siteMusicIndex = 0;
+  if (backgroundAudio) backgroundAudio.src = siteMusicPlaylist[0].url;
 
   function escapeHTML(value) {
     return String(value || "").replace(/[&<>"']/g, (char) => ({
@@ -96,7 +105,7 @@
       image.src = page.logoImage || defaultPage.logoImage;
     });
     const heroLogo = document.getElementById("heroLogoImage");
-    if (heroLogo) heroLogo.src = page.logoImage || defaultPage.logoImage;
+    if (heroLogo) heroLogo.src = page.heroLogoImage || defaultPage.heroLogoImage;
     const motionBand = $(".motion-band");
     if (motionBand) {
       const motionImage = page.motionBackgroundImage || page.footerImage;
@@ -350,6 +359,24 @@
         $("#musicToggle").classList.remove("playing");
       }
     });
+
+    backgroundAudio?.addEventListener("ended", async () => {
+      siteMusicIndex = (siteMusicIndex + 1) % siteMusicPlaylist.length;
+      backgroundAudio.src = siteMusicPlaylist[siteMusicIndex].url;
+      try {
+        await backgroundAudio.play();
+      } catch (error) {
+        console.warn("背景音乐续播失败", error);
+      }
+    });
+
+    document.addEventListener("play", (event) => {
+      if (!backgroundAudio || event.target === backgroundAudio) return;
+      if (event.target.matches("audio, video")) {
+        backgroundAudio.pause();
+        $("#musicToggle")?.classList.remove("playing");
+      }
+    }, true);
 
     $("#categoryList")?.addEventListener("click", (event) => {
       const button = event.target.closest("button[data-category]");

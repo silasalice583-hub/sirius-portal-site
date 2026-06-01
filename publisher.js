@@ -1,6 +1,6 @@
 (async function () {
   const baseArticles = window.SIRIUS_ARTICLES || [];
-  const defaultCover = "assets/logo-cutout-web.png";
+  const defaultCover = "assets/logo-vector-web.png";
   const defaultMusic = "1-8月，让它发生/12 21.mp3";
   const defaultPage = {
     brandName: "天狼星门户",
@@ -14,7 +14,8 @@
     aboutEyebrow: "About",
     aboutTitle: "关于门户",
     aboutText: "这里收录 10 篇已排版文章，并支持通过独立后台继续发布和编辑。前台只保留阅读入口，避免读者误入编辑区。",
-    logoImage: "assets/logo-cutout-web.png",
+    logoImage: "assets/logo-vector-web.png",
+    heroLogoImage: "assets/logo-render-web.png",
     logoMotion: "strong",
     backgroundImage: "",
     heroBanner: "",
@@ -247,6 +248,8 @@
       excerpt,
       hot: Number(document.getElementById("hotScore").value || 0),
       commentMode: document.getElementById("commentMode").value,
+      contentType: document.getElementById("contentType").value || "article",
+      duration: document.getElementById("meditationDuration").value.trim(),
       music: document.getElementById("articleMusic").value.trim(),
       video: document.getElementById("articleVideo").value.trim(),
       sourceDoc: original.sourceDoc || "",
@@ -293,6 +296,8 @@
     coverData = article.cover || defaultCover;
     setField("postTitle", article.title);
     setField("postCategory", article.category);
+    setField("contentType", article.contentType || "article");
+    setField("meditationDuration", article.duration || "");
     setField("coverUrl", article.cover && article.cover.startsWith("data:") ? "" : article.cover);
     setField("articleMusic", article.music);
     setField("articleVideo", article.video);
@@ -313,6 +318,8 @@
     coverData = defaultCover;
     setField("postTitle", "");
     setField("postCategory", "");
+    setField("contentType", "article");
+    setField("meditationDuration", "");
     setField("coverUrl", "");
     setField("articleMusic", "");
     setField("articleVideo", "");
@@ -380,11 +387,12 @@
   function renderManager() {
     document.getElementById("articleManager").innerHTML = `
       <table>
-        <thead><tr><th>标题</th><th>分类</th><th>简介</th><th>评论</th><th>操作</th></tr></thead>
+        <thead><tr><th>标题</th><th>类型</th><th>分类</th><th>简介</th><th>评论</th><th>操作</th></tr></thead>
         <tbody>
           ${allArticles().map((article) => `
             <tr>
               <td>${escapeHTML(article.title)}</td>
+              <td>${article.contentType === "meditation" ? "冥想" : "文章"}</td>
               <td>${escapeHTML(article.category)}</td>
               <td>${escapeHTML(article.excerpt || "").slice(0, 42)}</td>
               <td>${article.commentMode === "closed" ? "关闭" : article.commentMode === "featured" ? "精选" : "全部"}</td>
@@ -408,6 +416,10 @@
   function loadPageEditor() {
     const settings = getSettings();
     const page = { ...defaultPage, ...(settings.page || {}) };
+    if (page.logoImage === "logo抠图.png" || page.logoImage === "assets/logo-cutout-web.png") page.logoImage = defaultPage.logoImage;
+    if (!page.heroLogoImage || page.heroLogoImage === "logo抠图.png" || page.heroLogoImage === "assets/logo-cutout-web.png") {
+      page.heroLogoImage = defaultPage.heroLogoImage;
+    }
     document.documentElement.dataset.logoMotion = page.logoMotion || defaultPage.logoMotion;
     document.querySelectorAll("[data-site-logo]").forEach((image) => {
       image.src = page.logoImage || defaultPage.logoImage;
@@ -426,6 +438,7 @@
       pageAboutTitle: page.aboutTitle,
       pageAboutText: page.aboutText,
       pageLogoImage: page.logoImage || defaultPage.logoImage,
+      pageHeroLogoImage: page.heroLogoImage || defaultPage.heroLogoImage,
       pageLogoMotion: page.logoMotion || defaultPage.logoMotion,
       pageBackgroundImage: page.backgroundImage,
       pageHeroBanner: page.heroBanner,
@@ -460,6 +473,7 @@
       aboutTitle: document.getElementById("pageAboutTitle").value.trim() || defaultPage.aboutTitle,
       aboutText: document.getElementById("pageAboutText").value.trim() || defaultPage.aboutText,
       logoImage: document.getElementById("pageLogoImage").value.trim() || defaultPage.logoImage,
+      heroLogoImage: document.getElementById("pageHeroLogoImage").value.trim() || defaultPage.heroLogoImage,
       logoMotion: document.getElementById("pageLogoMotion").value || defaultPage.logoMotion,
       backgroundImage: document.getElementById("pageBackgroundImage").value.trim(),
       heroBanner: document.getElementById("pageHeroBanner").value.trim(),

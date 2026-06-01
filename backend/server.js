@@ -5,7 +5,7 @@ const crypto = require("node:crypto");
 
 const app = express();
 const port = Number(process.env.PORT || 3000);
-const apiVersion = 3;
+const apiVersion = 5;
 const allowedOrigins = (process.env.CORS_ORIGIN || "*").split(",").map((item) => item.trim());
 const databaseUrl = process.env.DATABASE_URL;
 
@@ -69,6 +69,11 @@ async function initDb() {
       constraint single_state_meta_row check (id = 1)
     );
 
+    create table if not exists collective_meditation_presence (
+      viewer_id text primary key,
+      seen_at timestamptz not null default now()
+    );
+
     insert into site_state_meta (id, revision)
     values (1, 1)
     on conflict (id) do nothing;
@@ -113,6 +118,8 @@ function normalizeArticle(article) {
     excerpt: article.excerpt || "",
     hot: Number(article.hot || 0),
     commentMode: article.commentMode || "all",
+    contentType: article.contentType || "article",
+    duration: article.duration || "",
     music: article.music || "",
     video: article.video || "",
     sourceDoc: article.sourceDoc || "",
@@ -318,6 +325,28 @@ app.put("/api/settings", async (req, res, next) => {
     );
     const meta = await bumpRevision();
     res.json({ ...settings, revision: Number(meta.revision) });
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.post("/api/collective-meditation/heartbeat", async (req, res, next) => {
+  try {
+    const viewerId = String(req.body.viewerId || "").slice(0, 160);
+    if (!viewerId) {
+      res.status(400).json({ error: "viewerId is required" });
+      return;
+    }
+    await pool.query(
+      `insert into collective_meditation_presence (viewer_id, seen_at)
+       values ($1, now())
+       on conflict (viewer_id) do update set seen_at = now()`,
+      [viewerId],
+    );
+    await pool.query("delete from collective_meditation_presence where seen_at < now() - interval '45 seconds'");
+    const result = await pool.query("select count(*)::integer as count from collective_meditation_presence");
+    res.set("Cache-Control", "no-store");
+    res.json({ count: Number(result.rows[0]?.count || 1) });
   } catch (error) {
     next(error);
   }

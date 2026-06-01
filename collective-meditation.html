@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>集体冥想 · 天狼星门户</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="page-meditation page-collective-session">
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="天狼星门户首页">
+        <img data-site-logo src="assets/logo-vector-web.png" alt="天狼星门户 logo" decoding="async" />
+        <span data-site="brandName">天狼星门户</span>
+      </a>
+      <nav class="top-nav" aria-label="主导航">
+        <a href="index.html">首页</a>
+        <a href="articles.html">文章</a>
+        <a href="meditation.html" class="active">冥想</a>
+        <a href="about.html">关于</a>
+      </nav>
+    </header>
+
+    <main class="collective-session-main">
+      <div class="nebula-layer nebula-one"></div>
+      <div class="nebula-layer nebula-two"></div>
+      <div class="nebula-stars"></div>
+      <a class="collective-back" href="meditation.html">← 返回冥想空间</a>
+      <section class="collective-session-shell">
+        <div class="collective-session-head">
+          <div>
+            <p class="eyebrow">Beijing Time · Collective Field</p>
+            <h1 id="sessionTitle">集体冥想</h1>
+            <p id="sessionTime"></p>
+          </div>
+          <aside class="participant-count">
+            <span>此刻共同冥想</span>
+            <strong id="participantCount">1</strong>
+            <b>人</b>
+          </aside>
+        </div>
+        <div class="collective-session-player">
+          <div class="live-indicator"><span></span>与北京时间同步</div>
+          <p id="sessionStatus">正在读取当前时段...</p>
+          <audio id="sessionAudio" controls preload="none"></audio>
+          <div id="sessionVideo"></div>
+        </div>
+      </section>
+    </main>
+
+    <audio id="backgroundAudio" preload="none"></audio>
+    <script src="articles-data.js"></script>
+    <script src="config.js"></script>
+    <script src="api-client.js"></script>
+    <script src="app.js"></script>
+    <script src="collective-meditation.js"></script>
+  </body>
+</html>
