@@ -5,7 +5,7 @@ const crypto = require("node:crypto");
 
 const app = express();
 const port = Number(process.env.PORT || 3000);
-const apiVersion = 5;
+const apiVersion = 6;
 const allowedOrigins = (process.env.CORS_ORIGIN || "*").split(",").map((item) => item.trim());
 const databaseUrl = process.env.DATABASE_URL;
 
@@ -28,7 +28,7 @@ app.use(cors({
     callback(new Error("Not allowed by CORS"));
   },
 }));
-app.use(express.json({ limit: "50mb" }));
+app.use(express.json({ limit: "70mb" }));
 
 async function initDb() {
   await pool.query(`
@@ -72,6 +72,14 @@ async function initDb() {
     create table if not exists collective_meditation_presence (
       viewer_id text primary key,
       seen_at timestamptz not null default now()
+    );
+
+    create table if not exists media_assets (
+      id text primary key,
+      filename text not null,
+      content_type text not null,
+      data bytea not null,
+      created_at timestamptz not null default now()
     );
 
     insert into site_state_meta (id, revision)
@@ -155,7 +163,7 @@ app.get("/api/health", async (req, res, next) => {
   try {
     await pool.query("select 1");
     res.set("Cache-Control", "no-store");
-    res.json({ ok: true, apiVersion, chunkedUploads: true, revisions: true });
+    res.json({ ok: true, apiVersion, chunkedUploads: true, revisions: true, mediaUploads: true });
   } catch (error) {
     next(error);
   }
@@ -163,7 +171,7 @@ app.get("/api/health", async (req, res, next) => {
 
 app.get("/api/capabilities", (req, res) => {
   res.set("Cache-Control", "no-store");
-  res.json({ apiVersion, chunkedUploads: true, revisions: true });
+  res.json({ apiVersion, chunkedUploads: true, revisions: true, mediaUploads: true });
 });
 
 app.get("/api/version", async (req, res, next) => {
@@ -325,6 +333,54 @@ app.put("/api/settings", async (req, res, next) => {
     );
     const meta = await bumpRevision();
     res.json({ ...settings, revision: Number(meta.revision) });
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.post("/api/media", async (req, res, next) => {
+  try {
+    const filename = String(req.body.filename || "media").slice(0, 240);
+    const contentType = String(req.body.contentType || "").slice(0, 120);
+    if (!/^(audio|video)\//.test(contentType)) {
+      res.status(400).json({ error: "仅支持上传音频或视频文件" });
+      return;
+    }
+    const data = Buffer.from(String(req.body.base64 || ""), "base64");
+    if (!data.length) {
+      res.status(400).json({ error: "媒体文件为空" });
+      return;
+    }
+    if (data.length > 48 * 1024 * 1024) {
+      res.status(413).json({ error: "单个媒体文件不能超过 48MB" });
+      return;
+    }
+    const id = crypto.randomUUID();
+    await pool.query(
+      "insert into media_assets (id, filename, content_type, data) values ($1, $2, $3, $4)",
+      [id, filename, contentType, data],
+    );
+    res.json({ id, filename, contentType, path: `/api/media/${id}` });
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.get("/api/media/:id", async (req, res, next) => {
+  try {
+    const result = await pool.query(
+      "select filename, content_type, data from media_assets where id = $1",
+      [req.params.id],
+    );
+    const media = result.rows[0];
+    if (!media) {
+      res.status(404).json({ error: "媒体文件不存在" });
+      return;
+    }
+    res.set("Content-Type", media.content_type);
+    res.set("Content-Disposition", `inline; filename*=UTF-8''${encodeURIComponent(media.filename)}`);
+    res.set("Cache-Control", "public, max-age=31536000, immutable");
+    res.send(media.data);
   } catch (error) {
     next(error);
   }

@@ -162,6 +162,7 @@
         <button data-music-action="up" type="button" title="上移">↑</button>
         <button data-music-action="down" type="button" title="下移">↓</button>
         <button data-music-action="preview" type="button" title="试听">▶</button>
+        <label class="inline-upload-action" title="上传音乐">⇧<input data-music-upload type="file" accept="audio/*" hidden /></label>
         <button data-music-action="remove" type="button" title="删除">×</button>
       </div>
     `).join("");
@@ -185,7 +186,9 @@
         <label>开始<input data-schedule-field="start" type="time" value="${escapeHTML(item.start || "20:00")}" /></label>
         <label>结束<input data-schedule-field="end" type="time" value="${escapeHTML(item.end || "20:30")}" /></label>
         <input data-schedule-field="music" value="${escapeHTML(item.music || "")}" placeholder="冥想音乐 MP3 地址" />
+        <label class="inline-upload-action" title="上传冥想音乐">⇧♪<input data-schedule-upload="music" type="file" accept="audio/*" hidden /></label>
         <input data-schedule-field="video" value="${escapeHTML(item.video || "")}" placeholder="可选：视频 MP4 地址" />
+        <label class="inline-upload-action" title="上传冥想视频">⇧▶<input data-schedule-upload="video" type="file" accept="video/*" hidden /></label>
         <button data-schedule-action="remove" type="button" title="删除时段">×</button>
       </div>
     `).join("") || "<p class=\"muted-text\">尚未设置实时播放时段。</p>";
@@ -395,6 +398,20 @@
     status.textContent = "图片已载入，保存后生效";
   }
 
+  async function uploadMedia(file) {
+    if (!file) return "";
+    status.textContent = `正在上传 ${file.name}...`;
+    try {
+      const url = await window.SiriusAPI.uploadMedia(file);
+      status.textContent = `媒体已上传 · ${file.name} · 保存页面后发布`;
+      return url;
+    } catch (error) {
+      status.textContent = "媒体上传失败";
+      alert(`上传失败：${error.message}`);
+      return "";
+    }
+  }
+
   $("#saveSiteButton").addEventListener("click", () => {
     saveSettings().catch((error) => {
       console.warn("保存页面失败", error);
@@ -441,6 +458,15 @@
     siteMusicPlaylistState = items.length ? items : [{ title: "背景音乐", url: "" }];
     renderSiteMusicPlaylist();
   });
+  $("#siteMusicPlaylist").addEventListener("change", async (event) => {
+    if (!event.target.matches("[data-music-upload]")) return;
+    const row = event.target.closest(".playlist-row");
+    const url = await uploadMedia(event.target.files[0]);
+    if (!url) return;
+    row.querySelector('[data-music-field="url"]').value = url;
+    siteMusicPlaylistState = collectSiteMusicPlaylist();
+    updateMusicPreview(url);
+  });
   $("#addMeditationSchedule").addEventListener("click", () => {
     meditationScheduleState = collectMeditationSchedule();
     meditationScheduleState.push({ title: "集体冥想", start: "20:00", end: "20:30", music: "", video: "" });
@@ -455,6 +481,15 @@
     meditationScheduleState = collectMeditationSchedule();
     meditationScheduleState.splice(Number(button.closest(".schedule-row").dataset.scheduleIndex), 1);
     renderMeditationSchedule();
+  });
+  $("#meditationSchedule").addEventListener("change", async (event) => {
+    const field = event.target.dataset.scheduleUpload;
+    if (!field) return;
+    const row = event.target.closest(".schedule-row");
+    const url = await uploadMedia(event.target.files[0]);
+    if (!url) return;
+    row.querySelector(`[data-schedule-field="${field}"]`).value = url;
+    meditationScheduleState = collectMeditationSchedule();
   });
   frame.addEventListener("load", injectPreviewTools);
 

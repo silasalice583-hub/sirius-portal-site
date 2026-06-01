@@ -49,7 +49,9 @@
           <label>标题图片<input id="coverInput" type="file" accept="image/*" /></label>
           <label>标题图片地址<input id="coverUrl" type="text" placeholder="也可以填写图片 URL 或本地路径" /></label>
           <label>文中音乐<input id="articleMusic" type="text" placeholder="MP3 地址或本地路径" /></label>
+          <label>上传文中音乐<input id="articleMusicFile" type="file" accept="audio/*" /></label>
           <label>文中视频<input id="articleVideo" type="text" placeholder="MP4 / WebM / 视频页面地址" /></label>
+          <label>上传文中视频<input id="articleVideoFile" type="file" accept="video/*" /></label>
           <label>冥想时长<input id="meditationDuration" type="text" placeholder="例如：20 分钟" /></label>
           <label>发布时间<input id="postDate" type="date" /></label>
           <label>热门权重<input id="hotScore" type="number" min="0" max="100" value="80" /></label>
@@ -90,7 +92,11 @@
           <button id="imageButton" type="button" title="插入图片">▣</button>
           <button id="videoButton" type="button" title="插入视频">▶</button>
           <button id="audioButton" type="button" title="插入音乐">♪</button>
+          <button id="uploadVideoButton" type="button" title="上传并插入视频">⇧▶</button>
+          <button id="uploadAudioButton" type="button" title="上传并插入音乐">⇧♪</button>
           <input id="bodyImageInput" type="file" accept="image/*" hidden />
+          <input id="bodyAudioInput" type="file" accept="audio/*" hidden />
+          <input id="bodyVideoInput" type="file" accept="video/*" hidden />
         </div>
 
         <div class="editor" id="editor" contenteditable="true">

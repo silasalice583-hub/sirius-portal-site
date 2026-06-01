@@ -35,7 +35,10 @@
     backendStatus.className = "backend-status error";
     alert(`公网数据库连接失败，当前不会读取本浏览器缓存作为网站数据。\n\n具体错误：${state.apiError}\n\n请先修复 Cloudflare /api 代理或 Railway 后端。`);
   } else if (state.source === "api") {
-    backendStatus.textContent = `已连接公网内容库 · 版本 ${state.revision || 1}`;
+    const capabilities = await window.SiriusAPI.loadCapabilities().catch(() => null);
+    backendStatus.textContent = capabilities
+      ? `已连接公网内容库 · 数据版本 ${state.revision || 1} · API v${capabilities.apiVersion || "未知"}${capabilities.chunkedUploads ? " · 支持大文章导入" : " · 不支持大文章导入"}${capabilities.mediaUploads ? " · 支持媒体上传" : " · 不支持媒体上传"}`
+      : `已连接公网内容库 · 数据版本 ${state.revision || 1} · 后端能力未识别`;
     backendStatus.className = "backend-status online";
   } else {
     backendStatus.textContent = "本地预览模式 · 内容仅保存在当前浏览器";
@@ -230,6 +233,40 @@
   async function setMediaField(inputId, file) {
     if (!file) return;
     setField(inputId, await readFileAsDataURL(file));
+  }
+
+  async function uploadMediaField(inputId, file) {
+    if (!file) return;
+    backendStatus.textContent = `正在上传 ${file.name}...`;
+    backendStatus.className = "backend-status local";
+    try {
+      const url = await window.SiriusAPI.uploadMedia(file);
+      setField(inputId, url);
+      backendStatus.textContent = `媒体已上传 · ${file.name}`;
+      backendStatus.className = "backend-status online";
+      refreshPreview();
+    } catch (error) {
+      backendStatus.textContent = "媒体上传失败";
+      backendStatus.className = "backend-status error";
+      alert(`上传失败：${error.message}`);
+    }
+  }
+
+  async function uploadEditorMedia(file, type) {
+    if (!file) return;
+    backendStatus.textContent = `正在上传 ${file.name}...`;
+    backendStatus.className = "backend-status local";
+    try {
+      const url = await window.SiriusAPI.uploadMedia(file);
+      command("insertHTML", type === "audio" ? audioEmbed(url) : mediaEmbed(url));
+      backendStatus.textContent = `媒体已上传并插入 · ${file.name}`;
+      backendStatus.className = "backend-status online";
+      autoSaveArticle();
+    } catch (error) {
+      backendStatus.textContent = "媒体上传失败";
+      backendStatus.className = "backend-status error";
+      alert(`上传失败：${error.message}`);
+    }
   }
 
   function makeArticle() {
@@ -624,13 +661,19 @@
     command("insertHTML", audioEmbed(url));
     autoSaveArticle();
   });
+  document.getElementById("uploadVideoButton").addEventListener("click", () => document.getElementById("bodyVideoInput").click());
+  document.getElementById("uploadAudioButton").addEventListener("click", () => document.getElementById("bodyAudioInput").click());
   document.getElementById("bodyImageInput").addEventListener("change", async (event) => {
     const file = event.target.files[0];
     if (!file) return;
     command("insertImage", await readFileAsDataURL(file));
     autoSaveArticle();
   });
+  document.getElementById("bodyAudioInput").addEventListener("change", (event) => uploadEditorMedia(event.target.files[0], "audio"));
+  document.getElementById("bodyVideoInput").addEventListener("change", (event) => uploadEditorMedia(event.target.files[0], "video"));
   document.getElementById("coverInput").addEventListener("change", (event) => setCover(event.target.files[0]));
+  document.getElementById("articleMusicFile").addEventListener("change", (event) => uploadMediaField("articleMusic", event.target.files[0]));
+  document.getElementById("articleVideoFile").addEventListener("change", (event) => uploadMediaField("articleVideo", event.target.files[0]));
   ["coverUrl", "postTitle", "postExcerpt"].forEach((id) => document.getElementById(id).addEventListener("input", refreshPreview));
   editor.addEventListener("input", refreshPreview);
   document.getElementById("previewButton").addEventListener("click", refreshPreview);

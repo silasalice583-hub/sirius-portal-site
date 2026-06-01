@@ -27,7 +27,10 @@
     });
     if (!response.ok) {
       const message = await response.text().catch(() => "");
-      throw new Error(`API ${response.status}${message ? `: ${message.slice(0, 220)}` : ""}`);
+      const error = new Error(`API ${response.status}${message ? `: ${message.slice(0, 220)}` : ""}`);
+      error.status = response.status;
+      error.responseText = message;
+      throw error;
     }
     return response.status === 204 ? null : response.json();
   }
@@ -52,16 +55,26 @@
     const chunkSize = 480000;
     const uploadId = `article-${article.id || Date.now()}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
     const total = Math.ceil(payload.length / chunkSize);
+    let capabilities;
     try {
-      const capabilities = await request("/api/capabilities");
-      if (!capabilities.chunkedUploads) throw new Error("Railway API does not support chunked uploads");
+      capabilities = await request("/api/capabilities");
     } catch (error) {
-      throw new Error(`Railway 后端版本过旧，无法导入较大文章。请重新部署 backend 目录后再试。原始错误：${error.message}`);
+      throw new Error(`文章体积较大，普通上传已被服务器拒绝；当前 Railway 后端不支持分块导入。请重新部署 backend 目录后再试。原始错误：${error.message}`);
     }
-    await request("/api/articles/chunked/init", {
-      method: "POST",
-      body: JSON.stringify({ uploadId }),
-    });
+    if (!capabilities.chunkedUploads) {
+      throw new Error(`文章体积较大，普通上传已被服务器拒绝；当前 Railway 后端版本 ${capabilities.apiVersion || "未知"} 不支持分块导入。请重新部署 backend 目录。`);
+    }
+    try {
+      await request("/api/articles/chunked/init", {
+        method: "POST",
+        body: JSON.stringify({ uploadId }),
+      });
+    } catch (error) {
+      if (error.status === 404 || error.status === 405) {
+        throw new Error("文章体积较大，普通上传已被服务器拒绝；线上 Railway 后端缺少分块导入接口。请在 Railway 重新部署最新 backend 目录。");
+      }
+      throw error;
+    }
     for (let index = 0; index < total; index += 1) {
       await request("/api/articles/chunked/part", {
         method: "POST",
@@ -117,6 +130,11 @@
     return request(`/api/version?ts=${Date.now()}`);
   }
 
+  async function loadCapabilities() {
+    if (!hasApi()) return null;
+    return request(`/api/capabilities?ts=${Date.now()}`);
+  }
+
   function watchVersion(initialRevision, onChange, intervalMs = 8000) {
     if (!hasApi()) return () => {};
     let revision = Number(initialRevision || 0);
@@ -145,7 +163,6 @@
   async function saveArticle(article) {
     if (hasApi()) {
       const payload = JSON.stringify(article);
-      if (payload.length > 900000) return saveLargeArticle(article);
       try {
         return await request("/api/articles", { method: "POST", body: payload });
       } catch (error) {
@@ -207,10 +224,34 @@
     return { count: 1 };
   }
 
+  function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result || "").split(",")[1] || "");
+      reader.onerror = () => reject(reader.error || new Error("读取文件失败"));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function uploadMedia(file) {
+    if (!file) throw new Error("没有选择媒体文件");
+    if (!hasApi()) throw new Error("本地预览模式不能上传媒体，请在部署后的网站后台操作");
+    const result = await request("/api/media", {
+      method: "POST",
+      body: JSON.stringify({
+        filename: file.name,
+        contentType: file.type,
+        base64: await fileToBase64(file),
+      }),
+    });
+    return apiBase() ? `${apiBase()}${result.path}` : result.path;
+  }
+
   window.SiriusAPI = {
     hasApi,
     loadState,
     loadVersion,
+    loadCapabilities,
     watchVersion,
     saveArticle,
     saveArticles,
@@ -219,6 +260,7 @@
     submitComment,
     saveComments,
     collectiveHeartbeat,
+    uploadMedia,
     migrateLocalToApi,
   };
 })();

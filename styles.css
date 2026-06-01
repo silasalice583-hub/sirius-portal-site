@@ -1237,13 +1237,23 @@ button { cursor: pointer; }
   border: 1px solid var(--line);
   background: rgba(255,255,255,.72);
 }
-.playlist-row { grid-template-columns: 28px minmax(100px, .58fr) minmax(180px, 1fr) repeat(4, 34px); }
-.schedule-row { grid-template-columns: minmax(120px, .8fr) 120px 120px minmax(180px, 1fr) minmax(160px, .8fr) 34px; }
+.playlist-row { grid-template-columns: 28px minmax(100px, .58fr) minmax(180px, 1fr) repeat(5, 34px); }
+.schedule-row { grid-template-columns: minmax(120px, .8fr) 110px 110px minmax(170px, 1fr) 42px minmax(150px, .8fr) 42px 34px; }
 .playlist-order { display: grid; place-items: center; color: var(--accent); font-weight: 900; }
 .playlist-row button,
 .schedule-row button,
 .subsection-heading button { border: 0; min-height: 34px; color: #fff; background: var(--accent); }
 .schedule-row label { gap: 4px; color: var(--muted); font-size: 12px; }
+.inline-upload-action {
+  display: grid;
+  place-items: center;
+  min-height: 34px;
+  color: #fff !important;
+  background: var(--gold);
+  cursor: pointer;
+  font-size: 13px !important;
+  font-weight: 900;
+}
 
 @keyframes nebulaDriftOne {
   from { transform: translate3d(-4%, -2%, 0) scale(1); }
@@ -1329,7 +1339,7 @@ button { cursor: pointer; }
   .meditation-orbit { width: min(68vw, 330px); }
   .collective-meditation { grid-template-columns: 1fr; }
   .meditation-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .playlist-row { grid-template-columns: 28px minmax(0, 1fr) repeat(4, 34px); }
+  .playlist-row { grid-template-columns: 28px minmax(0, 1fr) repeat(5, 34px); }
   .playlist-row input[data-music-field="url"] { grid-column: 2 / -1; grid-row: 2; }
   .schedule-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .schedule-row input[data-schedule-field="title"],
@@ -2066,9 +2076,9 @@ button { cursor: pointer; }
 
 .site-editor-shell {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(330px, 410px);
+  grid-template-columns: minmax(0, 1fr) minmax(520px, 680px);
   gap: 18px;
-  width: min(1600px, calc(100% - 28px));
+  width: min(1920px, calc(100% - 28px));
   margin: 18px auto 32px;
   align-items: start;
 }
