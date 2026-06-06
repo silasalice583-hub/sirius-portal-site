@@ -63,8 +63,74 @@
     .map((item, index) => typeof item === "string" ? { title: `背景音乐 ${index + 1}`, url: item } : item)
     .filter((item) => item?.url);
   if (!siteMusicPlaylist.length) siteMusicPlaylist.push({ title: "背景音乐", url: settings.siteMusic || defaultMusic });
+  const backgroundMusicStateKey = "siriusBackgroundMusicState";
   let siteMusicIndex = 0;
-  if (backgroundAudio) backgroundAudio.src = siteMusicPlaylist[0].url;
+  let isLeavingPage = false;
+
+  function loadBackgroundMusicState() {
+    try {
+      return JSON.parse(localStorage.getItem(backgroundMusicStateKey) || "{}");
+    } catch (error) {
+      return {};
+    }
+  }
+
+  function saveBackgroundMusicState(overrides = {}) {
+    if (!backgroundAudio) return;
+    const state = {
+      wantsPlayback: !backgroundAudio.paused,
+      index: siteMusicIndex,
+      url: siteMusicPlaylist[siteMusicIndex]?.url || backgroundAudio.currentSrc || backgroundAudio.src || "",
+      currentTime: Number(backgroundAudio.currentTime || 0),
+      volume: Number(backgroundAudio.volume || 1),
+      updatedAt: Date.now(),
+      ...overrides,
+    };
+    localStorage.setItem(backgroundMusicStateKey, JSON.stringify(state));
+  }
+
+  function playlistIndexFromState(state) {
+    const byUrl = siteMusicPlaylist.findIndex((item) => item.url === state.url);
+    if (byUrl >= 0) return byUrl;
+    const index = Number(state.index || 0);
+    return siteMusicPlaylist[index] ? index : 0;
+  }
+
+  function setMusicTogglePlaying(isPlaying) {
+    $("#musicToggle")?.classList.toggle("playing", Boolean(isPlaying));
+  }
+
+  function prepareBackgroundAudio() {
+    if (!backgroundAudio) return;
+    const saved = loadBackgroundMusicState();
+    siteMusicIndex = playlistIndexFromState(saved);
+    backgroundAudio.src = siteMusicPlaylist[siteMusicIndex].url;
+    backgroundAudio.volume = Number.isFinite(Number(saved.volume)) ? Number(saved.volume) : 1;
+
+    backgroundAudio.addEventListener("loadedmetadata", () => {
+      const savedAgain = loadBackgroundMusicState();
+      if (playlistIndexFromState(savedAgain) !== siteMusicIndex) return;
+      let targetTime = Number(savedAgain.currentTime || 0);
+      if (savedAgain.wantsPlayback) {
+        targetTime += Math.max(0, (Date.now() - Number(savedAgain.updatedAt || Date.now())) / 1000);
+      }
+      if (backgroundAudio.duration && Number.isFinite(backgroundAudio.duration)) {
+        targetTime %= backgroundAudio.duration;
+      }
+      if (targetTime > 0) backgroundAudio.currentTime = targetTime;
+    }, { once: true });
+
+    if (saved.wantsPlayback) {
+      setMusicTogglePlaying(true);
+      backgroundAudio.play().then(() => {
+        saveBackgroundMusicState({ wantsPlayback: true });
+      }).catch(() => {
+        setMusicTogglePlaying(false);
+      });
+    }
+  }
+
+  prepareBackgroundAudio();
 
   function escapeHTML(value) {
     return String(value || "").replace(/[&<>"']/g, (char) => ({
@@ -352,11 +418,18 @@
     $("#musicToggle")?.addEventListener("click", async () => {
       if (!backgroundAudio) return;
       if (backgroundAudio.paused) {
-        await backgroundAudio.play();
-        $("#musicToggle").classList.add("playing");
+        try {
+          await backgroundAudio.play();
+          setMusicTogglePlaying(true);
+          saveBackgroundMusicState({ wantsPlayback: true });
+        } catch (error) {
+          setMusicTogglePlaying(false);
+          console.warn("Background music playback was blocked", error);
+        }
       } else {
         backgroundAudio.pause();
-        $("#musicToggle").classList.remove("playing");
+        setMusicTogglePlaying(false);
+        saveBackgroundMusicState({ wantsPlayback: false });
       }
     });
 
@@ -365,16 +438,39 @@
       backgroundAudio.src = siteMusicPlaylist[siteMusicIndex].url;
       try {
         await backgroundAudio.play();
+        setMusicTogglePlaying(true);
+        saveBackgroundMusicState({ wantsPlayback: true, currentTime: 0 });
       } catch (error) {
         console.warn("背景音乐续播失败", error);
       }
     });
 
+    backgroundAudio?.addEventListener("play", () => {
+      setMusicTogglePlaying(true);
+      saveBackgroundMusicState({ wantsPlayback: true });
+    });
+
+    backgroundAudio?.addEventListener("pause", () => {
+      if (isLeavingPage) return;
+      setMusicTogglePlaying(false);
+      saveBackgroundMusicState();
+    });
+
+    backgroundAudio?.addEventListener("timeupdate", () => {
+      saveBackgroundMusicState();
+    });
+
+    window.addEventListener("pagehide", () => {
+      isLeavingPage = true;
+      saveBackgroundMusicState();
+    });
+
     document.addEventListener("play", (event) => {
       if (!backgroundAudio || event.target === backgroundAudio) return;
       if (event.target.matches("audio, video")) {
+        saveBackgroundMusicState({ wantsPlayback: false });
         backgroundAudio.pause();
-        $("#musicToggle")?.classList.remove("playing");
+        setMusicTogglePlaying(false);
       }
     }, true);
 
