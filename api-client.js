@@ -7,6 +7,11 @@
     return (window.SIRIUS_API_BASE || "").replace(/\/$/, "");
   }
 
+  function absoluteApiUrl(path) {
+    const base = apiBase() || window.location.origin;
+    return new URL(path, base).href;
+  }
+
   function hasApi() {
     return Boolean(apiBase() || window.SIRIUS_USE_SAME_ORIGIN_API);
   }
@@ -244,7 +249,7 @@
         base64: await fileToBase64(file),
       }),
     });
-    return apiBase() ? `${apiBase()}${result.path}` : result.path;
+    return absoluteApiUrl(result.path);
   }
 
   window.SiriusAPI = {

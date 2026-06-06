@@ -5,7 +5,7 @@ const crypto = require("node:crypto");
 
 const app = express();
 const port = Number(process.env.PORT || 3000);
-const apiVersion = 6;
+const apiVersion = 7;
 const allowedOrigins = (process.env.CORS_ORIGIN || "*").split(",").map((item) => item.trim());
 const databaseUrl = process.env.DATABASE_URL;
 
@@ -377,10 +377,38 @@ app.get("/api/media/:id", async (req, res, next) => {
       res.status(404).json({ error: "媒体文件不存在" });
       return;
     }
+    const data = Buffer.isBuffer(media.data) ? media.data : Buffer.from(media.data);
+    const total = data.length;
     res.set("Content-Type", media.content_type);
     res.set("Content-Disposition", `inline; filename*=UTF-8''${encodeURIComponent(media.filename)}`);
     res.set("Cache-Control", "public, max-age=31536000, immutable");
-    res.send(media.data);
+    res.set("Accept-Ranges", "bytes");
+
+    const range = req.headers.range;
+    if (range) {
+      const match = /^bytes=(\d*)-(\d*)$/.exec(range);
+      if (!match) {
+        res.status(416).set("Content-Range", `bytes */${total}`).end();
+        return;
+      }
+      const requestedStart = match[1] ? Number(match[1]) : 0;
+      const requestedEnd = match[2] ? Number(match[2]) : total - 1;
+      const start = Math.max(0, requestedStart);
+      const end = Math.min(total - 1, requestedEnd);
+      if (start > end || start >= total) {
+        res.status(416).set("Content-Range", `bytes */${total}`).end();
+        return;
+      }
+      const chunk = data.subarray(start, end + 1);
+      res.status(206);
+      res.set("Content-Range", `bytes ${start}-${end}/${total}`);
+      res.set("Content-Length", String(chunk.length));
+      res.send(chunk);
+      return;
+    }
+
+    res.set("Content-Length", String(total));
+    res.send(data);
   } catch (error) {
     next(error);
   }

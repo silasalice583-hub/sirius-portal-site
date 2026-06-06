@@ -2,7 +2,7 @@ export async function onRequest(context) {
   const sourceUrl = new URL(context.request.url);
   const corsHeaders = {
     "Access-Control-Allow-Origin": sourceUrl.origin,
-    "Access-Control-Allow-Methods": "GET, POST, PUT, OPTIONS",
+    "Access-Control-Allow-Methods": "GET, HEAD, POST, PUT, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type, Authorization",
     "Vary": "Origin",
   };
@@ -19,7 +19,9 @@ export async function onRequest(context) {
     });
   }
 
-  const targetUrl = new URL(`${upstream}/api/${context.params.path || ""}`);
+  const pathParam = context.params.path || "";
+  const apiPath = Array.isArray(pathParam) ? pathParam.join("/") : pathParam;
+  const targetUrl = new URL(`${upstream}/api/${apiPath}`);
   targetUrl.search = sourceUrl.search;
 
   const headers = new Headers(context.request.headers);
@@ -51,7 +53,11 @@ export async function onRequest(context) {
     });
   }
   const outputHeaders = new Headers(response.headers);
-  outputHeaders.set("Cache-Control", "no-store");
+  if (apiPath.startsWith("media/")) {
+    outputHeaders.set("Cache-Control", "public, max-age=31536000, immutable");
+  } else {
+    outputHeaders.set("Cache-Control", "no-store");
+  }
   Object.entries(corsHeaders).forEach(([key, value]) => outputHeaders.set(key, value));
 
   return new Response(response.body, {

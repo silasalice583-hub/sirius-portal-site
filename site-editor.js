@@ -1,4 +1,4 @@
-(async function () {
+﻿(async function () {
   const baseArticles = window.SIRIUS_ARTICLES || [];
   const defaultMusic = "1-8月，让它发生/12 21.mp3";
   const defaultPage = {
@@ -179,6 +179,52 @@
     $("#siteMusicPreview").src = url || collectSiteMusicPlaylist()[0]?.url || defaultMusic;
   }
 
+  function timeToMinutes(value) {
+    const [hour, minute] = String(value || "00:00").split(":").map(Number);
+    return (Number(hour) || 0) * 60 + (Number(minute) || 0);
+  }
+
+  function formatTimeFromMinutes(value) {
+    const total = ((Math.round(value) % 1440) + 1440) % 1440;
+    const hour = String(Math.floor(total / 60)).padStart(2, "0");
+    const minute = String(total % 60).padStart(2, "0");
+    return `${hour}:${minute}`;
+  }
+
+  function readMediaDuration(source, type = "audio") {
+    return new Promise((resolve) => {
+      const media = document.createElement(type === "video" ? "video" : "audio");
+      let objectUrl = "";
+      const finish = (duration = 0) => {
+        if (objectUrl) URL.revokeObjectURL(objectUrl);
+        media.removeAttribute("src");
+        media.load();
+        resolve(Number.isFinite(duration) ? duration : 0);
+      };
+      media.preload = "metadata";
+      media.muted = true;
+      media.addEventListener("loadedmetadata", () => finish(media.duration), { once: true });
+      media.addEventListener("error", () => finish(0), { once: true });
+      if (source instanceof File) {
+        objectUrl = URL.createObjectURL(source);
+        media.src = objectUrl;
+      } else {
+        media.crossOrigin = "anonymous";
+        media.src = String(source || "");
+      }
+      setTimeout(() => finish(0), 7000);
+    });
+  }
+
+  function updateScheduleEndFromDuration(row) {
+    const durationInput = row.querySelector('[data-schedule-field="durationSeconds"]');
+    const duration = Number(durationInput?.value || 0);
+    if (!duration) return;
+    const start = row.querySelector('[data-schedule-field="start"]')?.value || "20:00";
+    const endInput = row.querySelector('[data-schedule-field="end"]');
+    if (endInput) endInput.value = formatTimeFromMinutes(timeToMinutes(start) + Math.ceil(duration / 60));
+  }
+
   function renderMeditationSchedule() {
     $("#meditationSchedule").innerHTML = meditationScheduleState.map((item, index) => `
       <div class="schedule-row" data-schedule-index="${index}">
@@ -186,9 +232,10 @@
         <label>开始<input data-schedule-field="start" type="time" value="${escapeHTML(item.start || "20:00")}" /></label>
         <label>结束<input data-schedule-field="end" type="time" value="${escapeHTML(item.end || "20:30")}" /></label>
         <input data-schedule-field="music" value="${escapeHTML(item.music || "")}" placeholder="冥想音乐 MP3 地址" />
-        <label class="inline-upload-action" title="上传冥想音乐">⇧♪<input data-schedule-upload="music" type="file" accept="audio/*" hidden /></label>
+        <label class="inline-upload-action" title="上传冥想音乐">上传<input data-schedule-upload="music" type="file" accept="audio/*" hidden /></label>
         <input data-schedule-field="video" value="${escapeHTML(item.video || "")}" placeholder="可选：视频 MP4 地址" />
-        <label class="inline-upload-action" title="上传冥想视频">⇧▶<input data-schedule-upload="video" type="file" accept="video/*" hidden /></label>
+        <label class="inline-upload-action" title="上传冥想视频">上传<input data-schedule-upload="video" type="file" accept="video/*" hidden /></label>
+        <input data-schedule-field="durationSeconds" type="hidden" value="${escapeHTML(item.durationSeconds || "")}" />
         <button data-schedule-action="remove" type="button" title="删除时段">×</button>
       </div>
     `).join("") || "<p class=\"muted-text\">尚未设置实时播放时段。</p>";
@@ -201,9 +248,9 @@
       end: row.querySelector('[data-schedule-field="end"]').value || "20:30",
       music: row.querySelector('[data-schedule-field="music"]').value.trim(),
       video: row.querySelector('[data-schedule-field="video"]').value.trim(),
+      durationSeconds: Number(row.querySelector('[data-schedule-field="durationSeconds"]')?.value || 0),
     }));
   }
-
   function collectSettings() {
     const existingPage = pageSettings();
     const categories = $("#pageCategories").value
@@ -472,7 +519,10 @@
     meditationScheduleState.push({ title: "集体冥想", start: "20:00", end: "20:30", music: "", video: "" });
     renderMeditationSchedule();
   });
-  $("#meditationSchedule").addEventListener("input", () => {
+  $("#meditationSchedule").addEventListener("input", (event) => {
+    if (event.target.matches('[data-schedule-field="start"]')) {
+      updateScheduleEndFromDuration(event.target.closest(".schedule-row"));
+    }
     meditationScheduleState = collectMeditationSchedule();
   });
   $("#meditationSchedule").addEventListener("click", (event) => {
@@ -484,11 +534,28 @@
   });
   $("#meditationSchedule").addEventListener("change", async (event) => {
     const field = event.target.dataset.scheduleUpload;
-    if (!field) return;
+    if (!field) {
+      const row = event.target.closest(".schedule-row");
+      if (row && event.target.matches('[data-schedule-field="music"]') && event.target.value.trim()) {
+        const duration = await readMediaDuration(event.target.value.trim(), "audio");
+        if (duration) {
+          row.querySelector('[data-schedule-field="durationSeconds"]').value = String(Math.round(duration));
+          updateScheduleEndFromDuration(row);
+        }
+        meditationScheduleState = collectMeditationSchedule();
+      }
+      return;
+    }
     const row = event.target.closest(".schedule-row");
+    const file = event.target.files[0];
+    const duration = field === "music" ? await readMediaDuration(file, "audio") : 0;
     const url = await uploadMedia(event.target.files[0]);
     if (!url) return;
     row.querySelector(`[data-schedule-field="${field}"]`).value = url;
+    if (duration) {
+      row.querySelector('[data-schedule-field="durationSeconds"]').value = String(Math.round(duration));
+      updateScheduleEndFromDuration(row);
+    }
     meditationScheduleState = collectMeditationSchedule();
   });
   frame.addEventListener("load", injectPreviewTools);
