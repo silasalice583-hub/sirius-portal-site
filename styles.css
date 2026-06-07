@@ -1,11 +1,11 @@
 :root {
   --bg: #f4f6f1;
   --paper: #ffffff;
-  --ink: #17211d;
+  --ink: #233067;
   --muted: #66736d;
   --line: #dfe5df;
   --accent: #0f766e;
-  --accent-dark: #0d3f3a;
+  --accent-dark: #233067;
   --gold: #b7791f;
   --soft: #eef5f2;
   --mist: #e8efe9;
@@ -185,7 +185,7 @@ button { cursor: pointer; }
 .home-hero {
   width: calc(100% - 20px);
   margin: 10px auto 0;
-  color: #123f38;
+  color: #233067;
   background: #dff8e8;
   box-shadow: 0 22px 58px rgba(15, 118, 94, .16);
 }
@@ -272,7 +272,7 @@ button { cursor: pointer; }
 }
 
 .home-hero .hero-copy p {
-  color: rgba(18, 72, 63, .86);
+  color: rgba(35, 48, 103, .86);
 }
 
 .hero-mark {
@@ -422,7 +422,7 @@ button { cursor: pointer; }
   justify-content: center;
   min-height: 46px;
   padding: 0 18px;
-  color: #071b23;
+  color: #233067;
   background: #fff;
   font-weight: 900;
 }
@@ -482,7 +482,7 @@ button { cursor: pointer; }
 }
 
 .search-panel input::placeholder { color: rgba(255,255,255,0.72); }
-.home-hero .search-panel input { color: #174c43; }
+.home-hero .search-panel input { color: #233067; }
 .home-hero .search-panel input::placeholder { color: rgba(24, 91, 80, .62); }
 .search-panel button, .section-head button, .publisher-actions button { padding: 0 24px; min-height: 48px; }
 
@@ -1188,7 +1188,7 @@ button { cursor: pointer; }
   min-height: 48px;
   margin-top: 18px;
   padding: 0 20px;
-  color: #123d45;
+  color: #233067;
   background: #cffafe;
   font-weight: 900;
   box-shadow: 0 12px 30px rgba(103, 232, 249, .18);
@@ -1491,7 +1491,7 @@ button { cursor: pointer; }
   padding: clamp(24px, 5vw, 54px);
   overflow: hidden;
   min-height: 360px;
-  color: #113b35;
+  color: #233067;
   background: #dff8e8;
   box-shadow: var(--shadow-strong);
 }
@@ -1531,7 +1531,7 @@ button { cursor: pointer; }
 }
 
 .about-page-hero p {
-  color: rgba(20, 70, 62, .86);
+  color: rgba(35, 48, 103, .86);
   line-height: 1.9;
 }
 
