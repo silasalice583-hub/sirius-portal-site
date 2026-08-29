@@ -1,0 +1,8 @@
+node_modules/
+.env
+.env.local
+*.log
+~$*
+content/待补充/
+exports/*.zip
+tools/__pycache__/
