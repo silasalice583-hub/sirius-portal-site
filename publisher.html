@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>天狼星门户 · 后台编辑器</title>
+    <link rel="stylesheet" href="styles.css?v=20260829-9" />
+  </head>
+  <body class="publisher-page">
+    <header class="site-header">
+      <a class="brand" href="publisher.html">
+        <img data-site-logo src="assets/logo-vector-web.png" alt="天狼星门户 logo" decoding="async" />
+        <span>后台编辑器</span>
+      </a>
+      <nav class="top-nav" aria-label="主导航">
+        <a href="#articlesPanel" data-panel-link="articlesPanel">文章</a>
+        <a href="site-editor.html">页面编辑器</a>
+      </nav>
+    </header>
+
+    <main class="admin-shell">
+      <aside class="admin-sidebar">
+        <button class="admin-tab active" data-panel="articlesPanel" type="button">文章管理</button>
+        <button id="newPostButton" type="button">新建文章</button>
+      </aside>
+
+      <section class="admin-panel" id="articlesPanel">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Article Admin</p>
+            <h1>文章管理</h1>
+            <p class="backend-status" id="publisherBackendStatus"></p>
+          </div>
+          <button id="publishButton" type="button">保存文章</button>
+        </div>
+
+        <div class="article-manager" id="articleManager"></div>
+
+        <div class="form-grid">
+          <label>文章标题<input id="postTitle" type="text" placeholder="输入文章标题" /></label>
+          <label>内容类型
+            <select id="contentType">
+              <option value="article">普通文章</option>
+              <option value="meditation">冥想合集</option>
+            </select>
+          </label>
+          <label>分类<input id="postCategory" type="text" list="categoryOptions" placeholder="例如：访谈 / 指南 / 科普" /></label>
+          <datalist id="categoryOptions"></datalist>
+          <label>标题图片<input id="coverInput" type="file" accept="image/*" /></label>
+          <label>标题图片地址<input id="coverUrl" type="text" placeholder="也可以填写图片 URL 或本地路径" /></label>
+          <label>文中音乐<input id="articleMusic" type="text" placeholder="MP3 地址或本地路径" /></label>
+          <label>上传文中音乐<input id="articleMusicFile" type="file" accept="audio/*" /></label>
+          <label>文中视频<input id="articleVideo" type="text" placeholder="MP4 / WebM / 视频页面地址" /></label>
+          <label>上传文中视频<input id="articleVideoFile" type="file" accept="video/*" /></label>
+          <label>冥想时长<input id="meditationDuration" type="text" placeholder="例如：20 分钟" /></label>
+          <label>发布时间<input id="postDate" type="date" /></label>
+          <label>热门权重<input id="hotScore" type="number" min="0" max="100" value="80" /></label>
+          <label class="full-field">文章简介<textarea id="postExcerpt" placeholder="用于首页横排文章和热门轮播展示"></textarea></label>
+          <label>评论方式
+            <select id="commentMode">
+              <option value="all">展示全部评论</option>
+              <option value="featured">仅展示精选评论</option>
+              <option value="closed">不开启评论区</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="toolbar" aria-label="排版工具栏">
+          <select id="fontName" title="字体">
+            <option value="Microsoft YaHei">微软雅黑</option>
+            <option value="SimSun">宋体</option>
+            <option value="KaiTi">楷体</option>
+            <option value="Arial">Arial</option>
+          </select>
+          <label class="toolbar-number-control" title="字号（0–100px）">
+            <span>字号</span>
+            <input id="fontSize" type="number" min="0" max="100" step="1" value="18" inputmode="numeric" />
+          </label>
+          <button id="undoButton" type="button" title="撤销">↶</button>
+          <button id="redoButton" type="button" title="重做">↷</button>
+          <button id="formatBrushButton" type="button" title="格式刷">刷</button>
+          <button data-command="bold" type="button" title="加粗">B</button>
+          <button data-command="italic" type="button" title="斜体">I</button>
+          <button data-command="insertUnorderedList" type="button" title="项目列表">•</button>
+          <button data-command="justifyLeft" type="button" title="左对齐">⇤</button>
+          <button data-command="justifyCenter" type="button" title="居中">≡</button>
+          <button data-command="justifyRight" type="button" title="右对齐">⇥</button>
+          <label class="color-control" title="字体颜色"><span>颜色</span><input id="fontColor" type="color" value="#17211d" /></label>
+          <button id="paragraphButton" type="button" title="段落">¶</button>
+          <button id="imageButton" type="button" title="插入图片">▣</button>
+          <button id="videoButton" type="button" title="插入视频">▶</button>
+          <button id="audioButton" type="button" title="插入音乐">♪</button>
+          <button id="uploadVideoButton" type="button" title="上传并插入视频">⇧▶</button>
+          <button id="uploadAudioButton" type="button" title="上传并插入音乐">⇧♪</button>
+          <input id="bodyImageInput" type="file" accept="image/*" hidden />
+          <input id="bodyAudioInput" type="file" accept="audio/*" hidden />
+          <input id="bodyVideoInput" type="file" accept="video/*" hidden />
+        </div>
+
+        <div class="editor" id="editor" contenteditable="true">
+          <h2>在这里输入文章正文</h2>
+          <p>可以设置字体、字号、段落、对齐方式，也可以插入图片和文中播放音乐。</p>
+        </div>
+
+        <div class="publisher-actions">
+          <button id="previewButton" type="button">刷新预览</button>
+          <button id="exportButton" type="button">导出 JSON</button>
+          <button id="importButton" type="button">导入 JSON</button>
+          <input id="importJsonInput" type="file" accept="application/json,.json" hidden />
+          <button id="syncLocalButton" type="button">同步本机草稿到公网数据库</button>
+          <button id="clearButton" type="button">清空草稿</button>
+        </div>
+
+        <div class="comment-admin" id="commentAdmin" hidden>
+          <div class="section-head small-head">
+            <div>
+              <p class="eyebrow">Comments</p>
+              <h2>评论管理</h2>
+            </div>
+            <button id="saveCommentsButton" type="button">保存评论</button>
+          </div>
+          <div id="commentEditorList"></div>
+        </div>
+      </section>
+
+      <aside class="preview-panel">
+        <p class="eyebrow">Preview</p>
+        <h2 id="previewTitle">文章预览</h2>
+        <img id="previewCover" src="assets/logo-vector-web.png" alt="标题图片预览" decoding="async" />
+        <p id="previewExcerpt"></p>
+        <div id="previewBody"></div>
+      </aside>
+    </main>
+
+    <script src="articles-data.js?v=20260829-3"></script>
+    <script src="config.js"></script>
+    <script src="api-client.js"></script>
+    <script src="publisher.js?v=20260829-3"></script>
+  </body>
+</html>

@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>冥想 · 天狼星门户</title>
+    <link rel="stylesheet" href="styles.css?v=20260829-9" />
+  </head>
+  <body class="page-meditation">
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="天狼星门户首页">
+        <img data-site-logo src="assets/logo-vector-web.png" alt="天狼星门户 logo" decoding="async" />
+        <span data-site="brandName">天狼星门户</span>
+      </a>
+      <nav class="top-nav" aria-label="主导航">
+        <a href="index.html">首页</a>
+        <a href="articles.html">文章</a>
+        <a href="meditation.html" class="active">冥想</a>
+        <a href="about.html">关于</a>
+      </nav>
+      <button class="music-pill" id="musicToggle" type="button" title="背景音乐">
+        <span>♪</span><b>背景音乐</b>
+      </button>
+    </header>
+
+    <main class="meditation-main">
+      <section class="meditation-hero">
+        <div class="nebula-layer nebula-one"></div>
+        <div class="nebula-layer nebula-two"></div>
+        <div class="nebula-stars"></div>
+        <div class="meditation-hero-copy">
+          <p class="eyebrow">Sirius Meditation Field</p>
+          <h1>冥想空间</h1>
+          <p>进入安静而持续流动的星云场域。回看既往冥想，或与此刻的集体冥想保持同步。</p>
+        </div>
+        <div class="meditation-orbit" aria-hidden="true">
+          <span class="orbit-star orbit-star-one"></span>
+          <span class="orbit-star orbit-star-two"></span>
+          <span class="orbit-star orbit-star-three"></span>
+          <img class="meditation-woman" src="assets/meditation-woman-1.png" alt="" decoding="async" />
+        </div>
+      </section>
+
+      <section class="collective-meditation" id="collective">
+        <div class="collective-copy">
+          <p class="eyebrow">Beijing Time · Live</p>
+          <h2>集体冥想</h2>
+          <p id="beijingClock" class="beijing-clock"></p>
+          <p id="collectiveStatus" class="collective-status">正在读取今日排期...</p>
+        </div>
+        <div class="collective-player">
+          <div class="live-indicator"><span></span>实时同步</div>
+          <h3 id="collectiveTitle">当前没有正在播放的集体冥想</h3>
+          <p id="collectiveTime"></p>
+          <a class="collective-enter" id="collectiveEnter" href="collective-meditation.html">进入集体冥想</a>
+          <div class="collective-next" id="collectiveNext"></div>
+        </div>
+      </section>
+
+      <section class="meditation-archive">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Meditation Archive</p>
+            <h2>冥想合集</h2>
+          </div>
+          <span id="meditationCount"></span>
+        </div>
+        <div class="meditation-grid" id="meditationGrid"></div>
+      </section>
+
+      <article class="meditation-reader" id="meditationReader" hidden>
+        <button class="back-button" id="meditationBack" type="button">返回冥想合集</button>
+        <div class="reader-hero">
+          <img id="meditationCover" alt="" />
+          <div>
+            <p class="eyebrow" id="meditationMeta"></p>
+            <h2 id="meditationTitle"></h2>
+            <p id="meditationExcerpt"></p>
+          </div>
+        </div>
+        <div id="meditationMedia"></div>
+        <div class="reader-body" id="meditationBody"></div>
+      </article>
+    </main>
+
+    <audio id="backgroundAudio" preload="none"></audio>
+    <script src="articles-data.js?v=20260829-3"></script>
+    <script src="config.js"></script>
+    <script src="api-client.js"></script>
+    <script src="app.js?v=20260829-4"></script>
+    <script src="meditation.js"></script>
+  </body>
+</html>
