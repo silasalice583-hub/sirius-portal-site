@@ -27,7 +27,7 @@ backend
 
 ```text
 DATABASE_URL=Railway PostgreSQL 自动提供的变量
-CORS_ORIGIN=https://light-of-sirius-site.pages.dev
+CORS_ORIGIN=https://sirius-portal-site.pages.dev
 EDITOR_EMAIL=2663158081@qq.com
 SMTP_HOST=smtp.qq.com
 SMTP_PORT=465
@@ -92,10 +92,10 @@ Build output directory: /
 本项目部署完成后访问：
 
 ```text
-https://light-of-sirius-site.pages.dev/
-https://light-of-sirius-site.pages.dev/publisher.html
-https://light-of-sirius-site.pages.dev/site-editor.html
-https://light-of-sirius-site.pages.dev/api/health
+https://sirius-portal-site.pages.dev/
+https://sirius-portal-site.pages.dev/publisher.html
+https://sirius-portal-site.pages.dev/site-editor.html
+https://sirius-portal-site.pages.dev/api/health
 ```
 
 ## 5. 数据流

@@ -25,7 +25,7 @@ http://localhost:8088/publisher.html
 正式网站地址：
 
 ```text
-https://light-of-sirius-site.pages.dev/
+https://sirius-portal-site.pages.dev/
 ```
 
 Cloudflare Pages 连接 GitHub 仓库 `silasalice583-hub/sirius-portal-site`，生产分支使用 `main`。提交并推送到 `main` 后，Cloudflare Pages 自动更新前端；Railway 使用同一仓库的 `backend` 目录部署 API。
@@ -43,7 +43,7 @@ Railway 设置：
 
 ```text
 Root Directory: backend
-CORS_ORIGIN=https://light-of-sirius-site.pages.dev
+CORS_ORIGIN=https://sirius-portal-site.pages.dev
 ```
 
 完整步骤见 `docs/CLOUDFLARE_RAILWAY_DEPLOY.md`。
