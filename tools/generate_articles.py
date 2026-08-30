@@ -6,19 +6,20 @@ import zipfile
 
 
 ROOT = Path(__file__).resolve().parents[1]
+ARTICLE_ROOT = ROOT / "content" / "articles"
 
 
 META = {
-    "1": {"category": "门户行动", "date": "2025-08-12", "cover": "logo抠图.png", "music": "1-8月，让它发生/12 21.mp3", "commentMode": "all"},
-    "2": {"category": "访谈", "date": "2025-07-30", "cover": "logo抠图.png", "commentMode": "featured"},
-    "3": {"category": "门户更新", "date": "2025-08-04", "cover": "logo抠图.png", "commentMode": "all"},
-    "4": {"category": "门户更新", "date": "2025-07-29", "cover": "logo抠图.png", "commentMode": "featured"},
-    "5": {"category": "故事", "date": "2025-08-08", "cover": "logo抠图.png", "commentMode": "all"},
-    "6": {"category": "门户行动", "date": "2025-08-14", "cover": "logo抠图.png", "commentMode": "all"},
-    "7": {"category": "冥想", "date": "2025-08-16", "cover": "7-聚精会神，塑造美好未来/1.png", "commentMode": "all"},
-    "8": {"category": "指南", "date": "2025-08-17", "cover": "8-助推说明/图/1.png", "commentMode": "featured"},
-    "9": {"category": "观察", "date": "2025-08-18", "cover": "9-由人们的生活想到的/1.png", "commentMode": "all"},
-    "10": {"category": "科普", "date": "2025-08-19", "cover": "10-相干信号——量变引发质变/1.png", "commentMode": "all"},
+    "1": {"category": "门户行动", "date": "2025-08-12", "cover": "assets/logo-vector-web.png", "music": "content/articles/1-8月，让它发生/12 21.mp3", "commentMode": "all"},
+    "2": {"category": "访谈", "date": "2025-07-30", "cover": "assets/logo-vector-web.png", "commentMode": "featured"},
+    "3": {"category": "门户更新", "date": "2025-08-04", "cover": "assets/logo-vector-web.png", "commentMode": "all"},
+    "4": {"category": "门户更新", "date": "2025-07-29", "cover": "assets/logo-vector-web.png", "commentMode": "featured"},
+    "5": {"category": "故事", "date": "2025-08-08", "cover": "assets/logo-vector-web.png", "commentMode": "all"},
+    "6": {"category": "门户行动", "date": "2025-08-14", "cover": "assets/logo-vector-web.png", "commentMode": "all"},
+    "7": {"category": "冥想", "date": "2025-08-16", "cover": "content/articles/7-聚精会神，塑造美好未来/1.png", "commentMode": "all"},
+    "8": {"category": "指南", "date": "2025-08-17", "cover": "content/articles/8-助推说明/图/1.png", "commentMode": "featured"},
+    "9": {"category": "观察", "date": "2025-08-18", "cover": "content/articles/9-由人们的生活想到的/1.png", "commentMode": "all"},
+    "10": {"category": "科普", "date": "2025-08-19", "cover": "content/articles/10-相干信号——量变引发质变/1.png", "commentMode": "all"},
 }
 
 
@@ -77,16 +78,22 @@ def make_article(folder: Path):
     meta = META.get(number, {})
     images = [str(p.relative_to(ROOT)).replace("\\", "/") for p in sorted(folder.rglob("*.png"))]
     title = article_title(folder)
+    cover = meta.get("cover", images[0] if images else "assets/logo-vector-web.png")
+    if not (cover.startswith(("http://", "https://", "data:")) or (ROOT / cover).exists()):
+        cover = images[0] if images else "assets/logo-vector-web.png"
+    music = meta.get("music", "")
+    if music and not (music.startswith(("http://", "https://", "data:")) or (ROOT / music).exists()):
+        music = ""
     return {
         "id": f"article-{number}",
         "title": title,
         "category": meta.get("category", "文章"),
         "date": meta.get("date", "2025-08-01"),
-        "cover": meta.get("cover", images[0] if images else "logo抠图.png"),
+        "cover": cover,
         "excerpt": excerpt[:160],
         "hot": 98 - folder_order(folder) * 4,
         "commentMode": meta.get("commentMode", "all"),
-        "music": meta.get("music", ""),
+        "music": music,
         "sourceDoc": str(source.relative_to(ROOT)).replace("\\", "/") if source else "",
         "sourcePdf": str(pdf.relative_to(ROOT)).replace("\\", "/") if pdf else "",
         "images": images,
@@ -95,7 +102,7 @@ def make_article(folder: Path):
 
 
 def main():
-    folders = sorted([p for p in ROOT.iterdir() if p.is_dir() and re.match(r"\d+-", p.name)], key=folder_order)
+    folders = sorted([p for p in ARTICLE_ROOT.iterdir() if p.is_dir() and re.match(r"\d+-", p.name)], key=folder_order)
     articles = [make_article(folder) for folder in folders]
     output = "window.SIRIUS_ARTICLES = " + json.dumps(articles, ensure_ascii=False, indent=2) + ";\n"
     (ROOT / "articles-data.js").write_text(output, encoding="utf-8")

@@ -3,3 +3,7 @@ node_modules/
 .env.local
 *.log
 ~$*
+content/待补充/
+content/articles/
+exports/*.zip
+tools/__pycache__/

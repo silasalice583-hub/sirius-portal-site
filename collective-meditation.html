@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>集体冥想 · 天狼星门户</title>
+    <link rel="stylesheet" href="styles.css?v=20260830-6" />
+  </head>
+  <body class="page-meditation page-collective-session">
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="天狼星门户首页">
+        <img data-site-logo src="assets/logo-vector-web.png" alt="天狼星门户 logo" decoding="async" />
+        <span data-site="brandName">天狼星门户</span>
+      </a>
+      <nav class="top-nav" aria-label="主导航">
+        <a href="index.html">首页</a>
+        <a href="articles.html">文章</a>
+        <a href="meditation.html" class="active">冥想</a>
+        <a href="about.html">关于</a>
+      </nav>
+    </header>
+
+    <main class="collective-session-main">
+      <div class="nebula-layer nebula-one"></div>
+      <div class="nebula-layer nebula-two"></div>
+      <div class="nebula-stars"></div>
+      <a class="collective-back" href="meditation.html">← 返回冥想空间</a>
+      <section class="collective-session-shell">
+        <div class="collective-session-head">
+          <div>
+            <p class="eyebrow">Beijing Time · Collective Field</p>
+            <h1 id="sessionTitle">集体冥想</h1>
+            <p id="sessionTime"></p>
+          </div>
+          <aside class="participant-count">
+            <span>此刻共同冥想</span>
+            <strong id="participantCount">1</strong>
+            <b>人</b>
+          </aside>
+        </div>
+        <div class="collective-session-figure" aria-hidden="true">
+          <img src="assets/meditation-woman-1.png" alt="" decoding="async" />
+        </div>
+        <div class="collective-session-player">
+          <div class="live-indicator"><span></span>与北京时间同步</div>
+          <p id="sessionStatus">正在读取当前时段...</p>
+          <audio id="sessionAudio" controls preload="none"></audio>
+          <div id="sessionVideo"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-disclaimer" aria-labelledby="motionEyebrow">
+      <div class="site-disclaimer-shell">
+        <div class="site-disclaimer-mark" aria-hidden="true">
+          <span class="site-disclaimer-halo"></span>
+          <img src="assets/logo-vector-web.png" alt="" decoding="async" />
+          <span>SIRIUS PORTAL</span>
+        </div>
+        <div class="site-disclaimer-copy">
+          <span class="site-disclaimer-kicker">Responsible reading · 理性阅读</span>
+          <p class="eyebrow" id="motionEyebrow">声明：</p>
+          <div id="motionTitle">本网站所涉内容大多来自网络共享的资源和观点，内容性质属虚构和半虚构，由个人整理，不构成任何宗教立场、政治主张或价值倡导 -- 请读者运用自己的判断力进行理性思考，不迷信、不盲从，不参与任何形式的个人崇拜或迷信行为。
+
+若网站内容与任何地区的法律政策有所冲突，本网站将依法进行调整和删除，并保留修改变更、终止分享的所有权利。
+
+本网站坚决拥护依法治网，反对任何形式的违法宣扬，所呈内容仅作思维拓展和幻想作品参考使用。</div>
+        </div>
+      </div>
+    </footer>
+
+    <audio id="backgroundAudio" preload="none"></audio>
+    <script src="articles-data.js?v=20260830-4"></script>
+    <script src="config.js"></script>
+    <script src="api-client.js?v=20260830-3"></script>
+    <script src="app.js?v=20260830-4"></script>
+    <script src="collective-meditation.js"></script>
+  </body>
+</html>

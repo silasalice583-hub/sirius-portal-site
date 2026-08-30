@@ -1,11 +1,32 @@
 (async function () {
   const baseArticles = window.SIRIUS_ARTICLES || [];
-  const defaultCover = "logo抠图.png";
-  const defaultMusic = "1-8月，让它发生/12 21.mp3";
+  const retiredArticleIds = new Set([
+    "article-1", "article-2", "article-3", "article-4", "article-5",
+    "article-6", "article-7", "article-8", "article-9", "article-10",
+  ]);
+  const retiredArticleSignatures = new Set([
+    "2025-08-19|相干信号——量变引发质变", "2025-08-18|由人们的生活想到的",
+    "2025-08-17|助推说明", "2025-08-16|聚精会神，塑造美好未来",
+    "2025-08-14|25.8.14 扬升门户开启第2部分", "2025-08-12|8月，让它发生",
+    "2025-08-08|故事：简报", "2025-08-04|25.8.4 最终更新&新访谈",
+    "2025-07-30|八月星象 访谈", "2025-07-29|25.7.29 门户更新&联合访谈",
+  ]);
+  const isRetiredArticle = (article) => retiredArticleIds.has(article.id)
+    || retiredArticleSignatures.has(`${article.date || ""}|${article.title || ""}`);
+  const defaultCategories = ["门户更新", "会议", "访谈", "重要冥想", "文章更新", "相关资料"];
+  const normalizeCategory = (category) => category === "冥想发布" ? "重要冥想" : category;
+  const normalizeCategories = (categories) => {
+    const normalized = [...new Set((categories || []).map(normalizeCategory).filter(Boolean))];
+    if (!normalized.includes("重要冥想")) normalized.push("重要冥想");
+    if (!normalized.includes("相关资料")) normalized.push("相关资料");
+    return normalized;
+  };
+  const defaultCover = "assets/logo-vector-web.png";
+  const defaultMusic = "";
   const defaultPage = {
     brandName: "天狼星门户",
     heroEyebrow: "Sirius Portal Journal",
-    heroTitle: "天狼星门户",
+    heroTitle: "天狼星之光",
     heroDescription: "以博客杂志的方式整理门户更新、访谈、指南与观察。清晰分类、沉浸阅读、音乐伴随，让每篇文章都更容易被看见和收藏。",
     popularEyebrow: "Popular",
     popularTitle: "热门文章",
@@ -14,6 +35,9 @@
     aboutEyebrow: "About",
     aboutTitle: "关于门户",
     aboutText: "这里收录 10 篇已排版文章，并支持通过独立后台继续发布和编辑。前台只保留阅读入口，避免读者误入编辑区。",
+    logoImage: "assets/logo-vector-web.png",
+    heroLogoImage: "assets/logo-original.png",
+    logoMotion: "strong",
     backgroundImage: "",
     heroBanner: "",
     heroVideo: "",
@@ -26,13 +50,29 @@
   const editor = document.getElementById("editor");
   const previewCover = document.getElementById("previewCover");
   const state = await window.SiriusAPI.loadState();
-  let savedArticlesState = state.articles || [];
+  const backendStatus = document.getElementById("publisherBackendStatus");
+  if (state.source === "api-error") {
+    backendStatus.textContent = "公网数据库连接失败：当前内容不会发布";
+    backendStatus.className = "backend-status error";
+    alert(`公网数据库连接失败，当前不会读取本浏览器缓存作为网站数据。\n\n具体错误：${state.apiError}\n\n请先修复 Cloudflare /api 代理或 Railway 后端。`);
+  } else if (state.source === "api") {
+    const capabilities = await window.SiriusAPI.loadCapabilities().catch(() => null);
+    backendStatus.textContent = capabilities
+      ? `已连接公网内容库 · 数据版本 ${state.revision || 1} · API v${capabilities.apiVersion || "未知"}${capabilities.chunkedUploads ? " · 支持大文章导入" : " · 不支持大文章导入"}${capabilities.mediaUploads ? " · 支持媒体上传" : " · 不支持媒体上传"}${capabilities.articleDeletion ? " · 支持删除文章" : " · 后端需升级以删除文章"}${capabilities.articleArchiving ? " · 支持文章归档" : ""}`
+      : `已连接公网内容库 · 数据版本 ${state.revision || 1} · 后端能力未识别`;
+    backendStatus.className = "backend-status online";
+  } else {
+    backendStatus.textContent = "本地预览模式 · 内容仅保存在当前浏览器";
+    backendStatus.className = "backend-status local";
+  }
+  let savedArticlesState = (state.articles || []).filter((article) => !isRetiredArticle(article));
   let settingsState = state.settings || {};
   let commentsState = state.comments || {};
   let coverData = defaultCover;
   let editingId = null;
   let editingComments = [];
   let copiedFormat = null;
+  let lastEditorRange = null;
 
   function getSavedArticles() {
     return savedArticlesState;
@@ -48,17 +88,28 @@
   }
 
   function allArticles() {
-    const saved = getSavedArticles();
+    const saved = getSavedArticles()
+      .filter((article) => !isRetiredArticle(article))
+      .map((article) => ({ ...article, category: normalizeCategory(article.category) }));
     const savedMap = new Map(saved.map((article) => [article.id, article]));
     return [
       ...saved.filter((article) => !baseArticles.some((base) => base.id === article.id)),
-      ...baseArticles.map((article) => savedMap.get(article.id) || article),
+      ...baseArticles.filter((article) => !isRetiredArticle(article)).map((article) => savedMap.get(article.id) || { ...article, category: normalizeCategory(article.category) }),
     ].filter((article) => !article.deleted);
+  }
+
+  function activeArticles() {
+    return allArticles().filter((article) => !article.archived);
+  }
+
+  function archivedArticles() {
+    return allArticles().filter((article) => article.archived);
   }
 
   function articleCategories() {
     const settings = getSettings();
-    return settings.categories || [...new Set(allArticles().map((article) => article.category))];
+    const configured = settings.categories || [];
+    return normalizeCategories(configured.length ? configured : defaultCategories);
   }
 
   function escapeHTML(value) {
@@ -71,11 +122,8 @@
     }[char]));
   }
 
-  function defaultComments(articleId) {
-    return [
-      { id: `${articleId}-星门读者`, name: "星门读者", body: "这篇整理得很清楚，适合回看重点。", featured: true, approved: true },
-      { id: `${articleId}-晨光`, name: "晨光", body: "已收藏，准备转给同修一起阅读。", featured: false, approved: true },
-    ];
+  function isGeneratedComment(comment, articleId) {
+    return comment?.id === `${articleId}-星门读者` || comment?.id === `${articleId}-晨光`;
   }
 
   function getAllComments() {
@@ -84,7 +132,7 @@
 
   function getArticleComments(articleId) {
     const all = getAllComments();
-    return all[articleId] || defaultComments(articleId);
+    return (all[articleId] || []).filter((comment) => !isGeneratedComment(comment, articleId));
   }
 
   function saveArticleComments(articleId, comments) {
@@ -137,6 +185,50 @@
   function command(name, value = null) {
     editor.focus();
     document.execCommand(name, false, value);
+    refreshPreview();
+  }
+
+  function rememberEditorSelection() {
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) return;
+    const range = selection.getRangeAt(0);
+    const container = range.commonAncestorContainer.nodeType === Node.TEXT_NODE
+      ? range.commonAncestorContainer.parentElement
+      : range.commonAncestorContainer;
+    if (container && editor.contains(container)) lastEditorRange = range.cloneRange();
+  }
+
+  function restoreEditorSelection() {
+    if (!lastEditorRange) return false;
+    const selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(lastEditorRange);
+    return true;
+  }
+
+  function applyFontSize(rawValue) {
+    if (rawValue === "") return;
+    const size = Math.min(100, Math.max(0, Math.round(Number(rawValue))));
+    if (!Number.isFinite(size)) return;
+    document.getElementById("fontSize").value = String(size);
+    editor.focus();
+    restoreEditorSelection();
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) return;
+    if (selection.isCollapsed) {
+      blockFor(selectedElement()).style.fontSize = `${size}px`;
+    } else {
+      const existingSizeSevenFonts = new Set(editor.querySelectorAll('font[size="7"]'));
+      document.execCommand("fontSize", false, "7");
+      editor.querySelectorAll('font[size="7"]').forEach((font) => {
+        const currentSelection = window.getSelection();
+        const isSelectedFont = currentSelection?.rangeCount && currentSelection.getRangeAt(0).intersectsNode(font);
+        if (existingSizeSevenFonts.has(font) && !isSelectedFont) return;
+        font.removeAttribute("size");
+        font.style.fontSize = `${size}px`;
+      });
+    }
+    rememberEditorSelection();
     refreshPreview();
   }
 
@@ -217,13 +309,48 @@
     setField(inputId, await readFileAsDataURL(file));
   }
 
+  async function uploadMediaField(inputId, file) {
+    if (!file) return;
+    backendStatus.textContent = `正在上传 ${file.name}...`;
+    backendStatus.className = "backend-status local";
+    try {
+      const url = await window.SiriusAPI.uploadMedia(file);
+      setField(inputId, url);
+      backendStatus.textContent = `媒体已上传 · ${file.name}`;
+      backendStatus.className = "backend-status online";
+      refreshPreview();
+    } catch (error) {
+      backendStatus.textContent = "媒体上传失败";
+      backendStatus.className = "backend-status error";
+      alert(`上传失败：${error.message}`);
+    }
+  }
+
+  async function uploadEditorMedia(file, type) {
+    if (!file) return;
+    backendStatus.textContent = `正在上传 ${file.name}...`;
+    backendStatus.className = "backend-status local";
+    try {
+      const url = await window.SiriusAPI.uploadMedia(file);
+      command("insertHTML", type === "audio" ? audioEmbed(url) : mediaEmbed(url));
+      backendStatus.textContent = `媒体已上传并插入 · ${file.name}`;
+      backendStatus.className = "backend-status online";
+      autoSaveArticle();
+    } catch (error) {
+      backendStatus.textContent = "媒体上传失败";
+      backendStatus.className = "backend-status error";
+      alert(`上传失败：${error.message}`);
+    }
+  }
+
   function makeArticle() {
     const original = allArticles().find((article) => article.id === editingId) || {};
     const title = document.getElementById("postTitle").value.trim() || "未命名文章";
-    const category = document.getElementById("postCategory").value.trim() || "未分类";
+    const category = normalizeCategory(document.getElementById("postCategory").value.trim() || "未分类");
     const coverUrl = document.getElementById("coverUrl").value.trim();
     const text = editor.textContent.replace(/\s+/g, " ").trim();
     const excerpt = document.getElementById("postExcerpt").value.trim() || text.slice(0, 160);
+    const archived = document.getElementById("visibilityStatus").value === "archived";
     return {
       id: editingId || `local-${Date.now()}`,
       title,
@@ -233,6 +360,8 @@
       excerpt,
       hot: Number(document.getElementById("hotScore").value || 0),
       commentMode: document.getElementById("commentMode").value,
+      contentType: document.getElementById("contentType").value || "article",
+      duration: document.getElementById("meditationDuration").value.trim(),
       music: document.getElementById("articleMusic").value.trim(),
       video: document.getElementById("articleVideo").value.trim(),
       sourceDoc: original.sourceDoc || "",
@@ -240,18 +369,32 @@
       images: original.images || [],
       paragraphs: [],
       html: editor.innerHTML,
+      archived,
+      archivedAt: archived ? (original.archivedAt || new Date().toISOString()) : "",
     };
   }
 
-  function saveArticle() {
+  async function saveArticle() {
     const next = makeArticle();
+    const previousArticles = savedArticlesState;
     savedArticlesState = [next, ...getSavedArticles().filter((article) => article.id !== next.id)];
-    window.SiriusAPI.saveArticle(next).catch((error) => console.warn("保存文章失败", error));
-    editingId = next.id;
-    renderManager();
-    renderCategoryOptions();
-    renderHotPicker();
-    alert("已保存。门户首页刷新后会显示最新内容。");
+    try {
+      await window.SiriusAPI.saveArticle(next);
+      editingId = next.id;
+      renderArticleManagers();
+      renderCategoryOptions();
+      renderHotPicker();
+      backendStatus.textContent = next.archived
+        ? `已保存至归档栏 · ${new Date().toLocaleTimeString()}`
+        : `已发布到公网内容库 · ${new Date().toLocaleTimeString()}`;
+      backendStatus.className = "backend-status online";
+      alert(next.archived ? "已保存。文章仍处于归档状态，不会在前台公开。" : "已保存。门户首页刷新后会显示最新内容。");
+    } catch (error) {
+      savedArticlesState = previousArticles;
+      renderArticleManagers();
+      console.warn("保存文章失败", error);
+      alert(`保存失败：没有连接到公网后端数据库。\n\n具体错误：${error.message}\n\n请检查 Cloudflare Pages 的 RAILWAY_API_BASE 环境变量、最新部署是否包含 Functions，以及 Railway 后端服务。`);
+    }
   }
 
   function autoSaveArticle() {
@@ -259,7 +402,7 @@
     savedArticlesState = [next, ...getSavedArticles().filter((article) => article.id !== next.id)];
     window.SiriusAPI.saveArticle(next).catch((error) => console.warn("自动保存文章失败", error));
     editingId = next.id;
-    renderManager();
+    renderArticleManagers();
     renderCategoryOptions();
     renderHotPicker();
   }
@@ -269,6 +412,9 @@
     coverData = article.cover || defaultCover;
     setField("postTitle", article.title);
     setField("postCategory", article.category);
+    setField("contentType", article.contentType || "article");
+    setField("visibilityStatus", article.archived ? "archived" : "public");
+    setField("meditationDuration", article.duration || "");
     setField("coverUrl", article.cover && article.cover.startsWith("data:") ? "" : article.cover);
     setField("articleMusic", article.music);
     setField("articleVideo", article.video);
@@ -289,6 +435,9 @@
     coverData = defaultCover;
     setField("postTitle", "");
     setField("postCategory", "");
+    setField("contentType", "article");
+    setField("visibilityStatus", "public");
+    setField("meditationDuration", "");
     setField("coverUrl", "");
     setField("articleMusic", "");
     setField("articleVideo", "");
@@ -341,38 +490,120 @@
     alert("评论已保存。");
   }
 
-  function deleteArticle(id) {
-    if (!confirm("确定要从本地门户中隐藏这篇文章吗？")) return;
-    const base = baseArticles.find((article) => article.id === id);
-    const existing = allArticles().find((article) => article.id === id);
-    const hidden = { ...(existing || base), id, deleted: true };
-    savedArticlesState = [hidden, ...getSavedArticles().filter((article) => article.id !== id)];
-    window.SiriusAPI.hideArticle(hidden).catch((error) => console.warn("隐藏文章失败", error));
+  async function deleteArticle(id) {
+    const article = allArticles().find((item) => item.id === id);
+    if (!article || !confirm(`确定永久删除《${article.title}》吗？文章评论也会一并删除。此操作无法撤销。`)) return;
+    const previousArticles = savedArticlesState;
+    const previousComments = commentsState;
+    const isBundledArticle = baseArticles.some((item) => item.id === id);
+    savedArticlesState = [
+      ...(isBundledArticle ? [{ id, deleted: true }] : []),
+      ...getSavedArticles().filter((item) => item.id !== id),
+    ];
+    commentsState = { ...commentsState };
+    delete commentsState[id];
     if (editingId === id) newArticle();
-    renderManager();
+    renderArticleManagers();
     renderHotPicker();
+    try {
+      await window.SiriusAPI.deleteArticle(id, isBundledArticle);
+      backendStatus.textContent = `已删除《${article.title}》 · ${new Date().toLocaleTimeString()}`;
+      backendStatus.className = "backend-status online";
+    } catch (error) {
+      savedArticlesState = previousArticles;
+      commentsState = previousComments;
+      renderArticleManagers();
+      renderHotPicker();
+      backendStatus.textContent = "删除失败";
+      backendStatus.className = "backend-status error";
+      alert(`删除失败：${error.message}`);
+    }
   }
 
   function renderManager() {
     document.getElementById("articleManager").innerHTML = `
       <table>
-        <thead><tr><th>标题</th><th>分类</th><th>简介</th><th>评论</th><th>操作</th></tr></thead>
+        <thead><tr><th>标题</th><th>类型</th><th>分类</th><th>简介</th><th>评论</th><th>操作</th></tr></thead>
         <tbody>
-          ${allArticles().map((article) => `
+          ${activeArticles().map((article) => `
             <tr>
               <td>${escapeHTML(article.title)}</td>
+              <td>${article.contentType === "meditation" ? "冥想" : "文章"}</td>
               <td>${escapeHTML(article.category)}</td>
               <td>${escapeHTML(article.excerpt || "").slice(0, 42)}</td>
               <td>${article.commentMode === "closed" ? "关闭" : article.commentMode === "featured" ? "精选" : "全部"}</td>
               <td>
-                <button type="button" data-edit="${article.id}">编辑</button>
-                <button type="button" data-delete="${article.id}">隐藏</button>
+                <button type="button" data-edit="${escapeHTML(article.id)}">编辑</button>
+                <button class="archive-action" type="button" data-archive="${escapeHTML(article.id)}">归档</button>
+                <button class="danger-action" type="button" data-delete="${escapeHTML(article.id)}">删除</button>
               </td>
             </tr>
-          `).join("")}
+          `).join("") || '<tr><td colspan="6" class="manager-empty">暂无公开文章。</td></tr>'}
         </tbody>
       </table>
     `;
+  }
+
+  function renderArchiveManager() {
+    const archived = archivedArticles();
+    document.getElementById("archiveCount").textContent = String(archived.length);
+    document.getElementById("archiveManager").innerHTML = `
+      <table>
+        <thead><tr><th>标题</th><th>类型</th><th>分类</th><th>发布时间</th><th>归档时间</th><th>操作</th></tr></thead>
+        <tbody>
+          ${archived.map((article) => `
+            <tr>
+              <td>${escapeHTML(article.title)}</td>
+              <td>${article.contentType === "meditation" ? "冥想" : "文章"}</td>
+              <td>${escapeHTML(article.category)}</td>
+              <td>${escapeHTML(article.date || "")}</td>
+              <td>${escapeHTML(article.archivedAt ? new Date(article.archivedAt).toLocaleString("zh-CN") : "已归档")}</td>
+              <td>
+                <button type="button" data-edit="${escapeHTML(article.id)}">编辑</button>
+                <button class="restore-action" type="button" data-restore="${escapeHTML(article.id)}">恢复公开</button>
+                <button class="danger-action" type="button" data-delete="${escapeHTML(article.id)}">删除</button>
+              </td>
+            </tr>
+          `).join("") || '<tr><td colspan="6" class="manager-empty">归档栏为空。</td></tr>'}
+        </tbody>
+      </table>
+    `;
+  }
+
+  function renderArticleManagers() {
+    renderManager();
+    renderArchiveManager();
+  }
+
+  async function setArchived(id, archived) {
+    const article = allArticles().find((item) => item.id === id);
+    if (!article) return;
+    const previousArticles = savedArticlesState;
+    const next = {
+      ...article,
+      archived,
+      archivedAt: archived ? new Date().toISOString() : "",
+    };
+    savedArticlesState = [next, ...getSavedArticles().filter((item) => item.id !== id)];
+    if (archived && editingId === id) newArticle();
+    renderArticleManagers();
+    renderCategoryOptions();
+    renderHotPicker();
+    try {
+      await window.SiriusAPI.saveArticle(next);
+      backendStatus.textContent = archived
+        ? `已归档《${article.title}》 · 前台已隐藏`
+        : `已恢复《${article.title}》 · 前台重新公开`;
+      backendStatus.className = "backend-status online";
+    } catch (error) {
+      savedArticlesState = previousArticles;
+      renderArticleManagers();
+      renderCategoryOptions();
+      renderHotPicker();
+      backendStatus.textContent = archived ? "归档失败" : "恢复失败";
+      backendStatus.className = "backend-status error";
+      alert(`${archived ? "归档" : "恢复"}失败：${error.message}`);
+    }
   }
 
   function renderCategoryOptions() {
@@ -384,6 +615,15 @@
   function loadPageEditor() {
     const settings = getSettings();
     const page = { ...defaultPage, ...(settings.page || {}) };
+    if (!page.heroTitle || page.heroTitle === "天狼星门户") page.heroTitle = defaultPage.heroTitle;
+    if (page.logoImage === "logo抠图.png" || page.logoImage === "assets/logo-cutout-web.png") page.logoImage = defaultPage.logoImage;
+    if (!page.heroLogoImage || ["logo抠图.png", "assets/logo-render-web.png", "assets/logo-cutout-web.png"].includes(page.heroLogoImage)) {
+      page.heroLogoImage = defaultPage.heroLogoImage;
+    }
+    document.documentElement.dataset.logoMotion = page.logoMotion || defaultPage.logoMotion;
+    document.querySelectorAll("[data-site-logo]").forEach((image) => {
+      image.src = page.logoImage || defaultPage.logoImage;
+    });
     const map = {
       pageBrandName: page.brandName,
       pageHeroEyebrow: page.heroEyebrow,
@@ -397,13 +637,16 @@
       pageAboutEyebrow: page.aboutEyebrow,
       pageAboutTitle: page.aboutTitle,
       pageAboutText: page.aboutText,
+      pageLogoImage: page.logoImage || defaultPage.logoImage,
+      pageHeroLogoImage: page.heroLogoImage || defaultPage.heroLogoImage,
+      pageLogoMotion: page.logoMotion || defaultPage.logoMotion,
       pageBackgroundImage: page.backgroundImage,
       pageHeroBanner: page.heroBanner,
       pageHeroVideo: page.heroVideo,
       pageFooterImage: page.footerImage,
       pageAboutVideo: page.aboutVideo,
       pageHotSpeed: page.hotSpeed || 4500,
-      pageCategories: (settings.categories || articleCategories()).join("\n"),
+      pageCategories: articleCategories().join("\n"),
     };
     Object.entries(map).forEach(([id, value]) => setField(id, value));
     renderHotPicker();
@@ -411,10 +654,10 @@
 
   function savePage() {
     const settings = getSettings();
-    const categories = document.getElementById("pageCategories").value
+    const categories = normalizeCategories(document.getElementById("pageCategories").value
       .split(/\r?\n/)
       .map((item) => item.trim())
-      .filter(Boolean);
+      .filter(Boolean));
     const hotArticleIds = Array.from(document.querySelectorAll("#hotPicker input:checked")).map((input) => input.value);
     const page = {
       brandName: document.getElementById("pageBrandName").value.trim() || defaultPage.brandName,
@@ -429,6 +672,9 @@
       aboutEyebrow: document.getElementById("pageAboutEyebrow").value.trim() || defaultPage.aboutEyebrow,
       aboutTitle: document.getElementById("pageAboutTitle").value.trim() || defaultPage.aboutTitle,
       aboutText: document.getElementById("pageAboutText").value.trim() || defaultPage.aboutText,
+      logoImage: document.getElementById("pageLogoImage").value.trim() || defaultPage.logoImage,
+      heroLogoImage: document.getElementById("pageHeroLogoImage").value.trim() || defaultPage.heroLogoImage,
+      logoMotion: document.getElementById("pageLogoMotion").value || defaultPage.logoMotion,
       backgroundImage: document.getElementById("pageBackgroundImage").value.trim(),
       heroBanner: document.getElementById("pageHeroBanner").value.trim(),
       heroVideo: document.getElementById("pageHeroVideo").value.trim(),
@@ -442,9 +688,11 @@
   }
 
   function renderHotPicker() {
+    const picker = document.getElementById("hotPicker");
+    if (!picker) return;
     const settings = getSettings();
     const selected = new Set(settings.hotArticleIds || []);
-    document.getElementById("hotPicker").innerHTML = allArticles().map((article) => `
+    picker.innerHTML = activeArticles().map((article) => `
       <label>
         <input type="checkbox" value="${article.id}" ${selected.has(article.id) ? "checked" : ""} />
         <span>${escapeHTML(article.title)}</span>
@@ -479,10 +727,11 @@
   function importJSON(file) {
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = () => {
+    reader.onload = async () => {
       try {
         const data = JSON.parse(reader.result);
-        const imported = Array.isArray(data) ? data : [data];
+        const imported = Array.isArray(data) ? data : Array.isArray(data.articles) ? data.articles : [data];
+        if (!imported.length) throw new Error("JSON 文件中没有可导入的文章。");
         const normalized = imported.map((article) => ({
           ...article,
           id: article.id || `import-${Date.now()}-${Math.random().toString(16).slice(2)}`,
@@ -494,19 +743,42 @@
           commentMode: article.commentMode || "all",
           html: article.html || (article.paragraphs || []).map((p) => `<p>${escapeHTML(p)}</p>`).join(""),
         }));
+        const saved = await window.SiriusAPI.saveArticles(normalized);
         const existing = getSavedArticles().filter((article) => !normalized.some((item) => item.id === article.id));
-        savedArticlesState = [...normalized, ...existing];
-        window.SiriusAPI.saveArticles(normalized).catch((error) => console.warn("导入文章保存失败", error));
-        renderManager();
+        savedArticlesState = [...(saved || normalized), ...existing];
+        renderArticleManagers();
         renderCategoryOptions();
         renderHotPicker();
-        if (normalized[0]) loadArticle(normalized[0]);
+        if ((saved || normalized)[0]) loadArticle((saved || normalized)[0]);
         alert(`已导入 ${normalized.length} 篇文章。`);
       } catch (error) {
-        alert("JSON 文件格式不正确，无法导入。");
+        console.warn("导入文章失败", error);
+        alert(`导入失败：${error.message || "JSON 文件格式不正确或文章过大，无法保存到后端。"}`);
       }
     };
     reader.readAsText(file, "utf-8");
+  }
+
+  async function syncLocalDrafts() {
+    if (!window.SiriusAPI.hasApi()) {
+      alert("当前没有连接公网后端，本地预览模式不需要同步。");
+      return;
+    }
+    if (!confirm("将当前浏览器里旧的本机草稿、设置和评论同步到公网数据库吗？")) return;
+    try {
+      const result = await window.SiriusAPI.migrateLocalToApi();
+      const nextState = await window.SiriusAPI.loadState();
+      savedArticlesState = nextState.articles || [];
+      settingsState = nextState.settings || {};
+      commentsState = nextState.comments || {};
+      renderArticleManagers();
+      renderCategoryOptions();
+      renderHotPicker();
+      alert(`同步完成：文章 ${result.articles} 篇，设置 ${result.settings} 组，评论 ${result.comments} 条。`);
+    } catch (error) {
+      console.warn("同步本机草稿失败", error);
+      alert(`同步失败：${error.message}\n\n请检查 Cloudflare Pages 的 RAILWAY_API_BASE 环境变量、最新部署是否包含 Functions，以及 Railway 后端服务。`);
+    }
   }
 
   function showPanel(panelId) {
@@ -532,8 +804,9 @@
   document.querySelectorAll("[data-command]").forEach((button) => {
     button.addEventListener("click", () => command(button.dataset.command));
   });
+  document.addEventListener("selectionchange", rememberEditorSelection);
   document.getElementById("fontName").addEventListener("change", (event) => command("fontName", event.target.value));
-  document.getElementById("fontSize").addEventListener("change", (event) => command("fontSize", event.target.value));
+  document.getElementById("fontSize").addEventListener("input", (event) => applyFontSize(event.target.value));
   document.getElementById("undoButton").addEventListener("click", () => command("undo"));
   document.getElementById("redoButton").addEventListener("click", () => command("redo"));
   document.getElementById("formatBrushButton").addEventListener("click", applyCopiedFormat);
@@ -552,38 +825,46 @@
     command("insertHTML", audioEmbed(url));
     autoSaveArticle();
   });
+  document.getElementById("uploadVideoButton").addEventListener("click", () => document.getElementById("bodyVideoInput").click());
+  document.getElementById("uploadAudioButton").addEventListener("click", () => document.getElementById("bodyAudioInput").click());
   document.getElementById("bodyImageInput").addEventListener("change", async (event) => {
     const file = event.target.files[0];
     if (!file) return;
     command("insertImage", await readFileAsDataURL(file));
     autoSaveArticle();
   });
+  document.getElementById("bodyAudioInput").addEventListener("change", (event) => uploadEditorMedia(event.target.files[0], "audio"));
+  document.getElementById("bodyVideoInput").addEventListener("change", (event) => uploadEditorMedia(event.target.files[0], "video"));
   document.getElementById("coverInput").addEventListener("change", (event) => setCover(event.target.files[0]));
+  document.getElementById("articleMusicFile").addEventListener("change", (event) => uploadMediaField("articleMusic", event.target.files[0]));
+  document.getElementById("articleVideoFile").addEventListener("change", (event) => uploadMediaField("articleVideo", event.target.files[0]));
   ["coverUrl", "postTitle", "postExcerpt"].forEach((id) => document.getElementById(id).addEventListener("input", refreshPreview));
-  document.getElementById("pageBackgroundImageFile").addEventListener("change", (event) => setMediaField("pageBackgroundImage", event.target.files[0]));
-  document.getElementById("pageHeroBannerFile").addEventListener("change", (event) => setMediaField("pageHeroBanner", event.target.files[0]));
-  document.getElementById("pageHeroVideoFile").addEventListener("change", (event) => setMediaField("pageHeroVideo", event.target.files[0]));
-  document.getElementById("pageFooterImageFile").addEventListener("change", (event) => setMediaField("pageFooterImage", event.target.files[0]));
-  document.getElementById("pageAboutVideoFile").addEventListener("change", (event) => setMediaField("pageAboutVideo", event.target.files[0]));
   editor.addEventListener("input", refreshPreview);
   document.getElementById("previewButton").addEventListener("click", refreshPreview);
   document.getElementById("publishButton").addEventListener("click", saveArticle);
   document.getElementById("exportButton").addEventListener("click", exportJSON);
   document.getElementById("importButton").addEventListener("click", () => document.getElementById("importJsonInput").click());
   document.getElementById("importJsonInput").addEventListener("change", (event) => importJSON(event.target.files[0]));
+  document.getElementById("syncLocalButton").addEventListener("click", syncLocalDrafts);
   document.getElementById("clearButton").addEventListener("click", newArticle);
   document.getElementById("newPostButton").addEventListener("click", newArticle);
-  document.getElementById("saveSettingsButton").addEventListener("click", saveSettings);
-  document.getElementById("savePageButton").addEventListener("click", savePage);
   document.getElementById("saveCommentsButton").addEventListener("click", saveCurrentComments);
-  document.getElementById("siteMusic").addEventListener("input", (event) => {
-    document.getElementById("siteMusicPreview").src = event.target.value || defaultMusic;
-  });
 
   document.getElementById("articleManager").addEventListener("click", (event) => {
     const editId = event.target.dataset.edit;
+    const archiveId = event.target.dataset.archive;
     const deleteId = event.target.dataset.delete;
     if (editId) loadArticle(allArticles().find((article) => article.id === editId));
+    if (archiveId) setArchived(archiveId, true);
+    if (deleteId) deleteArticle(deleteId);
+  });
+
+  document.getElementById("archiveManager").addEventListener("click", (event) => {
+    const editId = event.target.dataset.edit;
+    const restoreId = event.target.dataset.restore;
+    const deleteId = event.target.dataset.delete;
+    if (editId) loadArticle(allArticles().find((article) => article.id === editId));
+    if (restoreId) setArchived(restoreId, false);
     if (deleteId) deleteArticle(deleteId);
   });
 
@@ -609,9 +890,7 @@
     button.addEventListener("click", () => showRegion(button.dataset.region));
   });
 
-  renderManager();
+  renderArticleManagers();
   renderCategoryOptions();
-  loadPageEditor();
-  loadSettings();
   newArticle();
 })();
