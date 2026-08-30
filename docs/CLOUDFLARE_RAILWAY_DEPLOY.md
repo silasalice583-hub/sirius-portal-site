@@ -27,7 +27,7 @@ backend
 
 ```text
 DATABASE_URL=Railway PostgreSQL 自动提供的变量
-CORS_ORIGIN=https://你的-cloudflare-pages域名.pages.dev
+CORS_ORIGIN=https://light-of-sirius-site.pages.dev
 EDITOR_EMAIL=2663158081@qq.com
 SMTP_HOST=smtp.qq.com
 SMTP_PORT=465
@@ -47,7 +47,7 @@ EDITOR_PASSWORD=新的管理密码
 
 更推荐使用 `EDITOR_PASSWORD_HASH` 保存 SHA-256 摘要；设置 `EDITOR_PASSWORD` 时会覆盖代码中的默认密码摘要。
 
-如果还没有 Cloudflare 域名，临时可以设置：
+仅在首次排查跨域问题时，才可临时设置：
 
 ```text
 CORS_ORIGIN=*
@@ -89,13 +89,13 @@ Build output directory: /
 
 如果仓库根目录不是当前网站目录，就把 Root directory 设为当前网站目录。
 
-部署完成后访问：
+本项目部署完成后访问：
 
 ```text
-https://你的-pages域名/index.html
-https://你的-pages域名/publisher.html
-https://你的-pages域名/site-editor.html
-https://你的-pages域名/api/health
+https://light-of-sirius-site.pages.dev/
+https://light-of-sirius-site.pages.dev/publisher.html
+https://light-of-sirius-site.pages.dev/site-editor.html
+https://light-of-sirius-site.pages.dev/api/health
 ```
 
 ## 5. 数据流

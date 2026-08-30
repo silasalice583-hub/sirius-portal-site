@@ -725,6 +725,16 @@ button { cursor: pointer; }
   box-shadow: 0 16px 42px rgba(24, 39, 35, 0.08);
 }
 .reader-body p { margin: 0 0 1.1em; }
+.reader-body > p:not(.article-source-link),
+.reader-body .article-note p,
+.reader-body .article-dialogue p,
+.reader-body .article-scene,
+.reader-body .article-steps li {
+  text-align: justify;
+  text-align-last: auto;
+  text-justify: inter-ideograph;
+  line-break: strict;
+}
 .reader-body img { max-width: 100%; display: block; margin: 24px auto; }
 
 .reader-body > .article-opening {
@@ -1792,8 +1802,15 @@ button { cursor: pointer; }
 }
 
 .site-disclaimer #motionTitle {
-  max-width: 900px;
-  white-space: pre-line;
+  width: 100%;
+  max-width: none;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-break: normal;
+  line-break: strict;
+  text-align: justify;
+  text-align-last: left;
+  text-justify: inter-ideograph;
   color: rgba(255,255,255,.92);
   font-size: clamp(11px, 1.15vw, 14px);
   font-weight: 500;

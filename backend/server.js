@@ -79,8 +79,16 @@ function normalizeCategories(categories) {
 
 function normalizeSettings(settings = {}) {
   const next = { ...settings, categories: normalizeCategories(settings.categories || []) };
-  if (next.page?.heroTitle === "天狼星门户") {
-    next.page = { ...next.page, heroTitle: "天狼星之光" };
+  if (next.page) {
+    next.page = { ...next.page };
+    if (next.page.brandName === "天狼星门户") next.page.brandName = "天狼星之光";
+    if (next.page.heroEyebrow === "Sirius Portal Journal") next.page.heroEyebrow = "Light of Sirius Journal";
+    if (next.page.heroTitle === "天狼星门户") next.page.heroTitle = "天狼星之光";
+    if (next.page.aboutTitle === "关于门户") next.page.aboutTitle = "关于天狼星之光";
+    if (/本网站所涉内容大多来自网络共享的资源和观点/.test(next.page.motionTitle || "")
+      && /本网站坚决拥护依法治网/.test(next.page.motionTitle || "")) {
+      next.page.motionTitle = "本网站所涉内容大多来自网络共享的资源和观点，内容性质属虚构和半虚构，由个人整理，不构成任何宗教立场、政治主张或价值倡导 -- 请读者运用自己的判断力进行理性思考，不迷信、不盲从，不参与任何形式的个人崇拜或迷信行为。\n\n若网站内容与任何地区的法律政策有所冲突，本网站将依法进行调整和删除，并保留修改变更、终止分享的所有权利。\n\n本网站坚决拥护依法治网，反对任何形式的违法宣扬，所呈内容仅作思维拓展和幻想作品参考使用。";
+    }
   }
   return next;
 }
@@ -339,7 +347,7 @@ app.post("/api/editor-auth/password", async (req, res, next) => {
       await transporter.sendMail({
         from: process.env.SMTP_FROM || process.env.SMTP_USER,
         to: editorEmail,
-        subject: "天狼星门户编辑器登录验证码",
+        subject: "天狼星之光编辑器登录验证码",
         text: `你的六位登录验证码是：${code}\n\n验证码 10 分钟内有效。若非本人操作，请忽略此邮件。`,
         html: `<p>你的六位登录验证码是：</p><p style="font-size:30px;font-weight:800;letter-spacing:8px;color:#6d28d9">${code}</p><p>验证码 10 分钟内有效。若非本人操作，请忽略此邮件。</p>`,
       });
@@ -778,7 +786,7 @@ app.use((error, req, res, next) => {
 
 initDb().then(() => {
   app.listen(port, "0.0.0.0", () => {
-    console.log(`Sirius Portal API listening on ${port}`);
+    console.log(`Light of Sirius API listening on ${port}`);
   });
 }).catch((error) => {
   console.error("Database initialization failed", error);

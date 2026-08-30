@@ -28,8 +28,8 @@
   };
   const defaultMusic = "";
   const defaultPage = {
-    brandName: "天狼星门户",
-    heroEyebrow: "Sirius Portal Journal",
+    brandName: "天狼星之光",
+    heroEyebrow: "Light of Sirius Journal",
     heroTitle: "天狼星之光",
     heroDescription: "以博客杂志的方式整理门户更新、访谈、指南与观察。清晰分类、沉浸阅读、音乐伴随，让每篇文章都更容易被看见和收藏。",
     popularEyebrow: "Popular",
@@ -41,7 +41,7 @@
     motionEyebrow: "声明：",
     motionTitle: "本网站所涉内容大多来自网络共享的资源和观点，内容性质属虚构和半虚构，由个人整理，不构成任何宗教立场、政治主张或价值倡导 -- 请读者运用自己的判断力进行理性思考，不迷信、不盲从，不参与任何形式的个人崇拜或迷信行为。\n\n若网站内容与任何地区的法律政策有所冲突，本网站将依法进行调整和删除，并保留修改变更、终止分享的所有权利。\n\n本网站坚决拥护依法治网，反对任何形式的违法宣扬，所呈内容仅作思维拓展和幻想作品参考使用。",
     aboutEyebrow: "About",
-    aboutTitle: "关于门户",
+    aboutTitle: "关于天狼星之光",
     aboutText: "这里持续收录经过整理与排版的文章，并支持通过独立后台继续发布和编辑。前台只保留阅读入口，避免读者误入编辑区。",
     logoImage: "assets/logo-vector-web.png",
     heroLogoImage: "assets/logo-original.png",
@@ -56,6 +56,8 @@
     colors: { motionEyebrow: "#b794f4" },
   };
   const legacyMotionTitle = "阅读、音乐、评论与编辑，被整理为一个可发布的门户系统。";
+  const isSiteDeclaration = (value) => /本网站所涉内容大多来自网络共享的资源和观点/.test(value || "")
+    && /本网站坚决拥护依法治网/.test(value || "");
   const fontSizeSelectors = {
     brandName: '[data-site="brandName"]',
     heroEyebrow: "#heroEyebrow",
@@ -77,8 +79,11 @@
   const state = await window.SiriusAPI.loadState();
   const settings = state.settings || {};
   const page = { ...defaultPage, ...(settings.page || {}) };
+  if (!page.brandName || page.brandName === "天狼星门户") page.brandName = defaultPage.brandName;
+  if (!page.heroEyebrow || page.heroEyebrow === "Sirius Portal Journal") page.heroEyebrow = defaultPage.heroEyebrow;
   if (!page.heroTitle || page.heroTitle === "天狼星门户") page.heroTitle = defaultPage.heroTitle;
-  if (!page.motionTitle || page.motionTitle === legacyMotionTitle) page.motionTitle = defaultPage.motionTitle;
+  if (!page.aboutTitle || page.aboutTitle === "关于门户") page.aboutTitle = defaultPage.aboutTitle;
+  if (!page.motionTitle || page.motionTitle === legacyMotionTitle || isSiteDeclaration(page.motionTitle)) page.motionTitle = defaultPage.motionTitle;
   if (!page.motionEyebrow || page.motionEyebrow === "Portal Motion") page.motionEyebrow = defaultPage.motionEyebrow;
   if (page.logoImage === "logo抠图.png" || page.logoImage === "assets/logo-cutout-web.png") page.logoImage = defaultPage.logoImage;
   if (!page.heroLogoImage || ["logo抠图.png", "assets/logo-render-web.png", "assets/logo-cutout-web.png"].includes(page.heroLogoImage)) {

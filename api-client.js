@@ -39,8 +39,16 @@
       .map((article) => ({ ...article, category: normalizeCategory(article.category) }));
     const settings = { ...(state.settings || {}) };
     settings.categories = normalizeCategories(settings.categories || []);
-    if (settings.page?.heroTitle === "天狼星门户") {
-      settings.page = { ...settings.page, heroTitle: "天狼星之光" };
+    if (settings.page) {
+      settings.page = { ...settings.page };
+      if (settings.page.brandName === "天狼星门户") settings.page.brandName = "天狼星之光";
+      if (settings.page.heroEyebrow === "Sirius Portal Journal") settings.page.heroEyebrow = "Light of Sirius Journal";
+      if (settings.page.heroTitle === "天狼星门户") settings.page.heroTitle = "天狼星之光";
+      if (settings.page.aboutTitle === "关于门户") settings.page.aboutTitle = "关于天狼星之光";
+      if (/本网站所涉内容大多来自网络共享的资源和观点/.test(settings.page.motionTitle || "")
+        && /本网站坚决拥护依法治网/.test(settings.page.motionTitle || "")) {
+        settings.page.motionTitle = "本网站所涉内容大多来自网络共享的资源和观点，内容性质属虚构和半虚构，由个人整理，不构成任何宗教立场、政治主张或价值倡导 -- 请读者运用自己的判断力进行理性思考，不迷信、不盲从，不参与任何形式的个人崇拜或迷信行为。\n\n若网站内容与任何地区的法律政策有所冲突，本网站将依法进行调整和删除，并保留修改变更、终止分享的所有权利。\n\n本网站坚决拥护依法治网，反对任何形式的违法宣扬，所呈内容仅作思维拓展和幻想作品参考使用。";
+      }
     }
     return { ...state, articles, settings };
   }

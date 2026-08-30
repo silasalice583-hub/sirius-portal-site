@@ -1,4 +1,4 @@
-# 天狼星门户上线部署说明
+# 天狼星之光上线部署说明
 
 ## 本机预览
 
@@ -20,19 +20,33 @@ http://localhost:8088/index.html
 http://localhost:8088/publisher.html
 ```
 
-## 推荐方式：Render
+## 正式部署：Cloudflare Pages + Railway
 
-1. 把整个 `网站` 文件夹上传到 GitHub 仓库。
-2. 打开 Render，新建 `Web Service`。
-3. 选择刚才的仓库。
-4. Render 会读取 `render.yaml`。
-5. 部署完成后，Render 会给你一个公网网址。
+正式网站地址：
 
-启动命令：
-
-```bash
-npm start
+```text
+https://light-of-sirius-site.pages.dev/
 ```
+
+Cloudflare Pages 连接 GitHub 仓库 `silasalice583-hub/sirius-portal-site`，生产分支使用 `main`。提交并推送到 `main` 后，Cloudflare Pages 自动更新前端；Railway 使用同一仓库的 `backend` 目录部署 API。
+
+Cloudflare Pages 设置：
+
+```text
+Framework preset: None
+Build command: 留空
+Build output directory: /
+RAILWAY_API_BASE=https://你的-Railway-后端域名
+```
+
+Railway 设置：
+
+```text
+Root Directory: backend
+CORS_ORIGIN=https://light-of-sirius-site.pages.dev
+```
+
+完整步骤见 `docs/CLOUDFLARE_RAILWAY_DEPLOY.md`。
 
 ## Docker / 云服务器
 

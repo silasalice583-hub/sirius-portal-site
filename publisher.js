@@ -24,8 +24,8 @@
   const defaultCover = "assets/logo-vector-web.png";
   const defaultMusic = "";
   const defaultPage = {
-    brandName: "天狼星门户",
-    heroEyebrow: "Sirius Portal Journal",
+    brandName: "天狼星之光",
+    heroEyebrow: "Light of Sirius Journal",
     heroTitle: "天狼星之光",
     heroDescription: "以博客杂志的方式整理门户更新、访谈、指南与观察。清晰分类、沉浸阅读、音乐伴随，让每篇文章都更容易被看见和收藏。",
     popularEyebrow: "Popular",
@@ -33,7 +33,7 @@
     latestEyebrow: "Latest Articles",
     allArticlesTitle: "全部文章",
     aboutEyebrow: "About",
-    aboutTitle: "关于门户",
+    aboutTitle: "关于天狼星之光",
     aboutText: "这里收录 10 篇已排版文章，并支持通过独立后台继续发布和编辑。前台只保留阅读入口，避免读者误入编辑区。",
     logoImage: "assets/logo-vector-web.png",
     heroLogoImage: "assets/logo-original.png",
@@ -615,7 +615,10 @@
   function loadPageEditor() {
     const settings = getSettings();
     const page = { ...defaultPage, ...(settings.page || {}) };
+    if (!page.brandName || page.brandName === "天狼星门户") page.brandName = defaultPage.brandName;
+    if (!page.heroEyebrow || page.heroEyebrow === "Sirius Portal Journal") page.heroEyebrow = defaultPage.heroEyebrow;
     if (!page.heroTitle || page.heroTitle === "天狼星门户") page.heroTitle = defaultPage.heroTitle;
+    if (!page.aboutTitle || page.aboutTitle === "关于门户") page.aboutTitle = defaultPage.aboutTitle;
     if (page.logoImage === "logo抠图.png" || page.logoImage === "assets/logo-cutout-web.png") page.logoImage = defaultPage.logoImage;
     if (!page.heroLogoImage || ["logo抠图.png", "assets/logo-render-web.png", "assets/logo-cutout-web.png"].includes(page.heroLogoImage)) {
       page.heroLogoImage = defaultPage.heroLogoImage;

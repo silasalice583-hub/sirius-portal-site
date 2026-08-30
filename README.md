@@ -1,6 +1,8 @@
-# 天狼星门户网站
+# 天狼星之光网站
 
 这是一个静态前端与独立内容 API 组合的网站项目。前端可直接本地预览；线上内容通过 Cloudflare Pages Functions 转发到 Railway + PostgreSQL。
+
+正式网站：[https://light-of-sirius-site.pages.dev/](https://light-of-sirius-site.pages.dev/)
 
 ## 目录结构
 

@@ -229,11 +229,11 @@ def write_cover(spec: ArticleSpec, index: int) -> str:
   <circle cx="1280" cy="460" r="176" fill="none" stroke="white" stroke-width="2" opacity=".42"/>
   <path d="M1280 186 1517 596 1043 596Z" fill="none" stroke="{palette[2]}" stroke-width="5" opacity=".72"/>
   <path d="M1043 324 1517 324 1280 734Z" fill="none" stroke="white" stroke-width="3" opacity=".34"/>
-  <text x="128" y="148" fill="{palette[2]}" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="28" font-weight="700" letter-spacing="8">SIRIUS PORTAL · 门户更新</text>
+  <text x="128" y="148" fill="{palette[2]}" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="28" font-weight="700" letter-spacing="8">LIGHT OF SIRIUS · 门户更新</text>
   <text x="128" y="360" fill="white" font-family="STKaiti, KaiTi, Microsoft YaHei, serif" font-size="76" font-weight="700">{title_svg}</text>
   <line x1="128" y1="670" x2="720" y2="670" stroke="{palette[2]}" stroke-width="4"/>
   <text x="128" y="750" fill="white" opacity=".9" font-family="Microsoft YaHei, sans-serif" font-size="34">{spec.date}</text>
-  <text x="128" y="816" fill="{palette[2]}" font-family="Microsoft YaHei, sans-serif" font-size="24" letter-spacing="5">天狼星门户 JOURNAL</text>
+  <text x="128" y="816" fill="{palette[2]}" font-family="Microsoft YaHei, sans-serif" font-size="24" letter-spacing="5">天狼星之光 JOURNAL</text>
 </svg>'''
     destination.write_text(svg, encoding="utf-8")
     return relative(destination)

@@ -223,7 +223,7 @@ server.listen(port, host, () => {
   const displayHost = host === "0.0.0.0" ? "localhost" : host;
   const base = `http://${displayHost}:${port}`;
   console.log("");
-  console.log("天狼星门户服务器已启动");
+  console.log("天狼星之光服务器已启动");
   console.log(`前台网站: ${base}/index.html`);
   console.log(`后台编辑器: ${base}/publisher.html`);
   console.log("按 Ctrl+C 停止服务器");
