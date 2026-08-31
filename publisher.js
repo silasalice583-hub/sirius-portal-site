@@ -24,17 +24,18 @@
   const defaultCover = "assets/logo-vector-web.png";
   const defaultMusic = "";
   const defaultPage = {
-    brandName: "天狼星之光",
-    heroEyebrow: "Light of Sirius Journal",
-    heroTitle: "天狼星之光",
-    heroDescription: "以博客杂志的方式整理门户更新、访谈、指南与观察。清晰分类、沉浸阅读、音乐伴随，让每篇文章都更容易被看见和收藏。",
+    brandName: "天狼星门户",
+    heroEyebrow: "Sirius Portal",
+    heroTitle: "天狼星门户",
+    heroDescription: "我们来自不同领域，因为对灵性成长、公共福祉与人类未来的关注而聚在一起，志愿协作，致力于本平台的资讯整理与共享。我们筛选、整理并传播具备启发性的文章与实践资料，倡导每一位读者保有独立判断，将所思所悟转化成清醒且心怀善意的行动。",
     popularEyebrow: "Popular",
     popularTitle: "热门文章",
     latestEyebrow: "Latest Articles",
     allArticlesTitle: "全部文章",
+    categoryTranslations: "全部文章 All Articles\n门户更新 Portal Updates\n会议 Conferences\n访谈 Interviews\n重要冥想 Key Meditations\n文章更新 Article Updates\n相关资料 Resources",
     aboutEyebrow: "About",
-    aboutTitle: "关于天狼星之光",
-    aboutText: "这里收录 10 篇已排版文章，并支持通过独立后台继续发布和编辑。前台只保留阅读入口，避免读者误入编辑区。",
+    aboutTitle: "关于我们",
+    aboutText: "天狼星门户由一群关注意识成长、公共福祉与人类未来的志愿者共同维护。我们相信，明晰的信息、独立的思考与善意的行动能够彼此照亮；我们尊重差异、恪守理性，希望连结到更多乐于学习、喜欢分享，并愿意为正向转变付诸行动的同路人。",
     logoImage: "assets/logo-vector-web.png",
     heroLogoImage: "assets/logo-original.png",
     logoMotion: "strong",
@@ -615,10 +616,10 @@
   function loadPageEditor() {
     const settings = getSettings();
     const page = { ...defaultPage, ...(settings.page || {}) };
-    if (!page.brandName || page.brandName === "天狼星门户") page.brandName = defaultPage.brandName;
-    if (!page.heroEyebrow || page.heroEyebrow === "Sirius Portal Journal") page.heroEyebrow = defaultPage.heroEyebrow;
-    if (!page.heroTitle || page.heroTitle === "天狼星门户") page.heroTitle = defaultPage.heroTitle;
-    if (!page.aboutTitle || page.aboutTitle === "关于门户") page.aboutTitle = defaultPage.aboutTitle;
+    if (!page.brandName || page.brandName === "天狼星之光") page.brandName = defaultPage.brandName;
+    if (!page.heroEyebrow || ["Sirius Portal Journal", "Light of Sirius Journal", "Light of Sirius"].includes(page.heroEyebrow)) page.heroEyebrow = defaultPage.heroEyebrow;
+    if (!page.heroTitle || page.heroTitle === "天狼星之光") page.heroTitle = defaultPage.heroTitle;
+    if (!page.aboutTitle || ["关于门户", "关于天狼星之光"].includes(page.aboutTitle)) page.aboutTitle = defaultPage.aboutTitle;
     if (page.logoImage === "logo抠图.png" || page.logoImage === "assets/logo-cutout-web.png") page.logoImage = defaultPage.logoImage;
     if (!page.heroLogoImage || ["logo抠图.png", "assets/logo-render-web.png", "assets/logo-cutout-web.png"].includes(page.heroLogoImage)) {
       page.heroLogoImage = defaultPage.heroLogoImage;

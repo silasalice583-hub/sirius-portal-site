@@ -15,6 +15,17 @@
     "2025-07-30|八月星象 访谈", "2025-07-29|25.7.29 门户更新&联合访谈",
   ]);
   const defaultCategories = ["门户更新", "会议", "访谈", "重要冥想", "文章更新", "相关资料"];
+  const publicHeroDescription = "我们来自不同领域，因为对灵性成长、公共福祉与人类未来的关注而聚在一起，志愿协作，致力于本平台的资讯整理与共享。我们筛选、整理并传播具备启发性的文章与实践资料，倡导每一位读者保有独立判断，将所思所悟转化成清醒且心怀善意的行动。";
+  const publicAboutText = "天狼星门户由一群关注意识成长、公共福祉与人类未来的志愿者共同维护。我们相信，明晰的信息、独立的思考与善意的行动能够彼此照亮；我们尊重差异、恪守理性，希望连结到更多乐于学习、喜欢分享，并愿意为正向转变付诸行动的同路人。";
+  const legacyHeroDescriptions = new Set([
+    "以博客杂志的方式整理门户更新、访谈、指南与观察。清晰分类、沉浸阅读、音乐伴随，让每篇文章都更容易被看见和收藏。",
+    "我们是一群关注意识成长、公共福祉与人类共同未来的同行者。天狼星之光持续整理值得被看见的讯息、访谈与实践指引，愿以真诚、理性和行动连接更多心怀善意的人，一起为更清明、更和平、更有爱的未来贡献力量。",
+  ]);
+  const legacyAboutTexts = new Set([
+    "这里持续收录经过整理与排版的文章，并支持通过独立后台继续发布和编辑。前台只保留阅读入口，避免读者误入编辑区。",
+    "这里收录 10 篇已排版文章，并支持通过独立后台继续发布和编辑。前台只保留阅读入口，避免读者误入编辑区。",
+    "天狼星之光由一群关注意识成长、公共福祉与人类共同未来的伙伴共同维护。我们相信，清晰的信息、独立的思考与善意的行动能够彼此照亮；愿在尊重差异、保持理性的前提下，连接更多愿意学习、分享并为美好未来付诸行动的人。",
+  ]);
 
   function normalizeCategory(category) {
     return category === "冥想发布" ? "重要冥想" : category;
@@ -41,10 +52,12 @@
     settings.categories = normalizeCategories(settings.categories || []);
     if (settings.page) {
       settings.page = { ...settings.page };
-      if (settings.page.brandName === "天狼星门户") settings.page.brandName = "天狼星之光";
-      if (settings.page.heroEyebrow === "Sirius Portal Journal") settings.page.heroEyebrow = "Light of Sirius Journal";
-      if (settings.page.heroTitle === "天狼星门户") settings.page.heroTitle = "天狼星之光";
-      if (settings.page.aboutTitle === "关于门户") settings.page.aboutTitle = "关于天狼星之光";
+      if (settings.page.brandName === "天狼星之光") settings.page.brandName = "天狼星门户";
+      if (["Sirius Portal Journal", "Light of Sirius Journal", "Light of Sirius"].includes(settings.page.heroEyebrow)) settings.page.heroEyebrow = "Sirius Portal";
+      if (settings.page.heroTitle === "天狼星之光") settings.page.heroTitle = "天狼星门户";
+      if (legacyHeroDescriptions.has(settings.page.heroDescription)) settings.page.heroDescription = publicHeroDescription;
+      if (["关于门户", "关于天狼星之光"].includes(settings.page.aboutTitle)) settings.page.aboutTitle = "关于我们";
+      if (legacyAboutTexts.has(settings.page.aboutText)) settings.page.aboutText = publicAboutText;
       if (/本网站所涉内容大多来自网络共享的资源和观点/.test(settings.page.motionTitle || "")
         && /本网站坚决拥护依法治网/.test(settings.page.motionTitle || "")) {
         settings.page.motionTitle = "本网站所涉内容大多来自网络共享的资源和观点，内容性质属虚构和半虚构，由个人整理，不构成任何宗教立场、政治主张或价值倡导 -- 请读者运用自己的判断力进行理性思考，不迷信、不盲从，不参与任何形式的个人崇拜或迷信行为。\n\n若网站内容与任何地区的法律政策有所冲突，本网站将依法进行调整和删除，并保留修改变更、终止分享的所有权利。\n\n本网站坚决拥护依法治网，反对任何形式的违法宣扬，所呈内容仅作思维拓展和幻想作品参考使用。";

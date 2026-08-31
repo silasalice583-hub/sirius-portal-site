@@ -139,12 +139,12 @@
     if (active) {
       $("#sessionTitle").textContent = active.title || "集体冥想";
       $("#sessionTime").textContent = `${active.start} - ${active.end} · 北京时间`;
-      $("#sessionStatus").textContent = active.music ? "当前冥想正在进行" : "当前时段已开始，但还没有设置冥想音乐";
+      $("#sessionStatus").textContent = active.music ? "当前冥想正在进行" : "本场冥想正在进行，音频暂未开放";
       syncMedia(active);
     } else {
-      $("#sessionTitle").textContent = "当前没有进行中的集体冥想";
-      $("#sessionTime").textContent = "请返回冥想空间查看下一场排期";
-      $("#sessionStatus").textContent = "等待下一场集体冥想";
+      $("#sessionTitle").textContent = "此刻暂无进行中的集体冥想";
+      $("#sessionTime").textContent = "下一场时间将在确认后公布，欢迎稍后再来";
+      $("#sessionStatus").textContent = "下一场集体冥想敬请期待";
       $("#sessionAudio").pause();
       $("#sessionAudio").removeAttribute("src");
       $("#sessionAudio").hidden = true;

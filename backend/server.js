@@ -81,10 +81,23 @@ function normalizeSettings(settings = {}) {
   const next = { ...settings, categories: normalizeCategories(settings.categories || []) };
   if (next.page) {
     next.page = { ...next.page };
-    if (next.page.brandName === "天狼星门户") next.page.brandName = "天狼星之光";
-    if (next.page.heroEyebrow === "Sirius Portal Journal") next.page.heroEyebrow = "Light of Sirius Journal";
-    if (next.page.heroTitle === "天狼星门户") next.page.heroTitle = "天狼星之光";
-    if (next.page.aboutTitle === "关于门户") next.page.aboutTitle = "关于天狼星之光";
+    if (next.page.brandName === "天狼星之光") next.page.brandName = "天狼星门户";
+    if (["Sirius Portal Journal", "Light of Sirius Journal", "Light of Sirius"].includes(next.page.heroEyebrow)) next.page.heroEyebrow = "Sirius Portal";
+    if (next.page.heroTitle === "天狼星之光") next.page.heroTitle = "天狼星门户";
+    if ([
+      "以博客杂志的方式整理门户更新、访谈、指南与观察。清晰分类、沉浸阅读、音乐伴随，让每篇文章都更容易被看见和收藏。",
+      "我们是一群关注意识成长、公共福祉与人类共同未来的同行者。天狼星之光持续整理值得被看见的讯息、访谈与实践指引，愿以真诚、理性和行动连接更多心怀善意的人，一起为更清明、更和平、更有爱的未来贡献力量。",
+    ].includes(next.page.heroDescription)) {
+      next.page.heroDescription = "我们来自不同领域，因为对灵性成长、公共福祉与人类未来的关注而聚在一起，志愿协作，致力于本平台的资讯整理与共享。我们筛选、整理并传播具备启发性的文章与实践资料，倡导每一位读者保有独立判断，将所思所悟转化成清醒且心怀善意的行动。";
+    }
+    if (["关于门户", "关于天狼星之光"].includes(next.page.aboutTitle)) next.page.aboutTitle = "关于我们";
+    if ([
+      "这里持续收录经过整理与排版的文章，并支持通过独立后台继续发布和编辑。前台只保留阅读入口，避免读者误入编辑区。",
+      "这里收录 10 篇已排版文章，并支持通过独立后台继续发布和编辑。前台只保留阅读入口，避免读者误入编辑区。",
+      "天狼星之光由一群关注意识成长、公共福祉与人类共同未来的伙伴共同维护。我们相信，清晰的信息、独立的思考与善意的行动能够彼此照亮；愿在尊重差异、保持理性的前提下，连接更多愿意学习、分享并为美好未来付诸行动的人。",
+    ].includes(next.page.aboutText)) {
+      next.page.aboutText = "天狼星门户由一群关注意识成长、公共福祉与人类未来的志愿者共同维护。我们相信，明晰的信息、独立的思考与善意的行动能够彼此照亮；我们尊重差异、恪守理性，希望连结到更多乐于学习、喜欢分享，并愿意为正向转变付诸行动的同路人。";
+    }
     if (/本网站所涉内容大多来自网络共享的资源和观点/.test(next.page.motionTitle || "")
       && /本网站坚决拥护依法治网/.test(next.page.motionTitle || "")) {
       next.page.motionTitle = "本网站所涉内容大多来自网络共享的资源和观点，内容性质属虚构和半虚构，由个人整理，不构成任何宗教立场、政治主张或价值倡导 -- 请读者运用自己的判断力进行理性思考，不迷信、不盲从，不参与任何形式的个人崇拜或迷信行为。\n\n若网站内容与任何地区的法律政策有所冲突，本网站将依法进行调整和删除，并保留修改变更、终止分享的所有权利。\n\n本网站坚决拥护依法治网，反对任何形式的违法宣扬，所呈内容仅作思维拓展和幻想作品参考使用。";
@@ -347,7 +360,7 @@ app.post("/api/editor-auth/password", async (req, res, next) => {
       await transporter.sendMail({
         from: process.env.SMTP_FROM || process.env.SMTP_USER,
         to: editorEmail,
-        subject: "天狼星之光编辑器登录验证码",
+        subject: "天狼星门户编辑器登录验证码",
         text: `你的六位登录验证码是：${code}\n\n验证码 10 分钟内有效。若非本人操作，请忽略此邮件。`,
         html: `<p>你的六位登录验证码是：</p><p style="font-size:30px;font-weight:800;letter-spacing:8px;color:#6d28d9">${code}</p><p>验证码 10 分钟内有效。若非本人操作，请忽略此邮件。</p>`,
       });
@@ -786,7 +799,7 @@ app.use((error, req, res, next) => {
 
 initDb().then(() => {
   app.listen(port, "0.0.0.0", () => {
-    console.log(`Light of Sirius API listening on ${port}`);
+    console.log(`Sirius Portal API listening on ${port}`);
   });
 }).catch((error) => {
   console.error("Database initialization failed", error);

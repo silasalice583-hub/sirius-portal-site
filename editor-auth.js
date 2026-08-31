@@ -12,8 +12,8 @@
   gate.innerHTML = `
     <section class="editor-auth-card">
       <a class="editor-auth-brand" href="index.html">
-        <img src="assets/logo-vector-web.png" alt="天狼星之光 logo" />
-        <span>天狼星之光</span>
+        <img src="assets/logo-vector-web.png" alt="天狼星门户 logo" />
+        <span>天狼星门户</span>
       </a>
       <p class="eyebrow">Private Editor</p>
       <h1 id="editorAuthTitle"></h1>

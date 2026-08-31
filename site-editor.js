@@ -23,21 +23,22 @@
   };
   const defaultMusic = "";
   const defaultPage = {
-    brandName: "天狼星之光",
-    heroEyebrow: "Light of Sirius Journal",
-    heroTitle: "天狼星之光",
-    heroDescription: "以博客杂志的方式整理门户更新、访谈、指南与观察。清晰分类、沉浸阅读、音乐伴随，让每篇文章都更容易被看见和收藏。",
+    brandName: "天狼星门户",
+    heroEyebrow: "Sirius Portal",
+    heroTitle: "天狼星门户",
+    heroDescription: "我们来自不同领域，因为对灵性成长、公共福祉与人类未来的关注而聚在一起，志愿协作，致力于本平台的资讯整理与共享。我们筛选、整理并传播具备启发性的文章与实践资料，倡导每一位读者保有独立判断，将所思所悟转化成清醒且心怀善意的行动。",
     popularEyebrow: "Popular",
     popularTitle: "热门文章",
     latestEyebrow: "Latest Articles",
     allArticlesTitle: "全部文章",
+    categoryTranslations: "全部文章 All Articles\n门户更新 Portal Updates\n会议 Conferences\n访谈 Interviews\n重要冥想 Key Meditations\n文章更新 Article Updates\n相关资料 Resources",
     homeLatestEyebrow: "Signal",
     homeLatestTitle: "最新文章",
     motionEyebrow: "声明：",
     motionTitle: "本网站所涉内容大多来自网络共享的资源和观点，内容性质属虚构和半虚构，由个人整理，不构成任何宗教立场、政治主张或价值倡导 -- 请读者运用自己的判断力进行理性思考，不迷信、不盲从，不参与任何形式的个人崇拜或迷信行为。\n\n若网站内容与任何地区的法律政策有所冲突，本网站将依法进行调整和删除，并保留修改变更、终止分享的所有权利。\n\n本网站坚决拥护依法治网，反对任何形式的违法宣扬，所呈内容仅作思维拓展和幻想作品参考使用。",
     aboutEyebrow: "About",
-    aboutTitle: "关于天狼星之光",
-    aboutText: "这里持续收录经过整理与排版的文章，并支持通过独立后台继续发布和编辑。前台只保留阅读入口，避免读者误入编辑区。",
+    aboutTitle: "关于我们",
+    aboutText: "天狼星门户由一群关注意识成长、公共福祉与人类未来的志愿者共同维护。我们相信，明晰的信息、独立的思考与善意的行动能够彼此照亮；我们尊重差异、恪守理性，希望连结到更多乐于学习、喜欢分享，并愿意为正向转变付诸行动的同路人。",
     logoImage: "assets/logo-vector-web.png",
     heroLogoImage: "assets/logo-original.png",
     logoMotion: "strong",
@@ -216,10 +217,10 @@
 
   function pageSettings() {
     const page = { ...defaultPage, ...(settingsState.page || {}) };
-    if (!page.brandName || page.brandName === "天狼星门户") page.brandName = defaultPage.brandName;
-    if (!page.heroEyebrow || page.heroEyebrow === "Sirius Portal Journal") page.heroEyebrow = defaultPage.heroEyebrow;
-    if (!page.heroTitle || page.heroTitle === "天狼星门户") page.heroTitle = defaultPage.heroTitle;
-    if (!page.aboutTitle || page.aboutTitle === "关于门户") page.aboutTitle = defaultPage.aboutTitle;
+    if (!page.brandName || page.brandName === "天狼星之光") page.brandName = defaultPage.brandName;
+    if (!page.heroEyebrow || ["Sirius Portal Journal", "Light of Sirius Journal", "Light of Sirius"].includes(page.heroEyebrow)) page.heroEyebrow = defaultPage.heroEyebrow;
+    if (!page.heroTitle || page.heroTitle === "天狼星之光") page.heroTitle = defaultPage.heroTitle;
+    if (!page.aboutTitle || ["关于门户", "关于天狼星之光"].includes(page.aboutTitle)) page.aboutTitle = defaultPage.aboutTitle;
     if (!page.motionTitle || page.motionTitle === legacyMotionTitle || isSiteDeclaration(page.motionTitle)) page.motionTitle = defaultPage.motionTitle;
     if (!page.motionEyebrow || page.motionEyebrow === "Portal Motion") page.motionEyebrow = defaultPage.motionEyebrow;
     if (page.logoImage === "logo抠图.png" || page.logoImage === "assets/logo-cutout-web.png") page.logoImage = defaultPage.logoImage;
@@ -261,6 +262,7 @@
       pageFontFamily: page.fontFamily || defaultPage.fontFamily,
       pageHotSpeed: page.hotSpeed || 4500,
       pageCategories: articleCategories().join("\n"),
+      pageCategoryTranslations: page.categoryTranslations || defaultPage.categoryTranslations,
     };
     Object.entries(map).forEach(([id, value]) => setField(id, value));
     siteMusicPlaylistState = (settingsState.siteMusicPlaylist || [])
@@ -420,6 +422,7 @@
       articleBannerImage: $("#pageArticleBannerImage").value.trim() || defaultPage.articleBannerImage,
       latestEyebrow: $("#pageLatestEyebrow").value.trim() || defaultPage.latestEyebrow,
       allArticlesTitle: $("#pageAllArticlesTitle").value.trim() || defaultPage.allArticlesTitle,
+      categoryTranslations: $("#pageCategoryTranslations").value.trim() || defaultPage.categoryTranslations,
       articlesPerPage: Number($("#pageArticlesPerPage").value || 7),
       aboutEyebrow: $("#pageAboutEyebrow").value.trim() || defaultPage.aboutEyebrow,
       aboutTitle: $("#pageAboutTitle").value.trim() || defaultPage.aboutTitle,
@@ -553,6 +556,22 @@
 
   function applyDraftTextToPreview() {
     Object.keys(textFieldDefinitions).forEach(updatePreviewText);
+    updatePreviewCategoryTranslation();
+  }
+
+  function updatePreviewCategoryTranslation() {
+    const doc = frame.contentDocument;
+    const target = doc?.querySelector("#latestEyebrow");
+    if (!target) return;
+    const translations = new Map($("#pageCategoryTranslations").value
+      .split(/\r?\n/)
+      .map((line) => line.trim().match(/^(\S+)\s+(.+)$/))
+      .filter(Boolean)
+      .map((match) => [match[1], match[2].trim()]));
+    const chineseTitle = doc.querySelector("#listTitle")?.textContent?.trim() || $("#pageAllArticlesTitle").value.trim();
+    const activeCategory = doc.querySelector("#categoryList button.active")?.dataset.category || "全部";
+    target.textContent = translations.get(chineseTitle) || translations.get(activeCategory) || $("#pageLatestEyebrow").value.trim() || defaultPage.latestEyebrow;
+    schedulePreviewScale();
   }
 
   function setFieldFontSize(input) {
@@ -672,7 +691,14 @@
     if (button) selectRegion(button.dataset.region);
   });
   Object.keys(textFieldDefinitions).forEach((fieldId) => {
-    document.getElementById(fieldId).addEventListener("input", () => updatePreviewText(fieldId));
+    document.getElementById(fieldId).addEventListener("input", () => {
+      updatePreviewText(fieldId);
+      updatePreviewCategoryTranslation();
+    });
+  });
+  $("#pageCategoryTranslations").addEventListener("input", updatePreviewCategoryTranslation);
+  frame.addEventListener("load", () => {
+    frame.contentDocument?.addEventListener("click", () => window.setTimeout(updatePreviewCategoryTranslation, 0));
   });
   document.querySelectorAll("[data-font-size-key]").forEach((input) => {
     input.addEventListener("input", () => setFieldFontSize(input));

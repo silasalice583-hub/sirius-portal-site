@@ -3,13 +3,13 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>页面编辑器 · 天狼星之光</title>
-    <link rel="stylesheet" href="styles.css?v=20260830-7" />
+    <title>页面编辑器 · 天狼星门户</title>
+    <link rel="stylesheet" href="styles.css?v=20260831-1" />
   </head>
-  <body class="site-editor-page editor-auth-pending" data-editor-label="网页编辑器" data-editor-script="site-editor.js?v=20260830-5">
+  <body class="site-editor-page editor-auth-pending" data-editor-label="网页编辑器" data-editor-script="site-editor.js?v=20260831-1">
     <header class="site-editor-toolbar">
       <a class="brand" href="site-editor.html" aria-label="页面编辑器首页">
-        <img data-site-logo src="assets/logo-vector-web.png" alt="天狼星之光 logo" decoding="async" />
+        <img data-site-logo src="assets/logo-vector-web.png" alt="天狼星门户 logo" decoding="async" />
         <span>页面编辑器</span>
       </a>
       <nav class="top-nav" aria-label="编辑器导航">
@@ -128,6 +128,8 @@
             <label>每页文章数<input id="pageArticlesPerPage" type="number" min="1" value="7" /></label>
             <label>自动轮播速度（毫秒）<input id="pageHotSpeed" type="number" min="1200" step="100" /></label>
             <label>文章分类<textarea id="pageCategories" placeholder="每行一个分类"></textarea></label>
+            <label>分类中英文对应<textarea id="pageCategoryTranslations" placeholder="全部文章 All Articles&#10;门户更新 Portal Updates&#10;会议 Conferences"></textarea></label>
+            <small class="media-guidance">每行填写“分类中文 空格 对应英文”，英文可包含多个单词；文章列表上方会随当前分类自动切换。</small>
           </div>
           <div class="page-editor-block compact">
             <h2>热门文章</h2>
@@ -144,7 +146,7 @@
             <label>关于页标题背景图片<input id="pageAboutImageFile" type="file" accept="image/*" /></label>
             <small class="media-guidance">推荐比例：16:7，建议宽度至少 1600px。图片会铺满标题区域，移动端会自动裁切。</small>
             <label>关于页标题背景图片地址<input id="pageAboutImage" type="text" /></label>
-            <label>关于天狼星之光内容<textarea id="pageAboutText"></textarea></label>
+            <label>关于我们内容<textarea id="pageAboutText"></textarea></label>
           </div>
         </div>
 
@@ -164,7 +166,7 @@
 
     <script src="articles-data.js?v=20260830-4"></script>
     <script src="config.js"></script>
-    <script src="api-client.js?v=20260830-4"></script>
-    <script src="editor-auth.js?v=20260830-3"></script>
+    <script src="api-client.js?v=20260831-1"></script>
+    <script src="editor-auth.js?v=20260831-1"></script>
   </body>
 </html>

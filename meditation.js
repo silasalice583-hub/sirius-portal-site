@@ -82,9 +82,9 @@
       </button>
     `).join("") : `
       <div class="meditation-empty">
-        <p class="eyebrow">Archive Empty</p>
-        <h3>冥想合集正在准备中</h3>
-        <p>在后台文章编辑器中将内容类型设为“冥想”，保存后会出现在这里。</p>
+        <p class="eyebrow">Coming Soon</p>
+        <h3>冥想内容即将与大家见面</h3>
+        <p>我们正在认真整理适合公开分享的冥想内容。感谢你的关注，新的练习与音频将在准备就绪后陆续发布。</p>
       </div>
     `;
   }
@@ -125,15 +125,15 @@
       $("#collectiveEnter").textContent = "进入正在进行的集体冥想";
       $("#collectiveEnter").classList.remove("disabled");
     } else {
-      $("#collectiveStatus").textContent = "当前时段没有正在进行的集体冥想";
-      $("#collectiveTitle").textContent = "等待下一场集体冥想";
+      $("#collectiveStatus").textContent = "此刻暂无进行中的集体冥想";
+      $("#collectiveTitle").textContent = "下一场集体冥想敬请期待";
       $("#collectiveTime").textContent = "";
-      $("#collectiveEnter").textContent = "查看集体冥想界面";
+      $("#collectiveEnter").textContent = "了解集体冥想";
       $("#collectiveEnter").classList.add("disabled");
     }
     $("#collectiveNext").innerHTML = upcoming
       ? `<span>下一场</span><strong>${escapeHTML(upcoming.title || "集体冥想")}</strong><b>${escapeHTML(upcoming.start || "")} - ${escapeHTML(upcoming.end || "")}</b>`
-      : "<span>排期</span><strong>后台尚未设置播放时段</strong>";
+      : "<span>排期</span><strong>近期暂无公开排期，请关注后续通知</strong>";
   }
 
   $("#meditationGrid").addEventListener("click", (event) => {
