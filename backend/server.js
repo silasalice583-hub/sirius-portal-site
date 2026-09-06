@@ -284,6 +284,7 @@ function normalizeArticle(article) {
     category: normalizeCategory(article.category || "未分类"),
     date: article.date || now,
     cover: article.cover || "assets/logo-vector-web.png",
+    coverMobile: article.coverMobile || "",
     excerpt: article.excerpt || "",
     hot: Number(article.hot || 0),
     commentMode: article.commentMode || "all",

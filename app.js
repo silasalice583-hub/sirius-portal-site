@@ -297,7 +297,7 @@
   }
 
   function mobileCoverPath(cover) {
-    const match = String(cover || "").match(/^(assets\/articles\/wechat\/[^/]+)\/cover\.(?:jpe?g|png|webp)(?:\?.*)?$/i);
+    const match = String(cover || "").match(/^(assets\/articles\/(?:wechat|cobra-archive)\/[^/]+)\/cover\.(?:jpe?g|png|webp)(?:\?.*)?$/i);
     return match ? `${match[1]}/cover-mobile.webp` : "";
   }
 
@@ -376,7 +376,7 @@
           <img ${coverImageAttributes(article, "(max-width: 760px) 104px, 380px")} alt="${escapeHTML(article.title)}" loading="lazy" decoding="async" />
           <span>${escapeHTML(article.category)} · ${escapeHTML(article.date)}</span>
           <h3>${escapeHTML(article.title)}</h3>
-          <p>${escapeHTML(article.excerpt || "暂无简介")}</p>
+          ${article.excerpt ? `<p>${escapeHTML(article.excerpt)}</p>` : ""}
         </a>
       `).join("");
   }
@@ -411,7 +411,7 @@
         <div class="hot-overlay">
           <span>${escapeHTML(article.category)} · ${escapeHTML(article.date)}</span>
           <h3>${escapeHTML(article.title)}</h3>
-          <p>${escapeHTML(article.excerpt)}</p>
+          ${article.excerpt ? `<p>${escapeHTML(article.excerpt)}</p>` : ""}
         </div>
       </article>
     `).join("");
@@ -466,7 +466,7 @@
             ${isGekaArticle(article) ? `<span class="card-translator"> · 翻译：GeKa</span>` : ""}
           </div>
           <h3>${escapeHTML(article.title)}</h3>
-          <p>${escapeHTML(article.excerpt || "暂无简介")}</p>
+          ${article.excerpt ? `<p>${escapeHTML(article.excerpt)}</p>` : ""}
         </div>
       </article>
     `).join("");

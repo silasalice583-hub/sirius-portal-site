@@ -1,0 +1,21 @@
+{
+  "sourceDirectory": "C:\\Users\\蒋德康\\Downloads\\整理",
+  "sourceFileCount": 119,
+  "importedArticleCount": 116,
+  "duplicateExportsRemoved": 3,
+  "clearedExcerptCount": 116,
+  "dateCorrections": [
+    "sirius-article.json",
+    "sirius-article (10).json",
+    "sirius-article (11).json",
+    "sirius-article (12).json",
+    "sirius-article (13).json",
+    "sirius-article (14).json",
+    "sirius-article - 2026-09-06T170440.032.json"
+  ],
+  "articleDataCount": 166,
+  "coverBackground": "assets/articles/cobra-archive/cover-background.png",
+  "coverPromptMode": "OpenAI built-in image generation plus deterministic typography and exact 12-point geometry",
+  "coverPrompt": "Create a reusable 16:9 article-cover background: deep navy-to-teal starfield and subtle nebula, luminous geometric 12-point star on the right, generous clean space on the left, refined editorial style, no text, no letters, no logo, no watermark.",
+  "coverEditPrompt": "Change only the right-side geometric star emblem to exactly twelve distinct, evenly spaced points; preserve the entire starry navy-to-teal background, nebula, glow, circles, right-side placement, left-side negative space, 16:9 framing, and colors; no text, letters, logo, or watermark; do not crop the emblem; avoid eight-pointed or six-pointed stars and hexagrams."
+}

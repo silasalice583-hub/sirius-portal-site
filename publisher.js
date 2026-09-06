@@ -74,6 +74,7 @@
   let editingComments = [];
   let copiedFormat = null;
   let lastEditorRange = null;
+  let selectedEditorImage = null;
 
   function getSavedArticles() {
     return savedArticlesState;
@@ -166,6 +167,26 @@
     return `<div class="inline-audio"><audio src="${escapeHTML(url)}" controls></audio></div>`;
   }
 
+  function normalizeArticleHTML(value, title = "文章") {
+    const container = document.createElement("div");
+    container.innerHTML = value || "";
+    container.querySelectorAll("img").forEach((image, index) => {
+      image.classList.add("article-content-image");
+      image.loading = "lazy";
+      image.decoding = "async";
+      image.alt ||= `${title} 配图 ${index + 1}`;
+      image.style.maxWidth = "100%";
+      image.style.height = "auto";
+    });
+    container.querySelectorAll("p,div,li,blockquote").forEach((block) => {
+      if (block.matches(".inline-audio,.article-source-link,.wechat-source-line,.wechat-signature")) return;
+      block.style.textAlign = "justify";
+      block.style.textAlignLast = "auto";
+      block.style.textJustify = "inter-ideograph";
+    });
+    return container.innerHTML;
+  }
+
   function setField(id, value) {
     document.getElementById(id).value = value || "";
   }
@@ -187,6 +208,66 @@
     editor.focus();
     document.execCommand(name, false, value);
     refreshPreview();
+  }
+
+  function editableTextBlocks() {
+    return Array.from(editor.querySelectorAll("p,div,li,blockquote,h2,h3,h4,h5,h6"))
+      .filter((block) => !block.matches(".inline-audio,.article-source-link,.wechat-source-line,.wechat-signature"));
+  }
+
+  function justifyAllArticleText() {
+    editableTextBlocks().forEach((block) => {
+      block.style.textAlign = "justify";
+      block.style.textAlignLast = "auto";
+      block.style.textJustify = "inter-ideograph";
+    });
+    refreshPreview();
+    autoSaveArticle();
+  }
+
+  function selectEditorImage(image) {
+    selectedEditorImage?.classList.remove("editor-image-selected");
+    selectedEditorImage = image && editor.contains(image) ? image : null;
+    const widthInput = document.getElementById("imageWidth");
+    const applyButton = document.getElementById("applyImageWidthButton");
+    const resetButton = document.getElementById("resetImageWidthButton");
+    const hasSelection = Boolean(selectedEditorImage);
+    widthInput.disabled = !hasSelection;
+    applyButton.disabled = !hasSelection;
+    resetButton.disabled = !hasSelection;
+    if (!hasSelection) return;
+    selectedEditorImage.classList.add("editor-image-selected");
+    const inlineWidth = selectedEditorImage.style.width.match(/^([\d.]+)%$/);
+    const measuredWidth = editor.clientWidth
+      ? Math.round((selectedEditorImage.getBoundingClientRect().width / editor.clientWidth) * 100)
+      : 100;
+    widthInput.value = String(Math.min(100, Math.max(10, inlineWidth ? Number(inlineWidth[1]) : measuredWidth || 100)));
+  }
+
+  function applySelectedImageWidth() {
+    if (!selectedEditorImage || !editor.contains(selectedEditorImage)) return;
+    const raw = Number(document.getElementById("imageWidth").value || 100);
+    const width = Math.min(100, Math.max(10, Math.round(raw)));
+    document.getElementById("imageWidth").value = String(width);
+    selectedEditorImage.style.width = `${width}%`;
+    selectedEditorImage.style.maxWidth = "100%";
+    selectedEditorImage.style.height = "auto";
+    selectedEditorImage.style.display = "block";
+    selectedEditorImage.style.marginInline = "auto";
+    refreshPreview();
+    autoSaveArticle();
+  }
+
+  function resetSelectedImageWidth() {
+    if (!selectedEditorImage || !editor.contains(selectedEditorImage)) return;
+    selectedEditorImage.style.removeProperty("width");
+    selectedEditorImage.style.maxWidth = "100%";
+    selectedEditorImage.style.height = "auto";
+    selectedEditorImage.style.display = "block";
+    selectedEditorImage.style.marginInline = "auto";
+    document.getElementById("imageWidth").value = "100";
+    refreshPreview();
+    autoSaveArticle();
   }
 
   function rememberEditorSelection() {
@@ -349,8 +430,7 @@
     const title = document.getElementById("postTitle").value.trim() || "未命名文章";
     const category = normalizeCategory(document.getElementById("postCategory").value.trim() || "未分类");
     const coverUrl = document.getElementById("coverUrl").value.trim();
-    const text = editor.textContent.replace(/\s+/g, " ").trim();
-    const excerpt = document.getElementById("postExcerpt").value.trim() || text.slice(0, 160);
+    const excerpt = document.getElementById("postExcerpt").value.trim();
     const archived = document.getElementById("visibilityStatus").value === "archived";
     return {
       id: editingId || `local-${Date.now()}`,
@@ -369,7 +449,7 @@
       sourcePdf: original.sourcePdf || "",
       images: original.images || [],
       paragraphs: [],
-      html: editor.innerHTML,
+      html: normalizeArticleHTML(editor.innerHTML, title),
       archived,
       archivedAt: archived ? (original.archivedAt || new Date().toISOString()) : "",
     };
@@ -423,7 +503,11 @@
     setField("hotScore", article.hot || 0);
     setField("postExcerpt", article.excerpt);
     document.getElementById("commentMode").value = article.commentMode || "all";
-    editor.innerHTML = article.html || (article.paragraphs || []).map((p) => `<p>${escapeHTML(p)}</p>`).join("");
+    editor.innerHTML = normalizeArticleHTML(
+      article.html || (article.paragraphs || []).map((p) => `<p>${escapeHTML(p)}</p>`).join(""),
+      article.title,
+    );
+    selectEditorImage(null);
     previewCover.src = coverData;
     refreshPreview();
     renderCommentAdmin();
@@ -446,7 +530,8 @@
     setField("hotScore", "80");
     setField("postExcerpt", "");
     document.getElementById("commentMode").value = "all";
-    editor.innerHTML = "<h2>在这里输入文章正文</h2><p>可以设置字体、字号、段落、对齐方式，也可以插入图片和文中播放音乐。</p>";
+    editor.innerHTML = "<h2>在这里输入文章正文</h2><p>正文默认采用两端对齐；还可以设置字体、字号、图片宽度，以及插入音视频。</p>";
+    selectEditorImage(null);
     previewCover.src = coverData;
     refreshPreview();
     document.getElementById("commentAdmin").hidden = true;
@@ -728,39 +813,56 @@
     URL.revokeObjectURL(link.href);
   }
 
-  function importJSON(file) {
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = async () => {
-      try {
-        const data = JSON.parse(reader.result);
-        const imported = Array.isArray(data) ? data : Array.isArray(data.articles) ? data.articles : [data];
-        if (!imported.length) throw new Error("JSON 文件中没有可导入的文章。");
-        const normalized = imported.map((article) => ({
+  async function importJSON(files) {
+    const selectedFiles = Array.from(files || []);
+    if (!selectedFiles.length) return;
+    try {
+      backendStatus.textContent = `正在读取并导入 ${selectedFiles.length} 个 JSON 文件…`;
+      backendStatus.className = "backend-status local";
+      const payloads = await Promise.all(selectedFiles.map(async (file) => JSON.parse(await file.text())));
+      const imported = payloads.flatMap((data) => (
+        Array.isArray(data) ? data : Array.isArray(data.articles) ? data.articles : [data]
+      ));
+      if (!imported.length) throw new Error("JSON 文件中没有可导入的文章。");
+      const normalizedById = new Map();
+      imported.forEach((article) => {
+        const title = article.title || "导入文章";
+        const normalized = {
           ...article,
           id: article.id || `import-${Date.now()}-${Math.random().toString(16).slice(2)}`,
-          title: article.title || "导入文章",
+          title,
           category: article.category || "未分类",
           date: article.date || new Date().toISOString().slice(0, 10),
           cover: article.cover || defaultCover,
-          excerpt: article.excerpt || "",
+          excerpt: "",
           commentMode: article.commentMode || "all",
-          html: article.html || (article.paragraphs || []).map((p) => `<p>${escapeHTML(p)}</p>`).join(""),
-        }));
-        const saved = await window.SiriusAPI.saveArticles(normalized);
-        const existing = getSavedArticles().filter((article) => !normalized.some((item) => item.id === article.id));
-        savedArticlesState = [...(saved || normalized), ...existing];
-        renderArticleManagers();
-        renderCategoryOptions();
-        renderHotPicker();
-        if ((saved || normalized)[0]) loadArticle((saved || normalized)[0]);
-        alert(`已导入 ${normalized.length} 篇文章。`);
-      } catch (error) {
-        console.warn("导入文章失败", error);
-        alert(`导入失败：${error.message || "JSON 文件格式不正确或文章过大，无法保存到后端。"}`);
-      }
-    };
-    reader.readAsText(file, "utf-8");
+          html: normalizeArticleHTML(
+            article.html || (article.paragraphs || []).map((p) => `<p>${escapeHTML(p)}</p>`).join(""),
+            title,
+          ),
+        };
+        normalizedById.set(normalized.id, normalized);
+      });
+      const normalized = Array.from(normalizedById.values());
+      backendStatus.textContent = `正在保存 ${normalized.length} 篇文章，请勿关闭页面…`;
+      const saved = await window.SiriusAPI.saveArticles(normalized);
+      const existing = getSavedArticles().filter((article) => !normalizedById.has(article.id));
+      savedArticlesState = [...(saved || normalized), ...existing];
+      renderArticleManagers();
+      renderCategoryOptions();
+      renderHotPicker();
+      if ((saved || normalized)[0]) loadArticle((saved || normalized)[0]);
+      backendStatus.textContent = `已导入 ${normalized.length} 篇文章 · 简介已清空`;
+      backendStatus.className = window.SiriusAPI.hasApi() ? "backend-status online" : "backend-status local";
+      alert(`已导入 ${normalized.length} 篇文章；导入文件中的自动简介已清空。`);
+    } catch (error) {
+      backendStatus.textContent = "文章导入失败";
+      backendStatus.className = "backend-status error";
+      console.warn("导入文章失败", error);
+      alert(`导入失败：${error.message || "JSON 文件格式不正确或文章过大，无法保存到后端。"}`);
+    } finally {
+      document.getElementById("importJsonInput").value = "";
+    }
   }
 
   async function syncLocalDrafts() {
@@ -816,6 +918,9 @@
   document.getElementById("formatBrushButton").addEventListener("click", applyCopiedFormat);
   document.getElementById("fontColor").addEventListener("input", (event) => command("foreColor", event.target.value));
   document.getElementById("paragraphButton").addEventListener("click", () => command("formatBlock", "p"));
+  document.getElementById("justifyAllButton").addEventListener("click", justifyAllArticleText);
+  document.getElementById("applyImageWidthButton").addEventListener("click", applySelectedImageWidth);
+  document.getElementById("resetImageWidthButton").addEventListener("click", resetSelectedImageWidth);
   document.getElementById("imageButton").addEventListener("click", () => document.getElementById("bodyImageInput").click());
   document.getElementById("videoButton").addEventListener("click", () => {
     const url = prompt("输入视频地址（MP4/WebM/视频页面链接）");
@@ -835,7 +940,17 @@
     const file = event.target.files[0];
     if (!file) return;
     command("insertImage", await readFileAsDataURL(file));
+    const inserted = Array.from(editor.querySelectorAll("img")).at(-1);
+    if (inserted) {
+      inserted.classList.add("article-content-image");
+      inserted.style.maxWidth = "100%";
+      inserted.style.height = "auto";
+      inserted.loading = "lazy";
+      inserted.decoding = "async";
+      selectEditorImage(inserted);
+    }
     autoSaveArticle();
+    event.target.value = "";
   });
   document.getElementById("bodyAudioInput").addEventListener("change", (event) => uploadEditorMedia(event.target.files[0], "audio"));
   document.getElementById("bodyVideoInput").addEventListener("change", (event) => uploadEditorMedia(event.target.files[0], "video"));
@@ -844,11 +959,12 @@
   document.getElementById("articleVideoFile").addEventListener("change", (event) => uploadMediaField("articleVideo", event.target.files[0]));
   ["coverUrl", "postTitle", "postExcerpt"].forEach((id) => document.getElementById(id).addEventListener("input", refreshPreview));
   editor.addEventListener("input", refreshPreview);
+  editor.addEventListener("click", (event) => selectEditorImage(event.target.closest("img")));
   document.getElementById("previewButton").addEventListener("click", refreshPreview);
   document.getElementById("publishButton").addEventListener("click", saveArticle);
   document.getElementById("exportButton").addEventListener("click", exportJSON);
   document.getElementById("importButton").addEventListener("click", () => document.getElementById("importJsonInput").click());
-  document.getElementById("importJsonInput").addEventListener("change", (event) => importJSON(event.target.files[0]));
+  document.getElementById("importJsonInput").addEventListener("change", (event) => importJSON(event.target.files));
   document.getElementById("syncLocalButton").addEventListener("click", syncLocalDrafts);
   document.getElementById("clearButton").addEventListener("click", newArticle);
   document.getElementById("newPostButton").addEventListener("click", newArticle);

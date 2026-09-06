@@ -1609,6 +1609,8 @@ button { cursor: pointer; }
   padding: clamp(24px, 4vw, 46px);
   font-size: 18px;
   line-height: 2.05;
+  overflow-wrap: anywhere;
+  word-break: break-word;
   box-shadow: 0 16px 42px rgba(24, 39, 35, 0.08);
 }
 .reader-body p { margin: 0 0 1.1em; }
@@ -1622,7 +1624,19 @@ button { cursor: pointer; }
   text-justify: inter-ideograph;
   line-break: strict;
 }
-.reader-body img { max-width: 100%; display: block; margin: 24px auto; }
+.reader-body figure,
+.reader-body picture {
+  max-width: 100%;
+}
+.reader-body img,
+.reader-body .article-content-image {
+  display: block;
+  width: auto;
+  max-width: min(100%, 760px) !important;
+  height: auto !important;
+  margin: 24px auto;
+  object-fit: contain;
+}
 
 .reader-body > .article-opening {
   display: flex;
@@ -1812,7 +1826,11 @@ button { cursor: pointer; }
 .home-feature-card img[src*="/portal-updates/"],
 .feature-card img[src*="/portal-updates/"],
 .article-card img[src*="/portal-updates/"],
-.hot-slide img[src*="/portal-updates/"] {
+.hot-slide img[src*="/portal-updates/"],
+.home-feature-card img[src*="/cobra-archive/"],
+.feature-card img[src*="/cobra-archive/"],
+.article-card img[src*="/cobra-archive/"],
+.hot-slide img[src*="/cobra-archive/"] {
   object-fit: contain;
   object-position: center;
   background: #12366d;
@@ -1952,6 +1970,12 @@ button { cursor: pointer; }
   background: var(--accent);
 }
 
+.toolbar button:disabled,
+.toolbar input:disabled {
+  cursor: not-allowed;
+  opacity: .45;
+}
+
 .color-control {
   display: inline-flex;
   align-items: center;
@@ -1984,7 +2008,36 @@ button { cursor: pointer; }
   position: relative;
   z-index: 1;
 }
-.editor img, #previewBody img { max-width: 100%; height: auto; }
+.editor p,
+.editor div:not(.inline-audio),
+.editor li,
+.editor blockquote,
+#previewBody p,
+#previewBody div:not(.inline-audio),
+#previewBody li,
+#previewBody blockquote {
+  text-align: justify;
+  text-align-last: auto;
+  text-justify: inter-ideograph;
+}
+.editor figure,
+#previewBody figure {
+  max-width: 100%;
+}
+.editor img,
+#previewBody img {
+  display: block;
+  width: auto;
+  max-width: 100% !important;
+  height: auto !important;
+  margin-inline: auto;
+  object-fit: contain;
+}
+.editor img.editor-image-selected {
+  outline: 3px solid var(--accent);
+  outline-offset: 4px;
+  box-shadow: 0 0 0 7px rgba(15, 118, 110, .12);
+}
 .editor audio,
 .editor video,
 .editor iframe,
