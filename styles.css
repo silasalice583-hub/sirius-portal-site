@@ -487,7 +487,8 @@ html.article-reading .archive-hero {
     margin-top: 18px;
   }
 
-  .pagination button {
+  .pagination button,
+  .pagination-ellipsis {
     min-width: 36px;
     min-height: 36px;
     padding: 0 8px;
@@ -3211,6 +3212,16 @@ button { cursor: pointer; }
   border: 1px solid var(--line);
   color: var(--ink);
   background: #fff;
+}
+
+.pagination-ellipsis {
+  display: grid;
+  min-width: 42px;
+  min-height: 40px;
+  place-items: center;
+  color: var(--muted);
+  font-weight: 800;
+  letter-spacing: .08em;
 }
 
 .pagination button.active,

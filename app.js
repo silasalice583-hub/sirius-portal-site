@@ -490,10 +490,17 @@
       pagination.innerHTML = "";
       return;
     }
-    const pages = Array.from({ length: totalPages }, (_, index) => index + 1);
+    const leadingPageCount = 7;
+    const pages = Array.from(
+      { length: Math.min(totalPages, leadingPageCount) },
+      (_, index) => index + 1,
+    );
+    const hasCollapsedPages = totalPages > leadingPageCount + 1;
+    if (totalPages === leadingPageCount + 1) pages.push(totalPages);
     pagination.innerHTML = `
       <button type="button" data-page="${Math.max(1, currentPage - 1)}" ${currentPage === 1 ? "disabled" : ""}>上一页</button>
       ${pages.map((pageNumber) => `<button type="button" class="${pageNumber === currentPage ? "active" : ""}" data-page="${pageNumber}">${pageNumber}</button>`).join("")}
+      ${hasCollapsedPages ? `<span class="pagination-ellipsis" aria-hidden="true">…</span><button type="button" class="${totalPages === currentPage ? "active" : ""}" data-page="${totalPages}">${totalPages}</button>` : ""}
       <button type="button" data-page="${Math.min(totalPages, currentPage + 1)}" ${currentPage === totalPages ? "disabled" : ""}>下一页</button>
     `;
   }
