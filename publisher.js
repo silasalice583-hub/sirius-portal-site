@@ -94,9 +94,19 @@
       .filter((article) => !isRetiredArticle(article))
       .map((article) => ({ ...article, category: normalizeCategory(article.category) }));
     const savedMap = new Map(saved.map((article) => [article.id, article]));
+    const resolvedBundledArticle = (article) => {
+      const savedArticle = savedMap.get(article.id);
+      const isCobraArchive = String(article.cover || "").includes("/cobra-archive/");
+      const isLegacyLocalImport = savedArticle
+        && savedArticle.cover === defaultCover
+        && !savedArticle.coverMobile;
+      return savedArticle && !(isCobraArchive && isLegacyLocalImport)
+        ? savedArticle
+        : { ...article, category: normalizeCategory(article.category) };
+    };
     return [
       ...saved.filter((article) => !baseArticles.some((base) => base.id === article.id)),
-      ...baseArticles.filter((article) => !isRetiredArticle(article)).map((article) => savedMap.get(article.id) || { ...article, category: normalizeCategory(article.category) }),
+      ...baseArticles.filter((article) => !isRetiredArticle(article)).map(resolvedBundledArticle),
     ].filter((article) => !article.deleted);
   }
 
@@ -438,6 +448,7 @@
       category,
       date: document.getElementById("postDate").value || new Date().toISOString().slice(0, 10),
       cover: coverUrl || coverData || defaultCover,
+      coverMobile: original.coverMobile || "",
       excerpt,
       hot: Number(document.getElementById("hotScore").value || 0),
       commentMode: document.getElementById("commentMode").value,

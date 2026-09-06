@@ -109,9 +109,19 @@
     .map((article) => ({ ...article, category: normalizeCategory(article.category) }));
   let commentsState = state.comments || {};
   const savedMap = new Map(savedArticles.map((article) => [article.id, article]));
+  const resolvedBundledArticle = (article) => {
+    const saved = savedMap.get(article.id);
+    const isCobraArchive = String(article.cover || "").includes("/cobra-archive/");
+    const isLegacyLocalImport = saved
+      && saved.cover === "assets/logo-vector-web.png"
+      && !saved.coverMobile;
+    return saved && !(isCobraArchive && isLegacyLocalImport)
+      ? saved
+      : { ...article, category: normalizeCategory(article.category) };
+  };
   const articles = [
     ...savedArticles.filter((article) => !baseArticles.some((base) => base.id === article.id)),
-    ...baseArticles.filter((article) => !isRetiredArticle(article)).map((article) => savedMap.get(article.id) || { ...article, category: normalizeCategory(article.category) }),
+    ...baseArticles.filter((article) => !isRetiredArticle(article)).map(resolvedBundledArticle),
   ].filter((article) => !article.deleted && !article.archived && article.contentType !== "meditation");
 
   let currentCategory = "全部";
