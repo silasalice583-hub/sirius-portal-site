@@ -313,6 +313,9 @@
 
   function coverImageAttributes(article, sizes) {
     const cover = String(article.cover || defaultPage.logoImage);
+    if (window.SiriusAPI?.isLocalMediaURL?.(cover)) {
+      return `src="${escapeHTML(defaultPage.logoImage)}" data-local-media-src="${escapeHTML(cover)}"`;
+    }
     const mobileCover = mobileCoverPath(cover);
     if (mobileLayout.matches && mobileCover) return `src="${escapeHTML(mobileCover)}"`;
     return `src="${escapeHTML(cover)}"${mobileCover ? ` srcset="${escapeHTML(mobileCover)} 480w, ${escapeHTML(cover)} 1080w" sizes="${sizes}"` : ""}`;
@@ -389,6 +392,7 @@
           ${article.excerpt ? `<p>${escapeHTML(article.excerpt)}</p>` : ""}
         </a>
       `).join("");
+    window.SiriusAPI?.resolveLocalMediaElements?.(grid);
   }
 
   function renderCategories() {
@@ -428,6 +432,7 @@
     hotDots.innerHTML = hot.map((_, index) => (
       `<button type="button" class="${index === hotIndex ? "active" : ""}" data-hot-index="${index}" aria-label="查看第 ${index + 1} 篇热门文章"></button>`
     )).join("");
+    window.SiriusAPI?.resolveLocalMediaElements?.(hotCarousel);
   }
 
   function startHotRotation() {
@@ -480,6 +485,7 @@
         </div>
       </article>
     `).join("");
+    window.SiriusAPI?.resolveLocalMediaElements?.(grid);
     renderPagination(totalPages);
   }
 
@@ -573,7 +579,14 @@
     reader.classList.toggle("author-xiangming", themeClass === "author-xiangming");
     reader.classList.toggle("translator-geka", themeClass === "translator-geka");
     const readerMobileCover = mobileCoverPath(article.cover);
-    $("#readerCover").src = mobileLayout.matches && readerMobileCover ? readerMobileCover : article.cover;
+    const readerCover = $("#readerCover");
+    const preferredCover = mobileLayout.matches && readerMobileCover ? readerMobileCover : article.cover;
+    readerCover.src = window.SiriusAPI?.isLocalMediaURL?.(preferredCover) ? defaultPage.logoImage : preferredCover;
+    if (window.SiriusAPI?.isLocalMediaURL?.(preferredCover)) {
+      window.SiriusAPI.resolveMediaURL(preferredCover)
+        .then((url) => { readerCover.src = url; })
+        .catch((error) => console.warn("本地封面读取失败", error));
+    }
     if (!mobileLayout.matches && readerMobileCover) {
       $("#readerCover").srcset = `${readerMobileCover} 480w, ${article.cover} 1080w`;
       $("#readerCover").sizes = "(max-width: 760px) 100vw, 390px";
@@ -581,7 +594,7 @@
       $("#readerCover").removeAttribute("srcset");
       $("#readerCover").removeAttribute("sizes");
     }
-    $("#readerCover").alt = article.title;
+    readerCover.alt = article.title;
     $("#readerMeta").innerHTML = [
       escapeHTML(article.category),
       escapeHTML(article.date),
@@ -593,7 +606,16 @@
     const articleBodyHTML = article.html || (article.paragraphs || []).map((p) => `<p>${escapeHTML(p)}</p>`).join("");
     const fallbackImagesHTML = article.html ? "" : (article.images || []).slice(1)
       .map((src) => `<img src="${escapeHTML(src)}" alt="${escapeHTML(article.title)} 配图" loading="lazy" />`).join("");
-    $("#readerBody").innerHTML = articleBodyHTML + fallbackImagesHTML;
+    const sourcePdf = String(article.sourcePdf || "");
+    const pdfAttachment = article.showSourcePdf && /^(https?:\/\/|\/api\/media\/)/i.test(sourcePdf)
+      ? `<p class="article-source-pdf"><a href="${escapeHTML(sourcePdf)}" target="_blank" rel="noopener noreferrer">查看或下载原始 PDF</a></p>`
+      : "";
+    const readerBody = $("#readerBody");
+    readerBody.innerHTML = articleBodyHTML + fallbackImagesHTML + pdfAttachment;
+    readerBody.querySelectorAll(".pdf-document").forEach((documentElement) => {
+      if (sourcePdf) documentElement.dataset.pdfSrc = sourcePdf;
+    });
+    window.SiriusPdfInlineViewer?.renderWithin(readerBody);
     $("#inlineMusic").innerHTML = article.music ? `<div class="audio-card"><p class="eyebrow">Article Music</p><audio src="${escapeHTML(article.music)}" controls></audio></div>` : "";
     if (article.video) $("#inlineMusic").innerHTML += `<div class="audio-card media-card"><p class="eyebrow">Article Video</p>${mediaHTML(article.video, article.title)}</div>`;
     renderComments(article);

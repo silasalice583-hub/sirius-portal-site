@@ -5,5 +5,8 @@
   "description": "天狼星门户静态网站服务器",
   "scripts": {
     "start": "node server.js"
+  },
+  "devDependencies": {
+    "tesseract.js": "7.0.0"
   }
 }

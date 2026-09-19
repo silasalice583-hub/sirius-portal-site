@@ -74,6 +74,7 @@
   let editingComments = [];
   let copiedFormat = null;
   let lastEditorRange = null;
+  let previewCoverRequest = 0;
   let selectedEditorImage = null;
 
   function getSavedArticles() {
@@ -180,6 +181,18 @@
   function normalizeArticleHTML(value, title = "文章") {
     const container = document.createElement("div");
     container.innerHTML = value || "";
+    container.querySelectorAll(".pdf-document").forEach((documentElement) => {
+      documentElement.querySelectorAll(".pdf-rendered-pages,.pdf-viewer-error").forEach((element) => element.remove());
+      documentElement.querySelectorAll(":scope > .pdf-loading").forEach((element, index) => {
+        if (index) element.remove();
+      });
+      if (!documentElement.querySelector(":scope > .pdf-loading")) {
+        documentElement.insertAdjacentHTML("afterbegin", '<p class="pdf-loading">正在载入原 PDF 版式…</p>');
+      }
+      documentElement.removeAttribute("data-pdf-rendered");
+      documentElement.removeAttribute("data-pdf-src");
+      documentElement.setAttribute("contenteditable", "false");
+    });
     container.querySelectorAll("img").forEach((image, index) => {
       image.classList.add("article-content-image");
       image.loading = "lazy";
@@ -188,17 +201,24 @@
       image.style.maxWidth = "100%";
       image.style.height = "auto";
     });
-    container.querySelectorAll("p,div,li,blockquote").forEach((block) => {
-      if (block.matches(".inline-audio,.article-source-link,.wechat-source-line,.wechat-signature")) return;
-      block.style.textAlign = "justify";
-      block.style.textAlignLast = "auto";
-      block.style.textJustify = "inter-ideograph";
-    });
     return container.innerHTML;
   }
 
   function setField(id, value) {
     document.getElementById(id).value = value || "";
+  }
+
+  async function setPreviewCover(source) {
+    const request = ++previewCoverRequest;
+    const value = source || defaultCover;
+    if (window.SiriusAPI?.isLocalMediaURL?.(value)) previewCover.src = defaultCover;
+    try {
+      const resolved = await (window.SiriusAPI?.resolveMediaURL?.(value) || value);
+      if (request === previewCoverRequest) previewCover.src = resolved || defaultCover;
+    } catch (error) {
+      if (request === previewCoverRequest) previewCover.src = defaultCover;
+      console.warn("本地封面读取失败", error);
+    }
   }
 
   function refreshPreview() {
@@ -207,11 +227,18 @@
     const excerpt = document.getElementById("postExcerpt").value.trim();
     if (coverUrl) {
       coverData = coverUrl;
-      previewCover.src = coverUrl;
     }
+    setPreviewCover(coverData);
     document.getElementById("previewTitle").textContent = title;
     document.getElementById("previewExcerpt").textContent = excerpt;
-    document.getElementById("previewBody").innerHTML = editor.innerHTML;
+    const sourcePdf = editor.querySelector(".pdf-document")?.dataset.pdfSrc
+      || allArticles().find((article) => article.id === editingId)?.sourcePdf || "";
+    const previewBody = document.getElementById("previewBody");
+    previewBody.innerHTML = normalizeArticleHTML(editor.innerHTML, title);
+    previewBody.querySelectorAll(".pdf-document").forEach((documentElement) => {
+      if (sourcePdf) documentElement.dataset.pdfSrc = sourcePdf;
+    });
+    window.SiriusPdfInlineViewer?.renderWithin(previewBody);
   }
 
   function command(name, value = null) {
@@ -393,7 +420,7 @@
     if (!file) return;
     coverData = await readFileAsDataURL(file);
     document.getElementById("coverUrl").value = "";
-    previewCover.src = coverData;
+    setPreviewCover(coverData);
   }
 
   async function setMediaField(inputId, file) {
@@ -458,6 +485,8 @@
       video: document.getElementById("articleVideo").value.trim(),
       sourceDoc: original.sourceDoc || "",
       sourcePdf: original.sourcePdf || "",
+      showSourcePdf: Boolean(original.showSourcePdf),
+      pdfLayoutMode: original.pdfLayoutMode || "",
       images: original.images || [],
       paragraphs: [],
       html: normalizeArticleHTML(editor.innerHTML, title),
@@ -518,8 +547,12 @@
       article.html || (article.paragraphs || []).map((p) => `<p>${escapeHTML(p)}</p>`).join(""),
       article.title,
     );
+    editor.querySelectorAll(".pdf-document").forEach((documentElement) => {
+      if (article.sourcePdf) documentElement.dataset.pdfSrc = article.sourcePdf;
+    });
+    window.SiriusPdfInlineViewer?.renderWithin(editor);
     selectEditorImage(null);
-    previewCover.src = coverData;
+    setPreviewCover(coverData);
     refreshPreview();
     renderCommentAdmin();
     showPanel("articlesPanel");
@@ -541,9 +574,9 @@
     setField("hotScore", "80");
     setField("postExcerpt", "");
     document.getElementById("commentMode").value = "all";
-    editor.innerHTML = "<h2>在这里输入文章正文</h2><p>正文默认采用两端对齐；还可以设置字体、字号、图片宽度，以及插入音视频。</p>";
+    editor.innerHTML = "<h2>在这里输入文章正文</h2><p>可以保留原有段落对齐，也可以设置字体、字号、图片宽度，以及插入音视频。</p>";
     selectEditorImage(null);
-    previewCover.src = coverData;
+    setPreviewCover(coverData);
     refreshPreview();
     document.getElementById("commentAdmin").hidden = true;
     showPanel("articlesPanel");
@@ -1019,6 +1052,27 @@
   });
   document.querySelectorAll(".editable-region").forEach((button) => {
     button.addEventListener("click", () => showRegion(button.dataset.region));
+  });
+
+  window.SiriusPdfBatchImport?.init({
+    api: window.SiriusAPI,
+    getArticles: () => allArticles(),
+    onSaved: (article, count) => {
+      savedArticlesState = [article, ...savedArticlesState.filter((item) => item.id !== article.id)];
+      if (count % 25 === 0) renderArticleManagers();
+    },
+    onCategories: async (newCategories) => {
+      const categories = normalizeCategories([...articleCategories(), ...newCategories]);
+      settingsState = { ...settingsState, categories };
+      await window.SiriusAPI.saveSettings(settingsState);
+    },
+    onDone: () => {
+      renderArticleManagers();
+      renderCategoryOptions();
+      renderHotPicker();
+      backendStatus.textContent = "PDF 批量导入已结束；请在下方查看逐篇结果。";
+      backendStatus.className = window.SiriusAPI.hasApi() ? "backend-status online" : "backend-status local";
+    },
   });
 
   renderArticleManagers();

@@ -7,3 +7,8 @@ content/待补充/
 content/articles/
 exports/*.zip
 tools/__pycache__/
+output/
+tmp/
+.codex_media_deps/
+.codex_media_tools/
+.codex_model_cache/

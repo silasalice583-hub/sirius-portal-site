@@ -3,6 +3,11 @@
   const settingsKey = "siriusSiteSettings";
   const commentsKey = "siriusComments";
   const editorAuthTokenKey = "siriusEditorAuthToken";
+  const localMediaPrefix = "local-media://";
+  const localMediaDatabase = "siriusLocalMedia";
+  const localMediaStore = "media";
+  const localMediaObjectURLs = new Map();
+  let localMediaDatabasePromise;
   const retiredArticleIds = new Set([
     "article-1", "article-2", "article-3", "article-4", "article-5",
     "article-6", "article-7", "article-8", "article-9", "article-10",
@@ -83,6 +88,128 @@
     return !hasApi() || Boolean(window.SIRIUS_ALLOW_LOCAL_FALLBACK);
   }
 
+  function isLocalMediaURL(value) {
+    return String(value || "").startsWith(localMediaPrefix);
+  }
+
+  function openLocalMediaDatabase() {
+    if (!window.indexedDB) return Promise.reject(new Error("当前浏览器不支持本地大文件存储（IndexedDB）"));
+    if (!localMediaDatabasePromise) {
+      localMediaDatabasePromise = new Promise((resolve, reject) => {
+        const request = indexedDB.open(localMediaDatabase, 1);
+        request.onupgradeneeded = () => {
+          const database = request.result;
+          if (!database.objectStoreNames.contains(localMediaStore)) {
+            database.createObjectStore(localMediaStore, { keyPath: "id" });
+          }
+        };
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error || new Error("无法打开浏览器本地大文件存储"));
+      });
+    }
+    return localMediaDatabasePromise;
+  }
+
+  function localMediaId(value) {
+    return isLocalMediaURL(value) ? String(value).slice(localMediaPrefix.length) : "";
+  }
+
+  async function storeLocalMedia(file) {
+    if (!file) throw new Error("没有选择媒体文件");
+    const database = await openLocalMediaDatabase();
+    const id = crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    const record = {
+      id,
+      name: file.name || "media",
+      type: file.type || "application/octet-stream",
+      bytes: Number(file.size || 0),
+      blob: file,
+      createdAt: new Date().toISOString(),
+    };
+    await new Promise((resolve, reject) => {
+      const transaction = database.transaction(localMediaStore, "readwrite");
+      transaction.objectStore(localMediaStore).put(record);
+      transaction.oncomplete = resolve;
+      transaction.onerror = () => reject(transaction.error || new Error("无法写入浏览器本地大文件存储"));
+      transaction.onabort = () => reject(transaction.error || new Error("浏览器本地大文件存储空间不足"));
+    });
+    return `${localMediaPrefix}${id}`;
+  }
+
+  async function readLocalMedia(value) {
+    const id = localMediaId(value);
+    if (!id) return null;
+    const database = await openLocalMediaDatabase();
+    return new Promise((resolve, reject) => {
+      const request = database.transaction(localMediaStore, "readonly").objectStore(localMediaStore).get(id);
+      request.onsuccess = () => resolve(request.result || null);
+      request.onerror = () => reject(request.error || new Error("无法读取浏览器本地大文件"));
+    });
+  }
+
+  async function deleteLocalMedia(value) {
+    const id = localMediaId(value);
+    if (!id) return;
+    const objectURL = localMediaObjectURLs.get(value);
+    if (objectURL) URL.revokeObjectURL(objectURL);
+    localMediaObjectURLs.delete(value);
+    const database = await openLocalMediaDatabase();
+    await new Promise((resolve, reject) => {
+      const transaction = database.transaction(localMediaStore, "readwrite");
+      transaction.objectStore(localMediaStore).delete(id);
+      transaction.oncomplete = resolve;
+      transaction.onerror = () => reject(transaction.error || new Error("无法删除浏览器本地大文件"));
+    });
+  }
+
+  async function resolveMediaURL(value) {
+    const source = String(value || "");
+    if (!isLocalMediaURL(source)) return source;
+    if (localMediaObjectURLs.has(source)) return localMediaObjectURLs.get(source);
+    const record = await readLocalMedia(source);
+    if (!record?.blob) throw new Error("本地媒体文件不存在，请重新选择原文件导入");
+    const objectURL = URL.createObjectURL(record.blob);
+    localMediaObjectURLs.set(source, objectURL);
+    return objectURL;
+  }
+
+  async function resolveLocalMediaElements(root = document) {
+    const elements = Array.from(root?.querySelectorAll?.("[data-local-media-src]") || []);
+    await Promise.all(elements.map(async (element) => {
+      const source = element.dataset.localMediaSrc;
+      try {
+        element.src = await resolveMediaURL(source);
+        delete element.dataset.localMediaSrc;
+      } catch (error) {
+        console.warn("本地媒体读取失败", error);
+      }
+    }));
+  }
+
+  async function localMediaFile(value) {
+    const record = await readLocalMedia(value);
+    if (!record?.blob) throw new Error("待同步的本地媒体文件不存在，请重新选择原文件");
+    return new File([record.blob], record.name || "media", {
+      type: record.type || record.blob.type || "application/octet-stream",
+    });
+  }
+
+  async function migrateArticleMedia(article) {
+    const next = { ...article };
+    const uploaded = new Map();
+    const uploadHandle = async (handle) => {
+      if (!isLocalMediaURL(handle)) return handle;
+      if (!uploaded.has(handle)) uploaded.set(handle, await uploadMedia(await localMediaFile(handle)));
+      return uploaded.get(handle);
+    };
+    for (const field of ["cover", "coverMobile", "sourcePdf", "music", "video", "sourceDoc"]) {
+      next[field] = await uploadHandle(next[field]);
+    }
+    const handles = [...new Set(String(next.html || "").match(/local-media:\/\/[a-z0-9-]+/gi) || [])];
+    for (const handle of handles) next.html = next.html.split(handle).join(await uploadHandle(handle));
+    return next;
+  }
+
   function editorAuthToken() {
     try {
       return sessionStorage.getItem(editorAuthTokenKey) || "";
@@ -152,7 +279,14 @@
     if (isRetiredArticle(article)) return article;
     article = { ...article, category: normalizeCategory(article.category) };
     const saved = JSON.parse(localStorage.getItem(articleKey) || "[]").filter((item) => item.id !== article.id);
-    localStorage.setItem(articleKey, JSON.stringify([article, ...saved]));
+    try {
+      localStorage.setItem(articleKey, JSON.stringify([article, ...saved]));
+    } catch (error) {
+      if (error?.name === "QuotaExceededError") {
+        throw new Error("浏览器旧版文章存储空间已满。PDF 和封面现已改用大文件存储，请先导出并清理旧的 Base64 图片或旧 PDF 草稿后重试。");
+      }
+      throw error;
+    }
     return article;
   }
 
@@ -202,7 +336,7 @@
     const state = localState();
     let articleCount = 0;
     for (const article of state.articles) {
-      await saveArticle(article);
+      await saveArticle(await migrateArticleMedia(article));
       articleCount += 1;
     }
     if (Object.keys(state.settings).length) await saveSettings(state.settings);
@@ -286,7 +420,14 @@
       return saved;
     }
     const existing = JSON.parse(localStorage.getItem(articleKey) || "[]").filter((item) => !articles.some((article) => article.id === item.id));
-    localStorage.setItem(articleKey, JSON.stringify([...articles, ...existing]));
+    try {
+      localStorage.setItem(articleKey, JSON.stringify([...articles, ...existing]));
+    } catch (error) {
+      if (error?.name === "QuotaExceededError") {
+        throw new Error("浏览器旧版文章存储空间已满。请先导出并清理包含 Base64 图片或 PDF 的旧草稿后重试。");
+      }
+      throw error;
+    }
     return articles;
   }
 
@@ -301,12 +442,17 @@
         body: JSON.stringify({ keepTombstone }),
       });
     }
-    const saved = JSON.parse(localStorage.getItem(articleKey) || "[]").filter((item) => item.id !== articleId);
+    const existing = JSON.parse(localStorage.getItem(articleKey) || "[]");
+    const removed = existing.find((item) => item.id === articleId);
+    const saved = existing.filter((item) => item.id !== articleId);
     if (keepTombstone) saved.unshift({ id: articleId, deleted: true });
     localStorage.setItem(articleKey, JSON.stringify(saved));
     const comments = JSON.parse(localStorage.getItem(commentsKey) || "{}");
     delete comments[articleId];
     localStorage.setItem(commentsKey, JSON.stringify(comments));
+    const localMedia = [removed?.cover, removed?.coverMobile, removed?.sourcePdf, removed?.music, removed?.video]
+      .filter(isLocalMediaURL);
+    await Promise.all(localMedia.map((value) => deleteLocalMedia(value).catch((error) => console.warn("清理本地媒体失败", error))));
     return { id: articleId, deleted: true, tombstone: keepTombstone };
   }
 
@@ -413,6 +559,11 @@
     saveComments,
     collectiveHeartbeat,
     uploadMedia,
+    storeLocalMedia,
+    deleteLocalMedia,
+    isLocalMediaURL,
+    resolveMediaURL,
+    resolveLocalMediaElements,
     migrateLocalToApi,
     requestEditorCode,
     verifyEditorCode,

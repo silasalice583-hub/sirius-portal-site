@@ -640,8 +640,10 @@ app.post("/api/media", requireEditorAuth, async (req, res, next) => {
   try {
     const filename = String(req.body.filename || "media").slice(0, 240);
     const contentType = String(req.body.contentType || "").slice(0, 120);
-    if (!/^(audio|video)\//.test(contentType)) {
-      res.status(400).json({ error: "仅支持上传音频或视频文件" });
+    if (!/^(audio|video)\//.test(contentType)
+      && !/^image\/(?:jpeg|png|webp|gif)$/.test(contentType)
+      && contentType !== "application/pdf") {
+      res.status(400).json({ error: "仅支持上传常见图片、PDF、音频或视频文件" });
       return;
     }
     const data = Buffer.from(String(req.body.base64 || ""), "base64");

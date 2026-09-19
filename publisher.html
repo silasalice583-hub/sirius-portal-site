@@ -4,9 +4,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>天狼星门户 · 后台编辑器</title>
-    <link rel="stylesheet" href="styles.css?v=20260906-2" />
+    <link rel="stylesheet" href="styles.css?v=20260919-2" />
   </head>
-  <body class="publisher-page editor-auth-pending" data-editor-label="文章编辑器" data-editor-script="publisher.js?v=20260906-2">
+  <body class="publisher-page editor-auth-pending" data-editor-label="文章编辑器" data-editor-script="publisher.js?v=20260919-3">
     <header class="site-header">
       <a class="brand" href="publisher.html">
         <img data-site-logo src="assets/logo-vector-web.png" alt="天狼星门户 logo" decoding="async" />
@@ -120,11 +120,48 @@
         <div class="publisher-actions">
           <button id="previewButton" type="button">刷新预览</button>
           <button id="exportButton" type="button">导出 JSON</button>
-          <button id="importButton" type="button">导入 JSON</button>
+          <button id="importButton" type="button">批量导入 JSON</button>
           <input id="importJsonInput" type="file" accept="application/json,.json" multiple hidden />
+          <button id="pdfImportFilesButton" type="button">批量导入 PDF 与封面</button>
+          <button id="pdfImportFolderButton" type="button">选择 PDF 与封面文件夹</button>
+          <button id="pdfImportIndexButton" type="button">单独选择导入索引</button>
+          <input id="pdfImportFiles" type="file" accept="application/pdf,.pdf,image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" multiple hidden />
+          <input id="pdfImportFolder" type="file" webkitdirectory multiple hidden />
+          <input id="pdfImportIndex" type="file" accept="application/json,.json" hidden />
           <button id="syncLocalButton" type="button">同步本机草稿到公网数据库</button>
           <button id="clearButton" type="button">清空草稿</button>
         </div>
+
+        <section class="pdf-batch-panel" id="pdfBatchPanel" aria-labelledby="pdfBatchTitle" hidden>
+          <div class="section-head small-head">
+            <div>
+              <p class="eyebrow">PDF Batch Import</p>
+              <h2 id="pdfBatchTitle">批量导入 PDF 文章</h2>
+              <p>导入前可核对标题、日期、分类和封面。此次拆分的 PDF 建议直接选择包含“导入索引.json”的解压文件夹；同一目录中与 PDF 主文件名完全相同的 JPG、JPEG、PNG 或 WebP 会自动匹配并上传为文章封面，也可以先选 PDF、再单独选择同名封面。索引只在本机读取，不上传网站。本地预览时，PDF 和封面保存在浏览器的大文件存储中，不再占用容量很小的 localStorage。正文会像 PDF 编辑器一样直接嵌入原 PDF：保留换行、字体、颜色、图片和位置，同时保留可选择、可复制的文字层，而不是转换成普通图片或重新排版；也不默认两端对齐。简介始终留空。</p>
+            </div>
+          </div>
+          <div class="pdf-batch-options">
+            <label>导入状态
+              <select id="pdfImportVisibility">
+                <option value="archived">先放入归档栏，审核后公开</option>
+                <option value="public">直接公开发布</option>
+              </select>
+            </label>
+            <label class="pdf-batch-checkbox"><input id="pdfImportKeepOriginal" type="checkbox" /> 在文章末尾显示“下载原 PDF”链接</label>
+          </div>
+          <p class="pdf-batch-summary" id="pdfBatchSummary" role="status"></p>
+          <div class="pdf-batch-table-wrap">
+            <table class="pdf-batch-table">
+              <thead><tr><th><input id="pdfSelectAll" type="checkbox" checked aria-label="选择全部PDF" /></th><th>PDF 文件</th><th>同名封面</th><th>文章标题</th><th>发布时间</th><th>分类</th><th>识别情况</th></tr></thead>
+              <tbody id="pdfBatchRows"></tbody>
+            </table>
+          </div>
+          <div class="pdf-batch-controls">
+            <button id="pdfImportStart" type="button">开始导入所选文章</button>
+            <button id="pdfImportCancel" type="button">取消后续导入</button>
+            <progress id="pdfImportProgress" max="1" value="0" hidden></progress>
+          </div>
+        </section>
 
         <div class="comment-admin" id="commentAdmin" hidden>
           <div class="section-head small-head">
@@ -160,7 +197,10 @@
 
     <script src="articles-data.js?v=20260906-1"></script>
     <script src="config.js"></script>
-    <script src="api-client.js?v=20260831-1"></script>
+    <script src="api-client.js?v=20260919-2"></script>
+    <script src="pdf-import-core.js?v=20260919-6"></script>
+    <script src="pdf-inline-viewer.js?v=20260919-2"></script>
+    <script src="pdf-batch-import.js?v=20260919-6"></script>
     <script src="editor-auth.js?v=20260831-1"></script>
   </body>
 </html>
