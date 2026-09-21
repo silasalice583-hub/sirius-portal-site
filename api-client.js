@@ -179,7 +179,6 @@
       const source = element.dataset.localMediaSrc;
       try {
         element.src = await resolveMediaURL(source);
-        delete element.dataset.localMediaSrc;
       } catch (error) {
         console.warn("本地媒体读取失败", error);
       }

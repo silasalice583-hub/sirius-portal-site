@@ -194,6 +194,7 @@
       documentElement.setAttribute("contenteditable", "false");
     });
     container.querySelectorAll("img").forEach((image, index) => {
+      if (image.dataset.localMediaSrc) image.setAttribute("src", image.dataset.localMediaSrc);
       image.classList.add("article-content-image");
       image.loading = "lazy";
       image.decoding = "async";
@@ -238,10 +239,18 @@
     previewBody.querySelectorAll(".pdf-document").forEach((documentElement) => {
       if (sourcePdf) documentElement.dataset.pdfSrc = sourcePdf;
     });
+    window.SiriusAPI?.resolveLocalMediaElements?.(previewBody);
     window.SiriusPdfInlineViewer?.renderWithin(previewBody);
   }
 
   function command(name, value = null) {
+    const pdfResult = window.SiriusPdfInlineViewer?.formatActive?.(editor, name, value);
+    if (pdfResult) {
+      if (pdfResult === "unsupported") {
+        backendStatus.textContent = "当前工具不适用于 PDF 原版式文字；请选中文字并使用字体、字号、颜色、粗斜体或对齐工具。";
+      }
+      return;
+    }
     editor.focus();
     document.execCommand(name, false, value);
     refreshPreview();
@@ -253,6 +262,10 @@
   }
 
   function justifyAllArticleText() {
+    if (editor.querySelector(".pdf-document")) {
+      backendStatus.textContent = "原 PDF 版式不会自动改变全文对齐；请逐段调整，或改用可编辑网页正文模式。";
+      return;
+    }
     editableTextBlocks().forEach((block) => {
       block.style.textAlign = "justify";
       block.style.textAlignLast = "auto";
@@ -330,6 +343,7 @@
     const size = Math.min(100, Math.max(0, Math.round(Number(rawValue))));
     if (!Number.isFinite(size)) return;
     document.getElementById("fontSize").value = String(size);
+    if (window.SiriusPdfInlineViewer?.formatActive?.(editor, "fontSize", size)) return;
     editor.focus();
     restoreEditorSelection();
     const selection = window.getSelection();
@@ -550,7 +564,9 @@
     editor.querySelectorAll(".pdf-document").forEach((documentElement) => {
       if (article.sourcePdf) documentElement.dataset.pdfSrc = article.sourcePdf;
     });
-    window.SiriusPdfInlineViewer?.renderWithin(editor);
+    window.SiriusAPI?.resolveLocalMediaElements?.(editor);
+    window.SiriusPdfInlineViewer?.renderWithin(editor, { editable: true });
+    document.getElementById("pdfEditorHint").hidden = !editor.querySelector(".pdf-document");
     selectEditorImage(null);
     setPreviewCover(coverData);
     refreshPreview();
@@ -575,6 +591,7 @@
     setField("postExcerpt", "");
     document.getElementById("commentMode").value = "all";
     editor.innerHTML = "<h2>在这里输入文章正文</h2><p>可以保留原有段落对齐，也可以设置字体、字号、图片宽度，以及插入音视频。</p>";
+    document.getElementById("pdfEditorHint").hidden = true;
     selectEditorImage(null);
     setPreviewCover(coverData);
     refreshPreview();
@@ -1002,7 +1019,14 @@
   document.getElementById("articleMusicFile").addEventListener("change", (event) => uploadMediaField("articleMusic", event.target.files[0]));
   document.getElementById("articleVideoFile").addEventListener("change", (event) => uploadMediaField("articleVideo", event.target.files[0]));
   ["coverUrl", "postTitle", "postExcerpt"].forEach((id) => document.getElementById(id).addEventListener("input", refreshPreview));
-  editor.addEventListener("input", refreshPreview);
+  editor.addEventListener("input", (event) => {
+    if (event.target.closest?.(".pdf-editable-text")) return;
+    refreshPreview();
+  });
+  editor.addEventListener("sirius-pdf-edits-changed", () => {
+    refreshPreview();
+    autoSaveArticle();
+  });
   editor.addEventListener("click", (event) => selectEditorImage(event.target.closest("img")));
   document.getElementById("previewButton").addEventListener("click", refreshPreview);
   document.getElementById("publishButton").addEventListener("click", saveArticle);

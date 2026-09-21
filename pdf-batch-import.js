@@ -102,21 +102,35 @@
     try {
       const metadata = await pdf.getMetadata().catch(() => null);
       const documentTitle = String(metadata?.info?.Title || "").trim();
-      const firstPage = await pdf.getPage(1);
-      const content = await firstPage.getTextContent();
-      const rows = [];
-      for (const item of content.items) {
-        if (!item.str?.trim() || !item.transform) continue;
-        const y = Math.round(item.transform[5] / 4) * 4;
-        let row = rows.find((candidate) => candidate.y === y);
-        if (!row) { row = { y, parts: [] }; rows.push(row); }
-        row.parts.push({ x: item.transform[4], text: item.str });
+      const contents = [];
+      for (let number = 1; number <= Math.min(2, pdf.numPages); number += 1) {
+        const page = await pdf.getPage(number);
+        contents.push(await page.getTextContent());
       }
-      const words = rows.sort((a, b) => b.y - a.y)
-        .map((row) => row.parts.sort((a, b) => a.x - b.x).map((part) => part.text).join(""))
-        .join("\n").trim();
-      const prefix = documentTitle && !/^(?:untitled|无标题|未命名)$/i.test(documentTitle)
-        ? `${documentTitle}\n` : "";
+      let heading = "";
+      const words = contents.map((content, pageIndex) => {
+        const rows = [];
+        for (const item of content.items) {
+          if (!item.str?.trim() || !item.transform) continue;
+          const y = Math.round(item.transform[5] / 4) * 4;
+          let row = rows.find((candidate) => candidate.y === y);
+          if (!row) { row = { y, parts: [], size: 0 }; rows.push(row); }
+          row.size = Math.max(row.size, Math.hypot(item.transform[2], item.transform[3]));
+          row.parts.push({ x: item.transform[4], text: item.str });
+        }
+        rows.sort((a, b) => b.y - a.y);
+        const texts = rows.map((row) => row.parts.sort((a, b) => a.x - b.x).map((part) => part.text).join(""));
+        if (pageIndex === 0 && rows[0]?.size >= 12.5) {
+          heading = texts[0];
+          for (let i = 1; i < Math.min(4, rows.length); i += 1) {
+            if (heading.length < 28 || rows[i].size < rows[0].size * .97
+              || rows[i - 1].y - rows[i].y > rows[0].size * 3.5 || /[】”）)]$/.test(heading)) break;
+            heading += texts[i];
+          }
+        }
+        return texts.join("\n").trim();
+      }).join("\n");
+      const prefix = [heading, documentTitle && !/^(?:untitled|无标题|未命名)$/i.test(documentTitle) ? documentTitle : ""].filter(Boolean).join("\n") + "\n";
       if (words.length >= 16) return `${prefix}${words}`;
       const rendered = await renderPage(pdf, 1, 1.25);
       try {
@@ -156,7 +170,7 @@
           <td><input type="text" data-field="title" value="${core.escapeHTML(row.title)}" ${busy ? "disabled" : ""} /></td>
           <td><input type="date" data-field="date" value="${core.escapeHTML(row.date)}" ${busy ? "disabled" : ""} /></td>
           <td><input type="text" data-field="category" value="${core.escapeHTML(row.category)}" list="categoryOptions" ${busy ? "disabled" : ""} /></td>
-          <td class="${row.approximateDate ? "pdf-batch-warning" : ""}">${core.escapeHTML(row.message || (row.approximateDate ? "仅识别到部分日期，请核对" : row.recognizedBy))}</td>
+          <td class="${row.approximateDate || row.titleNeedsReview ? "pdf-batch-warning" : ""}">${core.escapeHTML(row.message || (row.titleNeedsReview ? "标题可能不完整，请核对" : row.approximateDate ? "仅识别到部分日期，请核对" : row.recognizedBy))}</td>
         </tr>
       `).join("");
       startButton.disabled = busy || !rows.some((row) => row.selected);
@@ -169,7 +183,7 @@
       element.dataset.status = row.status;
       const statusCell = element.lastElementChild;
       statusCell.textContent = row.message || row.recognizedBy;
-      statusCell.classList.toggle("pdf-batch-warning", row.approximateDate);
+      statusCell.classList.toggle("pdf-batch-warning", row.approximateDate || row.titleNeedsReview);
       element.querySelector('[data-field="selected"]').checked = row.selected;
     }
 
@@ -224,17 +238,13 @@
       const coveredCount = rows.filter((row) => row.coverFile).length;
       setSummary(`已选择 ${files.length} 个 PDF；${indexedCount} 个匹配拆分索引，${coveredCount} 个匹配同名封面。请核对后开始导入。`);
       for (const row of rows.filter((item) => !item.entry)) {
-        if (row.title !== "未命名PDF文章" && row.date && !row.approximateDate) {
-          row.message = "根据文件名/文件夹识别（可修改）";
-          updateRow(row);
-          continue;
-        }
         setSummary(`正在读取未匹配索引的 PDF 标题：${row.file.name}`);
         try {
           const text = await previewGenericPDF(row.file);
           const metadata = core.inferMetadata(row.file, null, text);
           Object.assign(row, metadata);
-          row.message = metadata.approximateDate ? "日期不完整，请核对" : "PDF文字/OCR";
+          row.message = metadata.titleNeedsReview ? "标题可能不完整，请核对"
+            : metadata.approximateDate ? "日期不完整，请核对" : "PDF文字/OCR";
         } catch (error) {
           row.message = `无法预览 PDF：${error.message || error}`;
           row.status = "error";
@@ -266,26 +276,50 @@
       const api = hooks.api;
       const showOriginal = document.getElementById("pdfImportKeepOriginal").checked;
       const archived = document.getElementById("pdfImportVisibility").value === "archived";
+      const layoutMode = document.getElementById("pdfImportLayout")?.value || "embedded";
       let succeeded = 0;
       let failed = 0;
       const categories = new Set();
       for (const row of selected) {
         if (cancelRequested) break;
         row.status = "working";
-        row.message = api.hasApi() ? "正在上传并嵌入原 PDF…" : "正在保存并嵌入原 PDF…";
+        row.message = layoutMode === "flow" ? "正在解析可编辑文字与正文图片…"
+          : (api.hasApi() ? "正在上传可编辑原版式 PDF…" : "正在保存可编辑原版式 PDF…");
         updateRow(row);
         setSummary(`正在导入 ${succeeded + failed + 1}/${selected.length}：${row.file.name}`);
         try {
-          const sourcePdf = await saveMediaFile(row.file, api, "原 PDF");
+          const previous = hooks.getArticles().find((article) => article.id === row.id) || {};
+          let html;
+          let conversion = null;
+          if (layoutMode === "flow") {
+            if (!window.SiriusPdfFlowImport?.convert) throw new Error("可编辑 PDF 转换组件没有加载，请刷新页面后重试");
+            conversion = await window.SiriusPdfFlowImport.convert(row.file, {
+              title: row.title,
+              catalogEntry: row.entry,
+              saveMedia: (file, label) => saveMediaFile(file, api, label),
+              onProgress: ({ message }) => {
+                row.message = message;
+                updateRow(row);
+              },
+            });
+            html = conversion.html;
+          } else {
+            html = core.pdfDocumentHTML(row.title);
+          }
+          if (!html.trim()) throw new Error("PDF 没有可识别的正文或图片");
+
+          let sourcePdf = "";
+          if (layoutMode === "embedded" || showOriginal) {
+            row.message = api.hasApi() ? "正在上传原 PDF…" : "正在保存原 PDF…";
+            updateRow(row);
+            sourcePdf = await saveMediaFile(row.file, api, "原 PDF");
+          }
           let importedCover = "";
           if (row.coverFile) {
             row.message = "正在上传同名封面…";
             updateRow(row);
             importedCover = await saveMediaFile(row.coverFile, api, "封面");
           }
-          const html = core.pdfDocumentHTML(row.title);
-          if (!html.trim()) throw new Error("PDF 没有可识别的正文或图片");
-          const previous = hooks.getArticles().find((article) => article.id === row.id) || {};
           const article = {
             ...previous,
             id: row.id,
@@ -298,12 +332,12 @@
             html,
             paragraphs: [],
             images: [],
-            pdfLayoutMode: "embedded-pdf",
+            pdfLayoutMode: layoutMode === "flow" ? "flow-html" : "embedded-pdf",
             contentType: "article",
             commentMode: previous.commentMode || "all",
             hot: Number(previous.hot || 0),
             sourcePdf,
-            showSourcePdf: showOriginal,
+            showSourcePdf: Boolean(showOriginal && sourcePdf),
             archived,
             archivedAt: archived ? (previous.archivedAt || new Date().toISOString()) : "",
           };
@@ -311,7 +345,10 @@
           hooks.onSaved(saved || article, succeeded + failed + 1);
           categories.add(article.category);
           row.status = "done";
-          row.message = `${archived ? "已保存到归档栏" : "已公开保存"}${importedCover ? "（含同名封面）" : ""}`;
+          const conversionNote = conversion
+            ? `，可编辑正文 ${conversion.textLength} 字、图片 ${conversion.imageCount} 张${conversion.warnings.length ? `；${conversion.warnings.length} 页使用 OCR` : ""}`
+            : "，原 PDF 版式（文字层可在编辑器修改）";
+          row.message = `${archived ? "已保存到归档栏" : "已公开保存"}${conversionNote}${importedCover ? "（含同名封面）" : ""}`;
           row.selected = false;
           succeeded += 1;
         } catch (error) {
@@ -343,6 +380,7 @@
       if (!rows[index] || !field || busy) return;
       rows[index][field] = field === "selected" ? event.target.checked : event.target.value;
       if (field === "date") rows[index].approximateDate = false;
+      if (field === "title") rows[index].titleNeedsReview = core.incompleteTitle(rows[index].title);
       startButton.disabled = !rows.some((row) => row.selected);
     });
     selectAll.addEventListener("change", () => {

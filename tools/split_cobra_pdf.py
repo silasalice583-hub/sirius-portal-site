@@ -155,7 +155,43 @@ def safe_name(title: str) -> str:
     title = re.sub(r"^【(?:柯博拉|Cobra)】", "", title, flags=re.I)
     title = re.sub(r'[<>:"/\\|?*\x00-\x1f]', "-", title)
     title = re.sub(r"\s+", " ", title).strip(" .-_—")
-    return title[:78].rstrip(" .-_—") or "未命名文章"
+    return title[:128].rstrip(" .-_—") or "未命名文章"
+
+
+def complete_heading(pages: list[dict], item: dict, minimum_lines: int = 1) -> str:
+    """Join a wrapped heading using its own type size, including a page break."""
+    title = item["text"].strip()
+    page_index, line_index = item["page"] - 1, item["line"]
+    previous = pages[page_index]["lines"][line_index]
+    for continuation in range(6):
+        if continuation + 1 >= minimum_lines and title.count("【") <= title.count("】") and len(compact(title)) >= len(compact(item.get("title", ""))):
+            break
+        line_index += 1
+        crossed_page = False
+        while page_index < len(pages):
+            lines = pages[page_index]["lines"]
+            while line_index < len(lines) and lines[line_index]["text"].strip().isdigit():
+                line_index += 1
+            if line_index < len(lines):
+                break
+            page_index += 1
+            line_index = 0
+            crossed_page = True
+        if page_index >= len(pages):
+            break
+        nxt = pages[page_index]["lines"][line_index]
+        if nxt["size"] < item["size"] * .88:
+            break
+        if not crossed_page and nxt["top"] - previous["bottom"] > max(36, item["size"] * 3):
+            break
+        value = nxt["text"].strip()
+        if re.match(r"^(?:【地球盟友】|https?://|原文[:：])", value):
+            break
+        separator = " " if re.search(r"[A-Za-z0-9]$", title) and re.match(r"[A-Za-z]", value) else ""
+        title += separator + value
+        previous = nxt
+    # The heading may be immediately followed by a source URL on the same line.
+    return re.split(r"[:：]?\s*https?://|主讲者[:：]", title, maxsplit=1)[0].strip()
 
 
 def make_plan() -> dict:
@@ -180,7 +216,12 @@ def make_plan() -> dict:
     for item in titles:
         page = pages[item["page"] - 1]
         lines = page["lines"]
-        title = TITLE_OVERRIDES.get(item["page"], item["text"])
+        following = lines[item["line"] + 1] if item["line"] + 1 < len(lines) else None
+        large_wrapped = ("【" not in item["text"] and len(compact(item["text"])) >= 28
+                         and item["size"] >= 12.5 and following
+                         and following["size"] >= item["size"] * .98
+                         and following["top"] - item["bottom"] < 26)
+        title = TITLE_OVERRIDES.get(item["page"], complete_heading(pages, item, minimum_lines=2 if large_wrapped else 1))
         # Preserve titles continued onto a second display line.
         i = item["line"]
         if item["page"] not in TITLE_OVERRIDES and i + 1 < len(lines):

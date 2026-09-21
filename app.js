@@ -615,6 +615,7 @@
     readerBody.querySelectorAll(".pdf-document").forEach((documentElement) => {
       if (sourcePdf) documentElement.dataset.pdfSrc = sourcePdf;
     });
+    window.SiriusAPI?.resolveLocalMediaElements?.(readerBody);
     window.SiriusPdfInlineViewer?.renderWithin(readerBody);
     $("#inlineMusic").innerHTML = article.music ? `<div class="audio-card"><p class="eyebrow">Article Music</p><audio src="${escapeHTML(article.music)}" controls></audio></div>` : "";
     if (article.video) $("#inlineMusic").innerHTML += `<div class="audio-card media-card"><p class="eyebrow">Article Video</p>${mediaHTML(article.video, article.title)}</div>`;
