@@ -220,7 +220,7 @@ test('mobile code effects override the legacy important motion reset only withou
   assert.match(exceptions, /\.matrix-transition \{ transition-duration: \.18s !important/);
   assert.match(exceptions, /\.matrix-progress span \{ animation-duration: \.65s !important/);
   const phone = css.slice(css.indexOf('@media(max-width:760px)'), css.indexOf('/* styles.css suppresses'));
-  assert.match(phone, /\.home-code-rain \{ opacity: \.72; mask-image: none; -webkit-mask-image: none/);
+  assert.match(phone, /\.home-code-rain \{ opacity: 1; mask-image: none; -webkit-mask-image: none/);
   assert.doesNotMatch(phone, /opacity: \.32|animation-duration: 26s/);
   // Original title translated at time / 45: approximately 22 CSS pixels/s.
   assert.ok(Math.abs(144 / 6.5 - 1000 / 45) < .1);
@@ -289,10 +289,25 @@ test('mobile home rain keeps its original density and hidden/reduced-motion beha
   const page = motionPage();
   page.intersect(true);
   const rain = page.rains[0];
-  assert.equal(rain.options.fps, 12); assert.equal(rain.options.spacing, 19); assert.equal(rain.options.opacity, .68);
+  assert.equal(rain.options.fps, 12); assert.equal(rain.options.spacing, 19); assert.equal(rain.options.opacity, .94);
   page.intersect(false); assert.ok(rain.stopped);
   page.intersect(true); assert.equal(page.rains.length, 2);
   const reduced = motionPage(true);
   assert.equal(reduced.nodes.length + reduced.timers.size + reduced.frames.jobs.size, 0);
   assert.equal(reduced.click('https://example.test/articles.html'), false);
+});
+
+test('Matrix transition uses a black terminal with emerald borders, code and luminous text', () => {
+  const theme = read('cosmic-refinement.css');
+  const terminal = theme.slice(theme.indexOf('/* Matrix terminal:'), theme.indexOf('@keyframes signalFill'));
+  assert.match(terminal, /\.matrix-transition \{ background: #000;/);
+  assert.match(terminal, /\.matrix-window \{[^}]*border: 1px solid #35ffa6;[^}]*background: #000d08f5;[^}]*box-shadow:/);
+  assert.doesNotMatch(terminal, /#ddffff|#effbff|#458bcc|matrix-controls|var\(--art-font\)/);
+  assert.match(ui, /SYSTEM LOADING/);
+  assert.doesNotMatch(ui, /matrix-controls/);
+  const page = motionPage(); page.frames.tick();
+  assert.equal(page.rains[0].options.opacity, .98);
+  assert.match(ui, /rgba\(24, 235, 146/);
+  assert.match(ui, /context.shadowColor = "#20ff9e"/);
+  assert.match(ui, /isMobile \? \(head \? 6 : 0\)/);
 });

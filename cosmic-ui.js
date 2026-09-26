@@ -120,7 +120,7 @@
       frame = 0;
       if (disposed || suspended || document.hidden) return;
       context.clearRect(0, 0, width, height);
-      context.font = `italic ${isMobile ? 13 : 15}px Consolas, "Courier New", monospace`;
+      context.font = `${isMobile ? 13 : 15}px Consolas, "Courier New", monospace`;
       context.textAlign = "center";
       for (let index = 0; index < columns.length; index += 1) {
         const column = columns[index];
@@ -131,15 +131,15 @@
         }
         for (let row = 0; row * lineHeight <= Math.min(height, column.depth); row += 1) {
           const y = row * lineHeight + 14;
-          const fading = 1 - (y / Math.max(height, column.depth)) * .62;
+          const fading = 1 - (y / Math.max(height, column.depth)) * (fluid ? .35 : .52);
           const head = column.depth - y < lineHeight * 1.5;
           const alpha = Math.min(1, opacity * column.brightness * fading * (head ? 1.08 : .86));
           const digit = (index * 17 + row * 29 + column.phase + Math.floor(time / 180)) % 11 < 5 ? "1" : "0";
-          context.fillStyle = fluid
-            ? (head ? `rgba(0, 175, 103, ${alpha})` : `rgba(0, 117, 68, ${alpha})`)
-            : (head ? `rgba(100, 255, 118, ${alpha})` : `rgba(32, 236, 58, ${alpha})`);
-          context.shadowColor = fluid ? "#31f394" : (head ? "#55ff73" : "#10d232");
-          context.shadowBlur = isMobile ? 0 : head ? 9 : 3;
+          context.fillStyle = head ? `rgba(174, 255, 218, ${alpha})` : `rgba(24, 235, 146, ${alpha})`;
+          context.shadowColor = "#20ff9e";
+          // Bright emerald everywhere; glow only the mobile leading glyphs
+          // so increased visibility does not add hundreds of blur passes.
+          context.shadowBlur = isMobile ? (head ? 6 : 0) : (head ? 9 : 3);
           const flowX = fluid ? Math.sin(y / 75 + time / 1250 + index / 6) * 9 : 0;
           context.fillText(digit, column.x + flowX, y);
         }
@@ -177,7 +177,7 @@
     const transition = document.createElement("div");
     transition.className = "matrix-transition";
     transition.setAttribute("aria-hidden", "true");
-    transition.innerHTML = `<canvas class="matrix-rain-canvas"></canvas><div class="matrix-scanline"></div><div class="matrix-window"><div class="matrix-titlebar"><span class="matrix-title">✧ Sirius Portal</span><span class="matrix-controls"><span>−</span><span>□</span><span>×</span></span></div><div class="matrix-window-body"><span class="matrix-window-icon">✧</span><div><strong>星际信号已连接</strong><p>SIGNAL CONNECTED · 正在开启旅程</p></div></div><div class="matrix-progress"><span></span></div></div>`;
+    transition.innerHTML = `<canvas class="matrix-rain-canvas"></canvas><div class="matrix-scanline"></div><div class="matrix-window"><div class="matrix-titlebar"><span class="matrix-title">SIRIUS // PORTAL</span><span class="matrix-status-code">[ ONLINE ]</span></div><div class="matrix-window-body"><span class="matrix-window-icon">&gt;_</span><div><strong>正在开启旅程</strong><p>SYSTEM LOADING<span class="matrix-terminal-cursor">_</span></p></div></div><div class="matrix-progress"><span></span></div></div>`;
     body.append(transition);
     let stopTransitionRain = null;
     let transitionTimer = null;
@@ -195,7 +195,7 @@
       clearTimeout(transitionCleanupTimer);
       transition.classList.add("is-active");
       stopTransitionRain?.();
-      stopTransitionRain = runBinaryRain(transition.querySelector("canvas"), { fps: isMobile ? 17 : 24, spacing: isMobile ? 17 : 18, opacity: .93 });
+      stopTransitionRain = runBinaryRain(transition.querySelector("canvas"), { fps: isMobile ? 17 : 24, spacing: isMobile ? 17 : 18, opacity: .98 });
       transitionTimer = setTimeout(() => {
         transition.classList.remove("is-active");
         transitionCleanupTimer = setTimeout(() => { stopTransitionRain?.(); stopTransitionRain = null; }, 280);
@@ -230,7 +230,7 @@
       let stopHomeRain = null;
       const observeHero = ([entry]) => {
         if (entry.isIntersecting && !stopHomeRain) {
-          stopHomeRain = runBinaryRain(codeLayer, { fps: isMobile ? 12 : 11, spacing: isMobile ? 19 : 20, opacity: .68, fluid: true });
+          stopHomeRain = runBinaryRain(codeLayer, { fps: isMobile ? 12 : 11, spacing: isMobile ? 19 : 20, opacity: .94, fluid: true });
         } else if (!entry.isIntersecting && stopHomeRain) {
           stopHomeRain();
           stopHomeRain = null;

@@ -235,20 +235,21 @@ body:is(.page-articles,.page-meditation) .site-disclaimer :is(#motionTitle,.site
 .page-home .site-disclaimer { --edge: #317f9480; color: #124960; }
 .page-home .site-disclaimer :is(#motionTitle,.site-disclaimer-kicker,.site-disclaimer-mark) { color: #164e64; }
 
-/* XP-inspired decorative signal window over bright emerald binary. */
-.matrix-transition { background: radial-gradient(circle at 50% 40%,#ddffff,#96d7ed 70%,#66bddf); }
-.matrix-scanline { opacity: .12; }
-.matrix-window { position: relative; z-index: 1; width: min(420px,calc(100vw - 36px)); border: 2px solid #458bcc; border-radius: 10px 10px 5px 5px; color: #15465e; background: #effbff; box-shadow: 0 15px 50px #25709244,inset 0 0 0 1px white; font-family: Tahoma,"Microsoft YaHei",sans-serif; }
-.matrix-titlebar { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 8px 10px; border-radius: 7px 7px 0 0; background: linear-gradient(#79c7fa,#357cd7 45%,#2467b6 75%,#559ddd); color: white; text-shadow: 0 1px 2px #205285; }
-.matrix-title { font-size: 13px; font-weight: bold; }.matrix-controls { display: flex; gap: 4px; }
-.matrix-controls span { display: grid; place-items: center; width: 19px; height: 19px; border: 1px solid white; border-radius: 3px; font: 14px/1 Arial; }
-.matrix-controls span:last-child { background: linear-gradient(#e6a196,#cf5747); }
+/* Matrix terminal: true black field, luminous emerald code and framing. */
+.matrix-transition { background: #000; color: #63ffc0; }
+.matrix-rain-canvas { opacity: .98; }
+.matrix-scanline { opacity: .1; background: repeating-linear-gradient(0deg,transparent 0 3px,#27ff941f 4px,transparent 5px); }
+.matrix-window { position: relative; z-index: 1; width: min(420px,calc(100vw - 36px)); border: 1px solid #35ffa6; border-radius: 3px; color: #79ffbf; background: #000d08f5; box-shadow: 0 0 9px #1dff9b99,0 0 30px #11e58044,inset 0 0 18px #0ff18b14; font-family: Consolas,"Courier New","Microsoft YaHei",monospace; text-shadow: 0 0 5px #20ff9e88; }
+.matrix-titlebar { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 14px; border-bottom: 1px solid #2cff9270; background: #03180f; color: #75ffc0; }
+.matrix-title { font-size: 12px; font-weight: bold; letter-spacing: .1em; }
+.matrix-status-code { font-size: 10px; white-space: nowrap; color: #42fba3; }
 .matrix-window-body { display: flex; align-items: center; gap: 17px; padding: 25px 23px 16px; }
-.matrix-window-icon { color: #2296b3; font-size: 47px; text-shadow: 0 0 10px #7ae7ff; }
-.matrix-window-body strong { font: 700 20px/1.5 var(--art-font); letter-spacing: .08em; }
-.matrix-window-body p { font-size: 10px; letter-spacing: .06em; margin: 8px 0 0; }
-.matrix-progress { height: 12px; margin: 0 25px 23px; border: 1px solid #7bb0b7; border-radius: 3px; padding: 2px; }
-.matrix-progress span { display: block; height: 100%; background: repeating-linear-gradient(90deg,#1db27b 0 10px,transparent 10px 13px); animation: signalFill .7s ease-out both; transform-origin: left; }
+.matrix-window-icon { color: #49ffac; font-size: 32px; text-shadow: 0 0 8px #20ff9e; }
+.matrix-window-body strong { font: 700 20px/1.5 Consolas,"Microsoft YaHei",monospace; letter-spacing: .08em; color: #b0ffdb; }
+.matrix-window-body p { font-size: 11px; letter-spacing: .13em; margin: 8px 0 0; color: #4affad; }
+.matrix-terminal-cursor { padding-left: .3em; color: #c3ffe1; }
+.matrix-progress { height: 12px; margin: 0 25px 23px; border: 1px solid #29ec97; border-radius: 1px; padding: 2px; background: #001108; box-shadow: 0 0 7px #13eb8d44; }
+.matrix-progress span { display: block; height: 100%; background: repeating-linear-gradient(90deg,#36ffa3 0 10px,transparent 10px 13px); box-shadow: 0 0 7px #20ff9e88; animation: signalFill .7s ease-out both; transform-origin: left; }
 @keyframes signalFill { from { transform: scaleX(.08); } to { transform: scaleX(1); } }
 .cosmic-pen { width: 44px; height: 70px; filter: drop-shadow(0 0 5px #e7f6df); }
 .cosmic-pen img,.cosmic-click-symbol img { display: block; width: 100%; height: 100%; }

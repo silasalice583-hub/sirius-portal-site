@@ -75,3 +75,11 @@ node --test tests/pdf-transparency.test.js tests/background-scenes.test.js tests
 ```text
 node --test tests/public-experience.test.js tests/background-scenes.test.js tests/portal-interactions.test.js tests/pdf-performance.test.js tests/pdf-import.test.js tests/pdf-transparency.test.js tests/author-pdf-posts.test.js
 ```
+
+### 随后修正：黑底翠绿终端与更清晰的手机代码雨（2026-09-27 matrix3）
+
+- 换页改为纯黑底，载入框使用近黑底色、翠绿色发光边框/文字和分段进度条；移除旧浅蓝 XP 窗框与装饰控制按钮。首页与换页数字统一为明亮翠绿，前导数字带浅翠绿光晕。
+- 首页代码雨 Canvas 基础不透明度由 .68 提高至 .94，手机图层由 .72 提高至 1，桌面图层改为 .92；减轻下部衰减，保留手机无额外遮罩。手机仅前导字形使用光晕，避免每个数字都执行模糊。
+- 首页标题加强翠绿渐变与发光，保留 motion2 恢复的 6.5 秒流速、12fps 手机代码雨、660ms 入场和 420ms 导航等待；减少动态效果、后台暂停和离屏清理逻辑不变。
+- 5 个公共入口统一更新相关 CSS/JS 的 matrix3 缓存版本。61/61 自动化回归通过，JavaScript 语法检查与 Git 空白检查通过。
+- 使用实际 Canvas 绘制函数在 390×844 尺寸静态检查首页地球上的代码和黑底代码颜色/清晰度；此检查不包括浏览器排版及动态播放。浏览器连接仍失败，桌面浏览器和手机真机动态视觉验收仍待完成。
