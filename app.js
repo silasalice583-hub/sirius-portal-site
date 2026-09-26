@@ -356,6 +356,14 @@
     document.documentElement.dataset.logoMotion = page.logoMotion || "strong";
     const setResponsiveImage = (image, source, defaultSource, mobileSource, sizes, mobileWidth, desktopWidth) => {
       if (!image) return;
+      // The 640px transparent WebP is sufficient for the 200–340px medal.
+      // Avoid downloading the 5.6MB original on high-DPI phones/desktops.
+      if (image.id === "heroLogoImage" && source === defaultSource) {
+        image.src = mobileSource;
+        image.removeAttribute("srcset");
+        image.removeAttribute("sizes");
+        return;
+      }
       image.src = source;
       if (source === defaultSource) {
         image.srcset = `${mobileSource} ${mobileWidth}w, ${defaultSource} ${desktopWidth}w`;
@@ -449,6 +457,25 @@
       categoryList.setAttribute("aria-label", "文章分类，可左右拖动或滚轮切换");
       let drag = null;
       let ignoreClickUntil = 0;
+      const selectSettledCategory = () => {
+        if (drag?.moved || performance.now() < categoryProgrammaticUntil) return;
+        const rect = categoryList.getBoundingClientRect();
+        const middle = rect.left + rect.width / 2;
+        const closest = [...categoryList.children].reduce((best, item) => {
+          const box = item.getBoundingClientRect();
+          const distance = Math.abs(box.left + box.width / 2 - middle);
+          return !best || distance < best.distance ? { item, distance } : best;
+        }, null)?.item;
+        if (!closest || closest.dataset.category === currentCategory) return;
+        currentCategory = closest.dataset.category;
+        currentPage = 1;
+        renderCategories(false, false);
+        renderGrid();
+      };
+      const scheduleCategorySelection = () => {
+        clearTimeout(categoryScrollTimer);
+        categoryScrollTimer = setTimeout(selectSettledCategory, 160);
+      };
       categoryList.addEventListener("dragstart", (event) => event.preventDefault());
       categoryList.addEventListener("pointerdown", (event) => {
         if (event.pointerType !== "mouse" || event.button !== 0) return;
@@ -466,19 +493,25 @@
       });
       const finishDrag = () => {
         if (!drag) return;
-        if (drag.moved) ignoreClickUntil = performance.now() + 300;
-        if (categoryList.hasPointerCapture(drag.pointer)) categoryList.releasePointerCapture(drag.pointer);
+        const ended = drag;
         drag = null;
+        if (ended.moved) {
+          ignoreClickUntil = performance.now() + 300;
+          scheduleCategorySelection();
+        }
+        if (categoryList.hasPointerCapture(ended.pointer)) categoryList.releasePointerCapture(ended.pointer);
         categoryList.classList.remove("is-dragging");
       };
       categoryList.addEventListener("pointerup", finishDrag);
       categoryList.addEventListener("pointercancel", finishDrag);
+      categoryList.addEventListener("lostpointercapture", finishDrag);
+      categoryList.addEventListener("pointerleave", () => { if (drag && !drag.moved) finishDrag(); });
       categoryList.addEventListener("click", (event) => {
         if (performance.now() < ignoreClickUntil) { event.preventDefault(); event.stopImmediatePropagation(); }
       }, true);
       categoryList.addEventListener("wheel", (event) => {
         if (event.ctrlKey) return;
-        const delta = (Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY) * (event.deltaMode === 1 ? 16 : 1);
+        const delta = (Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY) * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? categoryList.clientWidth : 1);
         const edge = categoryList.scrollWidth - categoryList.clientWidth;
         if ((delta < 0 && categoryList.scrollLeft <= 1) || (delta > 0 && categoryList.scrollLeft >= edge - 1)) return;
         event.preventDefault();
@@ -486,24 +519,7 @@
         categoryList.scrollLeft += delta;
       }, { passive: false });
       // Scroll snapping also selects the category on touchscreens and trackpads.
-      categoryList.addEventListener("scroll", () => {
-        clearTimeout(categoryScrollTimer);
-        categoryScrollTimer = setTimeout(() => {
-          if (performance.now() < categoryProgrammaticUntil) return;
-          const rect = categoryList.getBoundingClientRect();
-          const middle = rect.left + rect.width / 2;
-          const closest = [...categoryList.children].reduce((best, item) => {
-            const box = item.getBoundingClientRect();
-            const distance = Math.abs(box.left + box.width / 2 - middle);
-            return !best || distance < best.distance ? { item, distance } : best;
-          }, null)?.item;
-          if (!closest || closest.dataset.category === currentCategory) return;
-          currentCategory = closest.dataset.category;
-          currentPage = 1;
-          renderCategories(false, false);
-          renderGrid();
-        }, 160);
-      }, { passive: true });
+      categoryList.addEventListener("scroll", scheduleCategorySelection, { passive: true });
     }
     categoryList.querySelectorAll("[data-category]").forEach((button) => {
       const active = button.dataset.category === currentCategory;
@@ -552,7 +568,7 @@
   function startHotRotation() {
     const hot = hotArticles();
     if (hotTimer) clearInterval(hotTimer);
-    if (mobileLayout.matches) return;
+    if (mobileLayout.matches || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if (hot.length < 2) return;
     hotTimer = setInterval(() => {
       if (document.hidden || !$("#reader")?.hidden) return;
@@ -910,10 +926,13 @@
       history.replaceState(null, "", "articles.html");
     });
 
+    let searchTimer;
     $("#articleSearchInput")?.addEventListener("input", (event) => {
+      clearTimeout(searchTimer);
+      if (event.isComposing) return;
       currentQuery = event.target.value.trim();
       currentPage = 1;
-      renderGrid();
+      searchTimer = setTimeout(renderGrid, 140);
     });
 
     $("#sortSelect")?.addEventListener("change", (event) => {

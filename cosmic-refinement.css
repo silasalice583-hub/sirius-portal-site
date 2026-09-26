@@ -15,6 +15,28 @@ body:is(.page-articles,.page-meditation) { background: #215b86 !important; color
 .cosmic-photo.is-visible { opacity: 1; }
 /* The supplied Medusa alternative fills Gemini's scene without letterboxing. */
 .cosmic-photo { background-size: cover; background-repeat: no-repeat; }
+/* Portrait photographs need individual framing, not a shared centre crop.
+   On phones the nebula rim / Milky Way and horizon remain the focal points. */
+.cosmic-photo[data-scene="medusa-nebula"] { --portrait-ratio: .960059; background-position: 32% center; }
+.cosmic-photo[data-scene="milky-way-nevada"] { --portrait-ratio: .714075; background-position: 58% 90%; }
+@media (min-aspect-ratio: 1/1) {
+  /* Preserve the entire sharp portrait vertically. The same photograph fills
+     the sides softly, so there are no black bars or stretched stars. Both
+     sublayers belong to the photo's existing crossfade, including on rotation. */
+  .cosmic-photo:is([data-scene="medusa-nebula"],[data-scene="milky-way-nevada"])::before {
+    content: ""; position: absolute; inset: -24px;
+    background-image: inherit; background-size: cover; background-position: inherit;
+    background-repeat: no-repeat; filter: blur(6px);
+  }
+  .cosmic-photo:is([data-scene="medusa-nebula"],[data-scene="milky-way-nevada"])::after {
+    content: ""; position: absolute; top: 0; left: 50%; height: 100%;
+    aspect-ratio: var(--portrait-ratio); width: auto; transform: translateX(-50%);
+    background-image: inherit; background-size: contain; background-position: center;
+    background-repeat: no-repeat;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
+  }
+}
 body:is(.page-home,.page-about,.page-articles,.page-meditation) .site-header {
   background: transparent !important; backdrop-filter: none !important;
   box-shadow: none; border: 0;

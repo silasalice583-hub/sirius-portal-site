@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="144" viewBox="0 0 96 144">
+  <defs>
+    <pattern id="code" width="48" height="72" patternUnits="userSpaceOnUse">
+      <g fill="#b8ffe5" fill-opacity=".6" font-family="monospace" font-size="11">
+        <text x="1" y="12">0</text><text x="1" y="30">1</text><text x="1" y="48">0</text><text x="1" y="66">1</text>
+        <text x="17" y="3">1</text><text x="17" y="21">0</text><text x="17" y="39">1</text><text x="17" y="57">0</text>
+        <text x="33" y="12">1</text><text x="33" y="30">1</text><text x="33" y="48">0</text><text x="33" y="66">0</text>
+      </g>
+    </pattern>
+  </defs>
+  <path fill="url(#code)" d="M0 0h96v144H0z"/>
+</svg>

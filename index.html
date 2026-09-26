@@ -6,8 +6,10 @@
     <title>天狼星门户</title>
     <link rel="stylesheet" href="styles.css?v=20260926-final3" />
     <link rel="stylesheet" href="cosmic-theme.css?v=20260926-final3" />
-    <link rel="stylesheet" href="cosmic-refinement.css?v=20260926-scene2" />
-    <link rel="stylesheet" href="interaction-refinement.css?v=20260926-final3" />
+    <link rel="stylesheet" href="cosmic-refinement.css?v=20260926-framing1" />
+    <link rel="stylesheet" href="interaction-refinement.css?v=20260926-touch1" />
+    <link rel="preload" as="image" href="assets/space/earth-mobile.webp" media="(max-width: 760px), (pointer: coarse)" fetchpriority="high" />
+    <link rel="preload" as="image" href="assets/space/earth.webp" media="(min-width: 761px) and (pointer: fine)" fetchpriority="high" />
   </head>
   <body class="page-home">
     <header class="site-header">
@@ -30,7 +32,7 @@
       <section class="hero home-hero" id="home">
         <div class="hero-inner">
           <div class="hero-art-card">
-            <img id="heroLogoImage" src="assets/logo-original.png" srcset="assets/mobile/logo-original.webp 640w, assets/logo-original.png 2048w" sizes="(max-width: 760px) 57vw, 340px" alt="天狼星门户图标勋章" decoding="async" />
+            <img id="heroLogoImage" src="assets/mobile/logo-original.webp" width="640" height="640" alt="天狼星门户图标勋章" decoding="async" fetchpriority="high" />
           </div>
           <div class="hero-copy">
             <h1 id="heroTitle">天狼星门户</h1>
@@ -60,11 +62,10 @@
     </footer>
 
     <audio id="backgroundAudio" preload="none"></audio>
-    <script src="articles-data.js?v=20260906-1"></script>
-    <script src="config.js?v=20260926-final3"></script>
-    <script src="api-client.js?v=20260926-final3"></script>
-    <script src="app.js?v=20260926-scene2"></script>
-    <script src="cosmic-ui.js?v=20260926-scene2"></script>
-    <script src="home-title.js?v=20260926-final3"></script>
+    <script defer src="cosmic-ui.js?v=20260926-touch1"></script>
+    <script defer src="config.js?v=20260926-final3"></script>
+    <script defer src="api-client.js?v=20260926-touch1"></script>
+    <script defer src="app.js?v=20260926-touch1"></script>
+    <script defer src="home-title.js?v=20260926-touch1"></script>
   </body>
 </html>

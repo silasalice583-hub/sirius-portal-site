@@ -414,21 +414,22 @@
     };
   }
 
+  let pendingStateRequest = null;
   async function loadState() {
     if (!hasApi()) return localState();
-    try {
-      return cleanState({ ...(await request("/api/state")), source: "api" });
-    } catch (error) {
-      console.warn("API state load failed:", error);
-      if (canUseLocalFallback()) return localState();
-      return {
-        articles: [],
-        settings: {},
-        comments: {},
-        source: "api-error",
-        apiError: error.message,
-      };
+    // app.js and the meditation controllers start together. Share only the
+    // in-flight request, not a persistent snapshot that could hide new posts.
+    if (!pendingStateRequest) {
+      pendingStateRequest = request("/api/state")
+        .then((state) => cleanState({ ...state, source: "api" }))
+        .catch((error) => {
+          console.warn("API state load failed:", error);
+          if (canUseLocalFallback()) return localState();
+          return { articles: [], settings: {}, comments: {}, source: "api-error", apiError: error.message };
+        })
+        .finally(() => { pendingStateRequest = null; });
     }
+    return pendingStateRequest;
   }
 
   async function loadVersion() {

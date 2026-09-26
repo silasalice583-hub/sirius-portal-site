@@ -52,3 +52,18 @@ node --test tests/portal-interactions.test.js tests/pdf-performance.test.js test
 ```text
 node --test tests/pdf-transparency.test.js tests/background-scenes.test.js tests/portal-interactions.test.js tests/pdf-performance.test.js tests/pdf-import.test.js tests/author-pdf-posts.test.js
 ```
+
+## 2026-09-27 追加验收：两张竖图、手机标题与操作性能
+
+- Medusa 与 Nevada 横屏使用完整高度的清晰等比主画面，两侧同图延展并轻微模糊、羽化衔接；不放大裁掉星云主体/银河地平线。手机保持铺满及独立取景。已检查 1440×900、390×844、2560×1080 的静态构图对比；这是构图计算预览，并非浏览器实测。
+- 标题不再叠加独立 Canvas 字形，改为小型 SVG 代码纹理直接 `background-clip:text`；实际 DOM 负责字体、换行和自定义标题。手机低速、较疏的代码流与稳定翠绿字形，减少运动设置时静止。
+- 图片禁选/禁拖，同时保留图片链接点击、正文/PDF 选择复制。触屏主要按钮至少 44px，分类拖动松手后选择，取消/丢失捕获时复位；滚轮至首尾后不阻挡纵向页面滚动；中文搜索输入期间不抢占输入法。
+- 首页、关于页、集体冥想页移除不使用的 2,677,437 字节内置文章脚本。默认首页标志使用现有 85,368 字节透明 WebP，避免高 DPR 时选择 5,656,878 字节 PNG；用户自定义标志不替换。原始素材未删除。
+- 背景首图按桌面/手机互斥预载并高优先级解码，首图立即显示，后续保留渐变；解码完成后仍检查请求时序。公共脚本有序延后执行，背景脚本不再等待文章库。移除首次载入的强制动画遮挡，缩短点击导航等待。
+- 首页背景代码手机 6fps，定时器按需唤醒，非 60fps 空转；取消每帧布局读取；首屏离屏/标签隐藏/历史缓存时停止，返回时恢复。首页标题无需 JS 帧循环。冥想并发状态读取合并为一个正在进行的请求，后续读取仍请求新状态，无新增持久文章缓存。
+- 自动化回归 57/57 通过。范围包含图层请求竞争、异步解码失败回退、标题生命周期、动画清理、图片拖动、桌面分类释放/误触、触屏原生滚动、输入法、数据请求新鲜度，以及原分页、音乐和 PDF 用例。
+- 浏览器工具连接失败，仍未完成页面操作截图、真实手机性能/视觉验收；不宣称已测得首屏加载秒数或帧率提升百分比。
+
+```text
+node --test tests/public-experience.test.js tests/background-scenes.test.js tests/portal-interactions.test.js tests/pdf-performance.test.js tests/pdf-import.test.js tests/pdf-transparency.test.js tests/author-pdf-posts.test.js
+```

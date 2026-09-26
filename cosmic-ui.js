@@ -32,19 +32,28 @@
     let sceneRevision = 0;
     let photoRequest = 0;
     let sceneKey = "";
-    const showPhoto = (name, revision) => {
+    const showPhoto = (name, revision, priority = "auto") => {
       const request = ++photoRequest;
       const nextPhoto = photograph(name);
       const preload = new Image();
-      preload.onload = () => {
+      preload.decoding = "async";
+      preload.fetchPriority = backdrop.dataset.scene ? priority : "high";
+      const reveal = () => {
         if (revision !== sceneRevision || request !== photoRequest) return;
         const incoming = 1 - activeLayer;
+        // First paint should be immediate; only later slides crossfade.
+        layers.forEach((layer) => { layer.style.transition = backdrop.dataset.scene ? "" : "none"; });
         layers[incoming].dataset.scene = name;
         layers[incoming].style.backgroundImage = `url("${nextPhoto}")`;
         layers[incoming].classList.add("is-visible");
         layers[activeLayer].classList.remove("is-visible");
         activeLayer = incoming;
         backdrop.dataset.scene = name;
+      };
+      // Decode before crossfading, but never let an older decode win a race.
+      preload.onload = () => {
+        if (typeof preload.decode === "function") preload.decode().then(reveal, reveal);
+        else reveal();
       };
       preload.src = nextPhoto;
     };
@@ -69,7 +78,7 @@
       setInterval(() => {
         if (document.hidden || activePair.length < 2 || document.querySelector("#reader:not([hidden])")) return;
         photoIndex = (photoIndex + 1) % activePair.length;
-        showPhoto(activePair[photoIndex], sceneRevision);
+        showPhoto(activePair[photoIndex], sceneRevision, "low");
       }, 16000);
     }
   }
@@ -80,7 +89,9 @@
     const context = canvas.getContext("2d", { alpha: true });
     if (!context) return () => {};
     let frame = 0;
-    let lastDraw = 0;
+    let timer = 0;
+    let suspended = false;
+    let disposed = false;
     let columns = [];
     let width = 0;
     let height = 0;
@@ -101,10 +112,13 @@
         phase: Math.floor(Math.random() * 31),
       }));
     };
+    const schedule = () => {
+      if (disposed || suspended || document.hidden) return;
+      timer = setTimeout(() => { frame = requestAnimationFrame(draw); }, 1000 / fps);
+    };
     const draw = (time) => {
-      frame = requestAnimationFrame(draw);
-      if (document.hidden || time - lastDraw < 1000 / fps) return;
-      lastDraw = time;
+      frame = 0;
+      if (disposed || suspended || document.hidden) return;
       context.clearRect(0, 0, width, height);
       context.font = `italic ${isMobile ? 13 : 15}px Consolas, "Courier New", monospace`;
       context.textAlign = "center";
@@ -120,24 +134,40 @@
           const fading = 1 - (y / Math.max(height, column.depth)) * .62;
           const head = column.depth - y < lineHeight * 1.5;
           const alpha = Math.min(1, opacity * column.brightness * fading * (head ? 1.08 : .86));
-          const digit = (index * 17 + row * 29 + column.phase + Math.floor(time / 180)) % 11 < 5 ? "1" : "0";
+          const digit = (index * 17 + row * 29 + column.phase + Math.floor(time / (isMobile ? 480 : 240))) % 11 < 5 ? "1" : "0";
           context.fillStyle = fluid
             ? (head ? `rgba(0, 175, 103, ${alpha})` : `rgba(0, 117, 68, ${alpha})`)
             : (head ? `rgba(100, 255, 118, ${alpha})` : `rgba(32, 236, 58, ${alpha})`);
           context.shadowColor = fluid ? "#31f394" : (head ? "#55ff73" : "#10d232");
-          context.shadowBlur = head ? 9 : 3;
+          context.shadowBlur = isMobile ? 0 : head ? 9 : 3;
           const flowX = fluid ? Math.sin(y / 75 + time / 1250 + index / 6) * 9 : 0;
           context.fillText(digit, column.x + flowX, y);
         }
       }
       context.shadowBlur = 0;
+      schedule();
     };
+    const pause = () => { clearTimeout(timer); cancelAnimationFrame(frame); frame = 0; };
+    const resume = () => { pause(); schedule(); };
+    const hide = () => { suspended = true; pause(); };
+    const show = () => { suspended = false; resume(); };
     resize();
-    addEventListener("resize", resize, { passive: true });
-    frame = requestAnimationFrame(draw);
+    // ResizeObserver ignores mobile browser-chrome scroll/resize noise.
+    const observer = typeof ResizeObserver === "function" ? new ResizeObserver(resize) : null;
+    if (observer) observer.observe(canvas);
+    else addEventListener("resize", resize, { passive: true });
+    document.addEventListener("visibilitychange", resume);
+    addEventListener("pagehide", hide);
+    addEventListener("pageshow", show);
+    schedule();
     return () => {
-      cancelAnimationFrame(frame);
+      disposed = true;
+      pause();
+      observer?.disconnect();
       removeEventListener("resize", resize);
+      document.removeEventListener("visibilitychange", resume);
+      removeEventListener("pagehide", hide);
+      removeEventListener("pageshow", show);
       context.clearRect(0, 0, width, height);
     };
   }
@@ -160,7 +190,7 @@
         setTimeout(() => { stopTransitionRain?.(); stopTransitionRain = null; }, 280);
       }, duration);
     };
-    requestAnimationFrame(() => playTransition(660));
+    // Do not cover every first paint with an artificial loading screen.
     document.addEventListener("click", (event) => {
       const link = event.target.closest("a[href]");
       if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey
@@ -169,7 +199,7 @@
       if (destination.origin !== location.origin || destination.pathname === location.pathname) return;
       event.preventDefault();
       playTransition(520);
-      setTimeout(() => { location.href = destination.href; }, 380);
+      setTimeout(() => { location.href = destination.href; }, isMobile ? 80 : 140);
     });
     const homeHero = document.querySelector(".page-home .home-hero");
     if (homeHero) {
@@ -180,13 +210,13 @@
       let stopHomeRain = null;
       const observeHero = ([entry]) => {
         if (entry.isIntersecting && !stopHomeRain) {
-          stopHomeRain = runBinaryRain(codeLayer, { fps: isMobile ? 8 : 11, spacing: isMobile ? 19 : 20, opacity: .68, fluid: true });
+          stopHomeRain = runBinaryRain(codeLayer, { fps: isMobile ? 6 : 11, spacing: isMobile ? 32 : 20, opacity: isMobile ? .36 : .68, fluid: true });
         } else if (!entry.isIntersecting && stopHomeRain) {
           stopHomeRain();
           stopHomeRain = null;
         }
       };
-      if ("IntersectionObserver" in window) new IntersectionObserver(observeHero).observe(body);
+      if ("IntersectionObserver" in window) new IntersectionObserver(observeHero).observe(homeHero);
       else observeHero([{ isIntersecting: true }]);
     }
   }
@@ -236,6 +266,12 @@
       symbol.addEventListener("animationend", () => symbol.remove(), { once: true });
     }, { passive: true });
   }
+
+  // Delegation also covers article images inserted after loading or pagination.
+  // Keep image clicks and all text-selection/context-menu behaviour intact.
+  document.addEventListener("dragstart", (event) => {
+    if (event.target.closest?.("img")) event.preventDefault();
+  });
 
   const navPaths = {
     "index.html": '<path d="M12 2.5 22 12l-10 9.5L2 12Z"/><circle cx="12" cy="12" r="5"/><path d="M12 5v14M5 12h14"/>',
