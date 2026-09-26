@@ -30,7 +30,7 @@ test('all live astronomical scenes have desktop and mobile images; Jupiter is no
 test('all public entry points receive final interaction styles and existing local resources', () => {
   for (const file of ['index.html','articles.html','about.html','meditation.html','collective-meditation.html','publisher.html','site-editor.html']) {
     const html = fs.readFileSync(path.join(root, file), 'utf8');
-    if (!/publisher|site-editor/.test(file)) assert.match(html, /interaction-refinement.css\?v=20260926-touch1/);
+    if (!/publisher|site-editor/.test(file)) assert.match(html, /interaction-refinement.css\?v=20260927-motion2/);
     for (const match of html.matchAll(/(?:src|href)="([^"?#]+)(?:\?[^"#]*)?"/g)) {
       const resource = match[1];
       if (/^(?:https?:|#|mailto:|data:)/.test(resource)) continue;

@@ -134,7 +134,7 @@
           const fading = 1 - (y / Math.max(height, column.depth)) * .62;
           const head = column.depth - y < lineHeight * 1.5;
           const alpha = Math.min(1, opacity * column.brightness * fading * (head ? 1.08 : .86));
-          const digit = (index * 17 + row * 29 + column.phase + Math.floor(time / (isMobile ? 480 : 240))) % 11 < 5 ? "1" : "0";
+          const digit = (index * 17 + row * 29 + column.phase + Math.floor(time / 180)) % 11 < 5 ? "1" : "0";
           context.fillStyle = fluid
             ? (head ? `rgba(0, 175, 103, ${alpha})` : `rgba(0, 117, 68, ${alpha})`)
             : (head ? `rgba(100, 255, 118, ${alpha})` : `rgba(32, 236, 58, ${alpha})`);
@@ -159,7 +159,8 @@
     document.addEventListener("visibilitychange", resume);
     addEventListener("pagehide", hide);
     addEventListener("pageshow", show);
-    schedule();
+    // Paint immediately, especially for the short mobile page transition.
+    draw(0);
     return () => {
       disposed = true;
       pause();
@@ -180,17 +181,34 @@
     body.append(transition);
     let stopTransitionRain = null;
     let transitionTimer = null;
+    let transitionCleanupTimer = null;
+    let navigationTimer = null;
+    const stopTransition = () => {
+      clearTimeout(transitionTimer);
+      clearTimeout(transitionCleanupTimer);
+      transition.classList.remove("is-active");
+      stopTransitionRain?.();
+      stopTransitionRain = null;
+    };
     const playTransition = (duration) => {
       clearTimeout(transitionTimer);
+      clearTimeout(transitionCleanupTimer);
       transition.classList.add("is-active");
       stopTransitionRain?.();
       stopTransitionRain = runBinaryRain(transition.querySelector("canvas"), { fps: isMobile ? 17 : 24, spacing: isMobile ? 17 : 18, opacity: .93 });
       transitionTimer = setTimeout(() => {
         transition.classList.remove("is-active");
-        setTimeout(() => { stopTransitionRain?.(); stopTransitionRain = null; }, 280);
+        transitionCleanupTimer = setTimeout(() => { stopTransitionRain?.(); stopTransitionRain = null; }, 280);
       }, duration);
     };
-    // Do not cover every first paint with an artificial loading screen.
+    // Keep the original visible entrance, including direct mobile visits.
+    const entranceFrame = requestAnimationFrame(() => playTransition(660));
+    addEventListener("pagehide", () => {
+      cancelAnimationFrame(entranceFrame);
+      clearTimeout(navigationTimer);
+      stopTransition();
+    });
+    addEventListener("pageshow", (event) => { if (event.persisted) stopTransition(); });
     document.addEventListener("click", (event) => {
       const link = event.target.closest("a[href]");
       if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey
@@ -198,8 +216,10 @@
       const destination = new URL(link.href, location.href);
       if (destination.origin !== location.origin || destination.pathname === location.pathname) return;
       event.preventDefault();
-      playTransition(520);
-      setTimeout(() => { location.href = destination.href; }, isMobile ? 80 : 140);
+      clearTimeout(navigationTimer);
+      playTransition(700);
+      // Allow the fade-in and several code-rain frames before leaving.
+      navigationTimer = setTimeout(() => { location.href = destination.href; }, 420);
     });
     const homeHero = document.querySelector(".page-home .home-hero");
     if (homeHero) {
@@ -210,7 +230,7 @@
       let stopHomeRain = null;
       const observeHero = ([entry]) => {
         if (entry.isIntersecting && !stopHomeRain) {
-          stopHomeRain = runBinaryRain(codeLayer, { fps: isMobile ? 6 : 11, spacing: isMobile ? 32 : 20, opacity: isMobile ? .36 : .68, fluid: true });
+          stopHomeRain = runBinaryRain(codeLayer, { fps: isMobile ? 12 : 11, spacing: isMobile ? 19 : 20, opacity: .68, fluid: true });
         } else if (!entry.isIntersecting && stopHomeRain) {
           stopHomeRain();
           stopHomeRain = null;

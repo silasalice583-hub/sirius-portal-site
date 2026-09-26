@@ -50,7 +50,7 @@ test('title texture uses the real text and pauses offscreen, hidden and across h
   assert.equal(title.textContent, '天狼星门户');
   assert.doesNotMatch(read('home-title.js'), /requestAnimationFrame|getBoundingClientRect|fillText/);
   assert.match(css, /background-clip: text/);
-  assert.match(css, /animation-duration: 26s/);
+  assert.match(css, /animation: titleCodeFlow 6\.5s linear infinite/);
   assert.match(css, /prefers-reduced-motion:reduce[^}]+has-code-title \{ animation: none/s);
 });
 
@@ -68,7 +68,8 @@ test('rain wakes only at its requested cadence and releases timers/listeners whe
     ResizeObserver: class { observe() {} disconnect() { disconnected = true; } },
   };
   vm.createContext(scope); vm.runInContext(source, scope);
-  const stop = scope.runBinaryRain(canvas, { fps: 6, spacing: 32, opacity: .36, fluid: true });
+  const stop = scope.runBinaryRain(canvas, { fps: 12, spacing: 19, opacity: .68, fluid: true });
+  assert.ok(glyphs > 0, 'the first frame must not wait for a timer');
   assert.equal(timers.jobs.size, 1); assert.equal(frames.jobs.size, 0);
   timers.tick(); assert.equal(frames.jobs.size, 1);
   frames.tick(); assert.ok(glyphs > 0); assert.equal(timers.jobs.size, 1);
@@ -83,7 +84,7 @@ test('rain wakes only at its requested cadence and releases timers/listeners whe
   assert.equal(document.listeners.size, 0); assert.equal(events.listeners.size, 0);
   assert.ok(disconnected);
   assert.match(ui, /IntersectionObserver\(observeHero\)\.observe\(homeHero\)/);
-  assert.doesNotMatch(ui, /playTransition\(660\)/);
+  assert.match(ui, /playTransition\(660\)/);
 });
 
 test('dynamic images cannot drag while ordinary text and linked image clicks stay available', () => {
@@ -209,4 +210,89 @@ test('parallel page controllers share an in-flight state fetch but later visits 
   assert.equal((await failed).source, 'api-error');
   const retried = scope.loadState(); assert.equal(requests.length, 4);
   requests[3].resolve({ revision: 3 }); assert.equal((await retried).revision, 3);
+});
+
+test('mobile code effects override the legacy important motion reset only without reduced motion', () => {
+  const legacy = read('styles.css');
+  assert.match(legacy, /@media \(prefers-reduced-motion: reduce\), \(max-width: 760px\)[\s\S]*?animation-duration: \.001ms !important/);
+  const exceptions = css.slice(css.indexOf('@media(max-width:760px) and (prefers-reduced-motion:no-preference)'), css.indexOf('@media(pointer:coarse)'));
+  assert.match(exceptions, /h1\.has-code-title \{ animation-duration: 6\.5s !important; animation-iteration-count: infinite !important/);
+  assert.match(exceptions, /\.matrix-transition \{ transition-duration: \.18s !important/);
+  assert.match(exceptions, /\.matrix-progress span \{ animation-duration: \.65s !important/);
+  const phone = css.slice(css.indexOf('@media(max-width:760px)'), css.indexOf('/* styles.css suppresses'));
+  assert.match(phone, /\.home-code-rain \{ opacity: \.72; mask-image: none; -webkit-mask-image: none/);
+  assert.doesNotMatch(phone, /opacity: \.32|animation-duration: 26s/);
+  // Original title translated at time / 45: approximately 22 CSS pixels/s.
+  assert.ok(Math.abs(144 / 6.5 - 1000 / 45) < .1);
+});
+
+function motionPage(reducedMotion = false) {
+  const frames = clock(), events = eventTarget(), timers = new Map(), rains = [], nodes = [];
+  let nextTimer = 0, intersect;
+  const hero = {};
+  const element = () => {
+    const classes = new Set();
+    return { classes, classList: { add: (name) => classes.add(name), remove: (name) => classes.delete(name) },
+      setAttribute() {}, querySelector: () => ({}),
+    };
+  };
+  const document = { ...eventTarget(), createElement: element, querySelector: () => hero };
+  const location = { href: 'https://example.test/index.html', origin: 'https://example.test', pathname: '/index.html' };
+  const scope = { reducedMotion, isMobile: true, document, location, URL,
+    window: { IntersectionObserver: true }, body: { append: (node) => nodes.push(node) },
+    requestAnimationFrame: frames.add, cancelAnimationFrame: frames.remove,
+    addEventListener: events.addEventListener,
+    setTimeout(fn, delay) { timers.set(++nextTimer, { fn, delay }); return nextTimer; }, clearTimeout: (id) => timers.delete(id),
+    runBinaryRain(canvas, options) { const rain = { options, stopped: false }; rains.push(rain); return () => { rain.stopped = true; }; },
+    IntersectionObserver: class { constructor(fn) { intersect = fn; } observe(node) { assert.equal(node, hero); } },
+  };
+  vm.runInNewContext(ui.slice(ui.indexOf('\n  if (!reducedMotion)'), ui.indexOf('\n  if (!isMobile && !reducedMotion)')), scope);
+  const click = (href, extras = {}) => {
+    const link = { href, target: '', hasAttribute: () => false, closest: () => null };
+    let prevented = false;
+    document.emit('click', { button: 0, target: { closest: () => link }, preventDefault() { prevented = true; }, ...extras });
+    return prevented;
+  };
+  const fire = (delay) => {
+    const entry = [...timers].find(([, job]) => job.delay === delay);
+    assert.ok(entry, `missing ${delay}ms timer`);
+    timers.delete(entry[0]); entry[1].fn();
+  };
+  return { frames, events, timers, rains, nodes, location, click, fire, intersect: (visible) => intersect?.([{ isIntersecting: visible }]) };
+}
+
+test('mobile entry and navigation visibly run rain before leaving, with cleanup on history navigation', () => {
+  const page = motionPage();
+  page.frames.tick();
+  assert.ok(page.nodes[0].classes.has('is-active'));
+  assert.equal(page.rains[0].options.fps, 17);
+  page.fire(660); page.fire(280);
+  assert.ok(page.rains[0].stopped);
+  assert.ok(!page.nodes[0].classes.has('is-active'));
+  assert.ok(page.click('https://example.test/articles.html'));
+  assert.equal(page.location.pathname, '/index.html');
+  assert.ok(page.nodes[0].classes.has('is-active'));
+  assert.ok(page.click('https://example.test/about.html'));
+  assert.equal([...page.timers.values()].filter((timer) => timer.delay === 420).length, 1, 'rapid clicks keep one navigation');
+  page.fire(420);
+  assert.equal(page.location.href, 'https://example.test/about.html');
+  page.events.emit('pagehide');
+  assert.equal(page.timers.size, 0);
+  assert.ok(page.rains.at(-1).stopped);
+  page.events.emit('pageshow', { persisted: true });
+  assert.ok(!page.nodes[0].classes.has('is-active'), 'back/forward cannot leave an overlay stuck');
+  assert.equal(page.click('https://other.test/page'), false);
+  assert.equal(page.click('https://example.test/articles.html', { ctrlKey: true }), false);
+});
+
+test('mobile home rain keeps its original density and hidden/reduced-motion behaviour', () => {
+  const page = motionPage();
+  page.intersect(true);
+  const rain = page.rains[0];
+  assert.equal(rain.options.fps, 12); assert.equal(rain.options.spacing, 19); assert.equal(rain.options.opacity, .68);
+  page.intersect(false); assert.ok(rain.stopped);
+  page.intersect(true); assert.equal(page.rains.length, 2);
+  const reduced = motionPage(true);
+  assert.equal(reduced.nodes.length + reduced.timers.size + reduced.frames.jobs.size, 0);
+  assert.equal(reduced.click('https://example.test/articles.html'), false);
 });

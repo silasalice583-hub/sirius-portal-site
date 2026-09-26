@@ -64,6 +64,14 @@ node --test tests/pdf-transparency.test.js tests/background-scenes.test.js tests
 - 自动化回归 57/57 通过。范围包含图层请求竞争、异步解码失败回退、标题生命周期、动画清理、图片拖动、桌面分类释放/误触、触屏原生滚动、输入法、数据请求新鲜度，以及原分页、音乐和 PDF 用例。
 - 浏览器工具连接失败，仍未完成页面操作截图、真实手机性能/视觉验收；不宣称已测得首屏加载秒数或帧率提升百分比。
 
+### 随后修正：恢复手机代码流（2026-09-27 motion2）
+
+- 用户反馈代码流过弱、过慢。确认手机底层样式另有全局 `animation-duration:.001ms!important` / 单次播放重置；仅在手机且系统未开启“减少动态效果”时，为标题与换页效果增加精确例外，不恢复其他高开销装饰动画。
+- 手机首页代码雨恢复 19px 列距、Canvas .68 / 图层 .72 的可见度，取消中央 .16 的额外遮罩；使用 12fps，数字每 180ms 更新，并立即绘制首帧。后台和离屏暂停、分辨率上限保持不变。
+- 标题纹理周期统一为 6.5 秒（144px / 6.5s 约为原 Canvas 的 22px/s），覆盖上一版手机 26 秒、桌面 18 秒方案；仍直接裁剪到实际字形，保留字体/换行防错位。
+- 恢复 660ms 入场代码雨；换页等待 420ms，让淡入及若干代码帧充分展示，再导航。重复点击仅保留最新导航，旧清理计时器不会停止新动画，历史返回不残留遮罩。
+- 60/60 自动化回归通过，包括上述可见度参数、手机样式例外、首帧、导航时间与历史恢复；公共页面更新 motion2 缓存版本。浏览器连接仍失败，未宣称完成真机动画视觉验收。
+
 ```text
 node --test tests/public-experience.test.js tests/background-scenes.test.js tests/portal-interactions.test.js tests/pdf-performance.test.js tests/pdf-import.test.js tests/pdf-transparency.test.js tests/author-pdf-posts.test.js
 ```
