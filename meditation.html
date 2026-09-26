@@ -4,7 +4,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>冥想 · 天狼星门户</title>
-    <link rel="stylesheet" href="styles.css?v=20260920-1" />
+    <link rel="stylesheet" href="styles.css?v=20260926-final3" />
+    <link rel="stylesheet" href="cosmic-theme.css?v=20260926-final3" />
+    <link rel="stylesheet" href="cosmic-refinement.css?v=20260926-final3" />
+    <link rel="stylesheet" href="interaction-refinement.css?v=20260926-final3" />
+    <link rel="stylesheet" href="meditation-refinement.css?v=20260926-final3" />
   </head>
   <body class="page-meditation">
     <header class="site-header">
@@ -37,14 +41,14 @@
           <span class="orbit-star orbit-star-one"></span>
           <span class="orbit-star orbit-star-two"></span>
           <span class="orbit-star orbit-star-three"></span>
-          <img class="meditation-woman" src="assets/meditation-woman-1.png" srcset="assets/mobile/meditation-woman.webp 520w, assets/meditation-woman-1.png 1100w" sizes="(max-width: 760px) 1px, 420px" alt="" loading="lazy" decoding="async" />
+          <img class="meditation-woman" src="assets/meditation-woman-1.png" srcset="assets/mobile/meditation-woman.webp 520w, assets/meditation-woman-1.png 1100w" sizes="(max-width: 760px) 220px, 330px" alt="" loading="lazy" decoding="async" />
         </div>
       </section>
 
-      <section class="collective-meditation" id="collective">
+      <section class="collective-meditation" id="collective" aria-labelledby="collectiveHeading">
         <div class="collective-copy">
           <p class="eyebrow">Beijing Time · Live</p>
-          <h2>集体冥想</h2>
+          <h2 id="collectiveHeading">集体冥想</h2>
           <p id="beijingClock" class="beijing-clock"></p>
           <p id="collectiveStatus" class="collective-status">正在读取今日排期...</p>
         </div>
@@ -104,9 +108,10 @@
 
     <audio id="backgroundAudio" preload="none"></audio>
     <script src="articles-data.js?v=20260906-1"></script>
-    <script src="config.js"></script>
-    <script src="api-client.js?v=20260919-3"></script>
-    <script src="app.js?v=20260919-4"></script>
-    <script src="meditation.js?v=20260830-3"></script>
+    <script src="config.js?v=20260926-final3"></script>
+    <script src="api-client.js?v=20260926-final3"></script>
+    <script src="app.js?v=20260926-final3"></script>
+    <script src="meditation.js?v=20260926-final3"></script>
+    <script src="cosmic-ui.js?v=20260926-final3"></script>
   </body>
 </html>

@@ -1,9 +1,11 @@
 (function () {
   "use strict";
 
-  const vendorBase = new URL("/vendor/", window.location.origin).href;
+  const scriptBase = new URL(".", window.document?.currentScript?.src || window.location.href || window.location.origin + "/");
+  const vendorBase = new URL("vendor/", scriptBase).href;
   let pdfjsPromise;
   let activeText = null;
+  const activeControllers = new Set();
 
   function storedEdits(element) {
     try {
@@ -171,9 +173,17 @@
   function loadPdfJs() {
     if (!pdfjsPromise) {
       if (!Promise.try) Promise.try = (fn, ...args) => Promise.resolve().then(() => fn(...args));
-      pdfjsPromise = import(`${vendorBase}pdfjs/pdf.min.mjs`).then((pdfjs) => {
-        pdfjs.GlobalWorkerOptions.workerSrc = `${vendorBase}pdfjs/pdf.worker.min.mjs`;
+      if (!Promise.withResolvers) Promise.withResolvers = function () {
+        let resolve, reject;
+        const promise = new this((res, rej) => { resolve = res; reject = rej; });
+        return { promise, resolve, reject };
+      };
+      pdfjsPromise = import(`${vendorBase}pdfjs/pdf.min.mjs?v=20260926-legacy1`).then((pdfjs) => {
+        pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdf-worker-compat.mjs?v=20260926-legacy1", scriptBase).href;
         return pdfjs;
+      }).catch((error) => {
+        pdfjsPromise = null;
+        throw error;
       });
     }
     return pdfjsPromise;
@@ -191,17 +201,22 @@
     if (typeof ResizeObserver === "function") {
       const observer = new ResizeObserver(resize);
       observer.observe(pageElement);
+      return () => observer.disconnect();
     } else {
       window.addEventListener("resize", resize, { passive: true });
+      return () => window.removeEventListener("resize", resize);
     }
   }
 
   function renderScale(viewport, pageElement) {
     const displayScale = (pageElement.clientWidth || Math.min(820, viewport.width)) / viewport.width;
     const requested = displayScale * Math.max(2.4, (window.devicePixelRatio || 1) * 1.5);
-    const dimensionLimit = 16000 / Math.max(viewport.width, viewport.height);
-    const pixelLimit = Math.sqrt(24000000 / (viewport.width * viewport.height));
-    return Math.max(1, Math.min(requested, dimensionLimit, pixelLimit));
+    const dimensionLimit = 6000 / Math.max(viewport.width, viewport.height);
+    const pixelBudget = matchMedia("(max-width: 760px), (pointer: coarse)").matches ? 3000000 : 6000000;
+    const pixelLimit = Math.sqrt(pixelBudget / (viewport.width * viewport.height));
+    // Long single-page exports can be tens of thousands of points tall. A
+    // minimum scale of .7 would override both limits and exhaust mobile memory.
+    return Math.min(requested, dimensionLimit, pixelLimit);
   }
 
   function footerNumber(text) {
@@ -238,12 +253,21 @@
   function trimmedVerticalBounds(context, canvas, outputScale, pageHeight) {
     const width = canvas.width;
     const threshold = Math.max(3, Math.floor(width / 350));
+    let blockStart = -1;
+    let blockPixels;
     const rowHasContent = (y) => {
-      const pixels = context.getImageData(0, y, width, 1).data;
+      // Read strips instead of synchronously copying the GPU canvas per row.
+      // Keep this bounded rather than allocating a second full-page bitmap.
+      const start = Math.floor(y / 64) * 64;
+      if (start !== blockStart) {
+        blockStart = start;
+        blockPixels = context.getImageData(0, start, width, Math.min(64, canvas.height - start)).data;
+      }
+      const offset = (y - blockStart) * width * 4;
       let colored = 0;
       for (let x = 0; x < width; x += 2) {
-        const index = x * 4;
-        if (pixels[index] < 246 || pixels[index + 1] < 246 || pixels[index + 2] < 246) {
+        const index = offset + x * 4;
+        if (blockPixels[index] < 246 || blockPixels[index + 1] < 246 || blockPixels[index + 2] < 246) {
           if (++colored >= threshold) return true;
         }
       }
@@ -313,15 +337,10 @@
     if (layer.childElementCount) surface.append(layer);
   }
 
-  async function renderPage(pdfjs, pdf, pageNumber, pagesElement, documentElement, editable) {
+  async function renderPage(pdfjs, pdf, pageNumber, pageElement, documentElement, editable, controller) {
     const page = await pdf.getPage(pageNumber);
+    if (controller.disposed) return;
     const viewport = page.getViewport({ scale: 1 });
-    const pageElement = document.createElement("div");
-    pageElement.className = "pdf-live-page";
-    pageElement.dataset.pageNumber = String(pageNumber);
-    pageElement.setAttribute("role", "group");
-    pageElement.setAttribute("aria-label", `PDF 第 ${pageNumber} 页`);
-    pagesElement.append(pageElement);
     const outputScale = renderScale(viewport, pageElement);
     const renderViewport = page.getViewport({ scale: outputScale });
 
@@ -335,7 +354,8 @@
     canvas.height = Math.ceil(renderViewport.height);
     canvas.style.width = `${viewport.width}px`;
     canvas.style.height = `${viewport.height}px`;
-    const context = canvas.getContext("2d", { alpha: false });
+    const context = canvas.getContext("2d", { alpha: false, willReadFrequently: true });
+    if (!context) throw new Error("浏览器无法分配 PDF 画布，请关闭其他阅读页后重试");
     context.fillStyle = "#fff";
     context.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -347,79 +367,248 @@
     pageElement.append(surface);
 
     const vectorCapture = window.SiriusPdfVectorText?.capture(context, outputScale);
+    const paint = async () => {
+      if (controller.disposed) throw new Error("PDF 阅读已关闭");
+      const task = page.render({ canvas, canvasContext: context, viewport: renderViewport });
+      controller.renderTasks.add(task);
+      try { await task.promise; } finally { controller.renderTasks.delete(task); }
+    };
     try {
-      await page.render({ canvas, canvasContext: context, viewport: renderViewport }).promise;
-    } catch (error) {
-      vectorCapture?.restore();
-      throw error;
-    }
-    const textContent = await page.getTextContent();
-    const footerRects = removeFooterNumbers(pdfjs, textContent, renderViewport, context);
-    const crop = trimmedVerticalBounds(context, canvas, outputScale, viewport.height);
-    if (vectorCapture) {
-      try {
-        const vectorLayer = window.SiriusPdfVectorText.makeLayer(vectorCapture, viewport, footerRects, documentElement);
-        if (vectorLayer) {
-          vectorCapture.replay();
-          await page.render({ canvas, canvasContext: context, viewport: renderViewport }).promise;
+      await paint();
+      const textContent = await page.getTextContent();
+      const footerRects = removeFooterNumbers(pdfjs, textContent, renderViewport, context);
+      const crop = trimmedVerticalBounds(context, canvas, outputScale, viewport.height);
+      if (vectorCapture) {
+        try {
+          const vectorLayer = window.SiriusPdfVectorText.makeLayer(vectorCapture, viewport, footerRects, documentElement);
+          if (vectorLayer) {
+            vectorCapture.replay();
+            await paint();
+            removeFooterNumbers(pdfjs, textContent, renderViewport, context);
+            surface.insertBefore(vectorLayer, textLayerElement);
+            pageElement.dataset.pdfTextRendering = "vector";
+          } else pageElement.dataset.pdfTextRendering = "source-image";
+        } catch (error) {
+          vectorCapture.restore();
+          if (controller.disposed) throw error;
+          console.warn("PDF 矢量文字暂不可用，保留原页面显示", error);
+          await paint();
           removeFooterNumbers(pdfjs, textContent, renderViewport, context);
-          surface.insertBefore(vectorLayer, textLayerElement);
-          pageElement.dataset.pdfTextRendering = "vector";
-        } else pageElement.dataset.pdfTextRendering = "source-image";
-      } catch (error) {
-        vectorCapture.restore();
-        console.warn("PDF 矢量文字暂不可用，保留原页面显示", error);
-        await page.render({ canvas, canvasContext: context, viewport: renderViewport }).promise;
-        removeFooterNumbers(pdfjs, textContent, renderViewport, context);
-      } finally {
-        vectorCapture.restore();
+        } finally {
+          vectorCapture.restore();
+        }
       }
+      pageElement._pdfResizeCleanup?.();
+      pageElement.style.aspectRatio = `${viewport.width} / ${Math.max(1, crop.bottom - crop.top)}`;
+      pageElement._pdfResizeCleanup = fitSurface(pageElement, surface, viewport.width, viewport.height, crop.top, crop.bottom);
+      const textLayer = new pdfjs.TextLayer({
+        textContentSource: textContent,
+        container: textLayerElement,
+        viewport,
+      });
+      await textLayer.render();
+      configureTextLayer(documentElement, textLayerElement, pageNumber, editable, viewport);
+      if (!editable) {
+        try {
+          await addLinks(page, viewport, surface, textLayerElement);
+        } catch (error) {
+          console.warn(`PDF 第 ${pageNumber} 页链接无法读取`, error);
+        }
+      }
+    } finally {
+      vectorCapture?.restore();
+      page.cleanup();
     }
-    fitSurface(pageElement, surface, viewport.width, viewport.height, crop.top, crop.bottom);
-    const textLayer = new pdfjs.TextLayer({
-      textContentSource: textContent,
-      container: textLayerElement,
-      viewport,
+  }
+
+  function releasePage(pageElement) {
+    pageElement._pdfResizeCleanup?.();
+    pageElement._pdfResizeCleanup = null;
+    pageElement.querySelectorAll("canvas").forEach((canvas) => { canvas.width = 0; canvas.height = 0; });
+    pageElement.replaceChildren();
+    pageElement.style.height = "";
+    delete pageElement.dataset.pdfTextRendering;
+    pageElement.dataset.renderState = "waiting";
+  }
+
+  function disposeController(controller) {
+    if (controller.disposed) return;
+    controller.disposed = true;
+    controller.observer?.disconnect();
+    controller.viewportCleanup?.();
+    controller.renderTasks.forEach((task) => task.cancel());
+    controller.queue.length = 0;
+    controller.pages?.forEach((page) => {
+      releasePage(page);
     });
-    await textLayer.render();
-    configureTextLayer(documentElement, textLayerElement, pageNumber, editable, viewport);
-    if (!editable) {
-      try {
-        await addLinks(page, viewport, surface, textLayerElement);
-      } catch (error) {
-        console.warn(`PDF 第 ${pageNumber} 页链接无法读取`, error);
+    if (controller.task) controller.task.destroy().catch(() => {}).finally(() => controller.mediaLease?.release());
+    else controller.mediaLease?.release();
+    window.SiriusPdfVectorText?.restoreFonts(controller.element);
+    activeControllers.delete(controller);
+  }
+
+  function disposeWithin(root) {
+    for (const controller of [...activeControllers]) {
+      if (!controller.element.isConnected || root === controller.element || root?.contains?.(controller.element)) {
+        disposeController(controller);
       }
     }
-    page.cleanup();
   }
 
   async function renderDocument(element, editable) {
-    if (!element || ["loading", "done"].includes(element.dataset.pdfRendered)) return;
+    if (!element || [...activeControllers].some((controller) => controller.element === element && !controller.disposed)) return;
+    // Render flags and canvas snapshots sometimes survive an old editor save.
+    // They do not mean that this browser has a live document/worker.
+    element.querySelectorAll(":scope > .pdf-rendered-pages,:scope > .pdf-viewer-error").forEach((node) => node.remove());
     const storedSource = element.dataset.pdfSrc;
-    if (!storedSource) return;
+    if (!storedSource) {
+      const missing = document.createElement("p");
+      missing.className = "pdf-viewer-error";
+      missing.textContent = "这篇文章缺少原 PDF 附件地址。请在原导入设备的编辑器中重新保存并同步附件。";
+      element.querySelector(":scope > .pdf-loading")?.remove();
+      element.append(missing);
+      element.dataset.pdfRendered = "error";
+      return;
+    }
     element.dataset.pdfRendered = "loading";
     const loading = element.querySelector(":scope > .pdf-loading");
     const pages = document.createElement("div");
     pages.className = "pdf-rendered-pages";
-    let task;
+    const controller = {
+      element, task: null, mediaLease: null, observer: null, pages: [], queue: [], queued: new Set(),
+      rendered: new Set(), renderTasks: new Set(), working: false, disposed: false,
+    };
+    activeControllers.add(controller);
     try {
-      const source = await (window.SiriusAPI?.resolveMediaURL?.(storedSource) || storedSource);
+      controller.mediaLease = window.SiriusAPI?.acquireMediaURL
+        ? await window.SiriusAPI.acquireMediaURL(storedSource)
+        : { url: await (window.SiriusAPI?.resolveMediaURL?.(storedSource) || storedSource), release() {} };
       const pdfjs = await loadPdfJs();
-      task = pdfjs.getDocument({
-        url: source,
+      if (controller.disposed) {
+        controller.mediaLease.release();
+        return;
+      }
+      controller.task = pdfjs.getDocument({
+        url: controller.mediaLease.url,
         cMapUrl: `${vendorBase}pdfjs/cmaps/`,
         cMapPacked: true,
         standardFontDataUrl: `${vendorBase}pdfjs/standard_fonts/`,
         wasmUrl: `${vendorBase}pdfjs/wasm/`,
         iccUrl: `${vendorBase}pdfjs/iccs/`,
+        disableAutoFetch: true,
+        disableStream: true,
+        rangeChunkSize: 256 * 1024,
       });
-      const pdf = await task.promise;
+      const pdf = await controller.task.promise;
+      if (controller.disposed) return;
+      const firstPage = await pdf.getPage(1);
+      const firstViewport = firstPage.getViewport({ scale: 1 });
+      const aspectRatio = `${firstViewport.width} / ${firstViewport.height}`;
       element.append(pages);
       for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
-        if (loading) loading.textContent = `正在载入原 PDF 版式 ${pageNumber}/${pdf.numPages}…`;
-        await renderPage(pdfjs, pdf, pageNumber, pages, element, editable);
+        const pageElement = document.createElement("div");
+        pageElement.className = "pdf-live-page";
+        pageElement.dataset.pageNumber = String(pageNumber);
+        pageElement.dataset.renderState = "waiting";
+        pageElement.style.aspectRatio = aspectRatio;
+        pageElement.setAttribute("role", "group");
+        pageElement.setAttribute("aria-label", `PDF 第 ${pageNumber} 页`);
+        pages.append(pageElement);
+        controller.pages.push(pageElement);
       }
-      loading?.remove();
+      if (loading) loading.textContent = `正在载入 PDF 首页，共 ${pdf.numPages} 页…`;
+
+      const trimPages = () => {
+        const maxPages = matchMedia("(max-width: 760px), (pointer: coarse)").matches ? 3 : 5;
+        if (controller.rendered.size <= maxPages) return;
+        const candidates = [...controller.rendered].map((pageNumber) => {
+          const page = controller.pages[pageNumber - 1];
+          const bounds = page.getBoundingClientRect();
+          const distance = bounds.bottom < 0 ? -bounds.bottom : bounds.top > innerHeight ? bounds.top - innerHeight : 0;
+          return { pageNumber, distance };
+        }).filter(({ distance }) => distance > innerHeight).sort((a, b) => b.distance - a.distance);
+        for (const candidate of candidates) {
+          if (controller.rendered.size <= maxPages) break;
+          releasePage(controller.pages[candidate.pageNumber - 1]);
+          controller.rendered.delete(candidate.pageNumber);
+        }
+      };
+
+      const pump = async () => {
+        if (controller.working || controller.disposed) return;
+        controller.working = true;
+        while (controller.queue.length && !controller.disposed) {
+          const pageNumber = controller.queue.shift();
+          controller.queued.delete(pageNumber);
+          const pageElement = controller.pages[pageNumber - 1];
+          if (!pageElement?.isConnected || controller.rendered.has(pageNumber)) continue;
+          const bounds = pageElement.getBoundingClientRect();
+          if (pageNumber !== 1 && (bounds.bottom < -650 || bounds.top > innerHeight + 650)) continue;
+          releasePage(pageElement);
+          pageElement.dataset.renderState = "loading";
+          try {
+            await renderPage(pdfjs, pdf, pageNumber, pageElement, element, editable, controller);
+            if (controller.disposed) break;
+            pageElement.dataset.renderState = "ready";
+            controller.rendered.add(pageNumber);
+            trimPages();
+          } catch (error) {
+            if (controller.disposed) break;
+            console.warn(`PDF 第 ${pageNumber} 页渲染失败`, error);
+            releasePage(pageElement);
+            pageElement.dataset.renderState = "error";
+            const retry = document.createElement("button");
+            retry.className = "pdf-page-retry";
+            retry.type = "button";
+            retry.textContent = `第 ${pageNumber} 页未能显示，点击重试`;
+            retry.addEventListener("click", () => queueRender(pageNumber));
+            pageElement.append(retry);
+          }
+          if (pageNumber === 1) loading?.remove();
+          await new Promise((resolve) => setTimeout(resolve, 0));
+        }
+        controller.working = false;
+      };
+
+      const queueRender = (pageNumber) => {
+        if (controller.disposed || controller.rendered.has(pageNumber) || controller.queued.has(pageNumber)) return;
+        controller.queued.add(pageNumber);
+        controller.queue.push(pageNumber);
+        void pump();
+      };
+
+      queueRender(1);
+      if (typeof IntersectionObserver === "function") {
+        controller.observer = new IntersectionObserver((entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) queueRender(Number(entry.target.dataset.pageNumber));
+          }
+          trimPages();
+        }, { rootMargin: "650px 0px" });
+        controller.pages.forEach((page) => controller.observer.observe(page));
+      } else {
+        let scheduled = false;
+        const checkVisiblePages = () => {
+          if (scheduled || controller.disposed) return;
+          scheduled = true;
+          requestAnimationFrame(() => {
+            scheduled = false;
+            if (controller.disposed) return;
+            controller.pages.forEach((page, index) => {
+              const bounds = page.getBoundingClientRect();
+              if (bounds.bottom >= -650 && bounds.top <= innerHeight + 650) queueRender(index + 1);
+            });
+            trimPages();
+          });
+        };
+        window.addEventListener("scroll", checkVisiblePages, { passive: true });
+        window.addEventListener("resize", checkVisiblePages, { passive: true });
+        controller.viewportCleanup = () => {
+          window.removeEventListener("scroll", checkVisiblePages);
+          window.removeEventListener("resize", checkVisiblePages);
+        };
+        checkVisiblePages();
+      }
       element.dataset.pdfRendered = "done";
     } catch (error) {
       console.warn("嵌入式 PDF 渲染失败", error);
@@ -428,19 +617,42 @@
       const message = document.createElement("p");
       message.className = "pdf-viewer-error";
       message.textContent = `PDF 无法显示：${error.message || error}`;
-      loading?.replaceWith(message);
-    } finally {
-      await task?.destroy().catch(() => {});
-      window.SiriusPdfVectorText?.restoreFonts(element);
+      const retry = document.createElement("button");
+      retry.type = "button";
+      retry.className = "pdf-page-retry";
+      retry.textContent = "重新载入 PDF";
+      retry.addEventListener("click", () => {
+        message.remove();
+        delete element.dataset.pdfRendered;
+        void renderDocument(element, editable);
+      });
+      message.append(document.createElement("br"), retry);
+      // A normal HTTP attachment can still be opened in the browser's own
+      // reader when the embedded engine is unsupported. Never link a stale blob.
+      try {
+        const sourceURL = new URL(storedSource, scriptBase);
+        if (["http:", "https:"].includes(sourceURL.protocol)) {
+          const original = document.createElement("a");
+          original.href = sourceURL.href;
+          original.target = "_blank";
+          original.rel = "noopener noreferrer";
+          original.textContent = "直接打开原 PDF";
+          message.append(document.createTextNode(" · "), original);
+        }
+      } catch (_) { /* Invalid local sources keep the retry / re-upload path. */ }
+      if (loading) loading.replaceWith(message);
+      else element.append(message);
+      disposeController(controller);
     }
   }
 
   function renderWithin(root = document, options = {}) {
+    disposeWithin(null);
     const documents = [];
     if (root.matches?.(".pdf-document")) documents.push(root);
     documents.push(...(root.querySelectorAll?.(".pdf-document") || []));
     return Promise.all(documents.map((element) => renderDocument(element, Boolean(options.editable))));
   }
 
-  window.SiriusPdfInlineViewer = { renderWithin, formatActive, activeEditableText, isFooterPosition };
+  window.SiriusPdfInlineViewer = { renderWithin, disposeWithin, formatActive, activeEditableText, isFooterPosition, renderScale };
 })();

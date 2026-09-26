@@ -4,9 +4,54 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>关于 · 天狼星门户</title>
-    <link rel="stylesheet" href="styles.css?v=20260920-1" />
+    <link rel="stylesheet" href="styles.css?v=20260926-final3" />
+    <link rel="stylesheet" href="cosmic-theme.css?v=20260926-final3" />
+    <link rel="stylesheet" href="cosmic-refinement.css?v=20260926-final3" />
+    <link rel="stylesheet" href="interaction-refinement.css?v=20260926-final3" />
+    <link rel="stylesheet" href="flower-of-life.css?v=20260926-final3" />
   </head>
   <body class="page-about">
+    <div class="flower-of-life-stage" aria-hidden="true">
+      <div class="flower-atmosphere"></div>
+      <svg class="flower-of-life-vector" viewBox="-300 -300 600 600" xmlns="http://www.w3.org/2000/svg" focusable="false" data-flower-of-life>
+        <defs>
+          <radialGradient id="lifePetalSpectrum" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="275">
+            <stop offset="0" stop-color="#9c67e9"/>
+            <stop offset=".22" stop-color="#6e93f2"/>
+            <stop offset=".43" stop-color="#50c9ef"/>
+            <stop offset=".61" stop-color="#72dccb"/>
+            <stop offset=".77" stop-color="#cfe38d"/>
+            <stop offset=".9" stop-color="#f8cb91"/>
+            <stop offset="1" stop-color="#eda8c1"/>
+          </radialGradient>
+          <radialGradient id="lifeLineSpectrum" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="284">
+            <stop offset="0" stop-color="#8060c1"/>
+            <stop offset=".28" stop-color="#6a81bd"/>
+            <stop offset=".54" stop-color="#389dab"/>
+            <stop offset=".78" stop-color="#b6964e"/>
+            <stop offset="1" stop-color="#ba789b"/>
+          </radialGradient>
+          <linearGradient id="lifePearl" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#fffde7"/>
+            <stop offset=".45" stop-color="#edffff"/>
+            <stop offset="1" stop-color="#fff1fd"/>
+          </linearGradient>
+          <clipPath id="lifeDiskClip"><circle r="270"/></clipPath>
+        </defs>
+        <g class="life-spectrum" clip-path="url(#lifeDiskClip)">
+          <circle class="life-disk" r="270" fill="url(#lifePetalSpectrum)"/>
+          <g class="life-petals" fill="url(#lifePetalSpectrum)"></g>
+          <g class="life-lattice" fill="none" stroke="url(#lifeLineSpectrum)"></g>
+          <g class="life-light-paths" fill="none" stroke="url(#lifePearl)"></g>
+        </g>
+        <g class="life-boundary" fill="none" stroke="url(#lifeLineSpectrum)">
+          <circle r="271.5"/><circle r="282"/>
+        </g>
+        <g class="life-boundary-glints" fill="none" stroke="url(#lifePearl)">
+          <circle r="271.5" pathLength="1000"/><circle r="282" pathLength="1000"/>
+        </g>
+      </svg>
+    </div>
     <header class="site-header">
       <a class="brand" href="index.html" aria-label="天狼星门户首页">
         <img data-site-logo src="assets/logo-vector-web.png" srcset="assets/mobile/logo-vector.webp 160w, assets/logo-vector-web.png 640w" sizes="(max-width: 760px) 40px, 58px" alt="天狼星门户 logo" decoding="async" />
@@ -25,15 +70,10 @@
 
     <main>
       <section class="about-page-hero">
-        <img class="hero-pattern-bg" id="aboutVisualImage" src="assets/about-emerald.jpg" srcset="assets/mobile/about-emerald.webp 960w, assets/about-emerald.jpg 1586w" sizes="100vw" alt="" aria-hidden="true" />
         <div class="hero-heading-copy">
           <p class="eyebrow" id="aboutEyebrow">About</p>
           <h1 id="aboutTitle">关于我们</h1>
           <p id="aboutText">天狼星门户由一群关注意识成长、公共福祉与人类未来的志愿者共同维护。我们相信，明晰的信息、独立的思考与善意的行动能够彼此照亮；我们尊重差异、恪守理性，希望连结到更多乐于学习、喜欢分享，并愿意为正向转变付诸行动的同路人。</p>
-        </div>
-        <div class="flower-of-life-stage" aria-hidden="true">
-          <div class="flower-glow"></div>
-          <img class="flower-of-life" src="assets/flower-of-life-rainbow.png?v=20260830-2" srcset="assets/mobile/flower-of-life-rainbow.webp 520w, assets/flower-of-life-rainbow.png?v=20260830-2 1254w" sizes="(max-width: 760px) 1px, 360px" alt="" loading="lazy" decoding="async" />
         </div>
       </section>
 
@@ -77,8 +117,10 @@
 
     <audio id="backgroundAudio" preload="none"></audio>
     <script src="articles-data.js?v=20260906-1"></script>
-    <script src="config.js"></script>
-    <script src="api-client.js?v=20260919-3"></script>
-    <script src="app.js?v=20260919-4"></script>
+    <script src="config.js?v=20260926-final3"></script>
+    <script src="api-client.js?v=20260926-final3"></script>
+    <script src="app.js?v=20260926-final3"></script>
+    <script src="cosmic-ui.js?v=20260926-final3"></script>
+    <script src="flower-of-life.js?v=20260926-final3"></script>
   </body>
 </html>

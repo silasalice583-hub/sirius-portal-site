@@ -1,0 +1,166 @@
+/* Photography stays untouched. Ornament is confined to edges and text glyphs. */
+.page-meditation {
+  --meditation-text: #f6fcff;
+  --meditation-soft: #ddf9ff;
+  --meditation-edge: rgba(198, 239, 255, .82);
+  --meditation-shadow: 0 1px 2px #061b39, 0 0 6px #061b39, 0 2px 14px #10244a;
+}
+.page-meditation :is(.meditation-main, .collective-session-main) {
+  background: transparent !important;
+  background-image: none !important;
+  color: var(--meditation-text);
+}
+.page-meditation :is(.meditation-main, .collective-session-main) > .nebula-layer,
+.page-meditation .meditation-hero > :is(.nebula-layer, .nebula-stars) { display: none; }
+.page-meditation .collective-session-main > .nebula-stars { display: none; }
+.page-meditation :is(.collective-copy, .collective-player, .meditation-card, .meditation-empty,
+  .meditation-reader, .meditation-reader .reader-body, .meditation-reader .audio-card,
+  .collective-session-shell, .collective-session-head, .collective-session-player, .participant-count) {
+  background: transparent !important;
+  background-image: none !important;
+  backdrop-filter: none !important;
+  box-shadow: none !important;
+  color: var(--meditation-text);
+}
+.page-meditation :is(.collective-copy, .collective-player, .meditation-card, .meditation-empty,
+  .meditation-reader, .collective-session-shell) {
+  position: relative;
+  border: 0;
+  border-top: 1px solid var(--meditation-edge);
+  border-bottom: 1px solid rgba(198, 239, 255, .52);
+  border-radius: 46px 10px 46px 10px;
+}
+.page-meditation :is(.collective-copy, .collective-player, .meditation-empty,
+  .meditation-reader, .collective-session-shell)::before {
+  position: absolute;
+  inset: 8px 12px;
+  border-inline: 1px solid rgba(201, 241, 255, .43);
+  border-radius: 36px 8px 36px 8px;
+  pointer-events: none;
+  content: "";
+}
+.page-meditation :is(.collective-copy, .collective-player, .meditation-empty,
+  .meditation-reader, .collective-session-shell)::after {
+  position: absolute;
+  top: -5px;
+  right: clamp(26px, 8%, 80px);
+  width: 9px;
+  height: 9px;
+  border: 1px solid #effcff;
+  background: transparent;
+  transform: rotate(45deg);
+  box-shadow: 0 0 7px #9beaff;
+  pointer-events: none;
+  content: "";
+}
+.page-meditation :is(.meditation-hero-copy, .collective-copy, .collective-player,
+  .meditation-empty, .meditation-card, .meditation-archive .section-head,
+  .collective-session-head, .collective-session-player, .collective-back) {
+  text-shadow: var(--meditation-shadow);
+}
+.page-meditation :is(.meditation-hero h1, .collective-copy h2, .collective-player h3,
+  .meditation-archive h2, .meditation-empty h3, .meditation-card h3,
+  .meditation-reader h2, .collective-session-head h1) {
+  font-family: "STKaiti", "KaiTi", "Noto Serif CJK SC", "Songti SC", serif;
+  font-weight: 700;
+  letter-spacing: .07em;
+  color: #f8fdff;
+  text-shadow: 0 2px 2px #08294b, 0 0 8px #062448, 0 0 20px rgba(112, 216, 255, .5);
+  overflow-wrap: anywhere;
+}
+.page-meditation .meditation-hero { gap: clamp(18px, 4vw, 60px); }
+.page-meditation .meditation-hero h1 { font-size: clamp(56px, 7.5vw, 110px); }
+.page-meditation .meditation-hero-copy > p:last-child { max-width: 32em; color: #f1fbff; }
+.page-meditation .eyebrow { color: #c4f5ff; letter-spacing: .09em; text-shadow: var(--meditation-shadow); }
+.page-meditation :is(.collective-status, .live-indicator, .beijing-clock,
+  .collective-player > p, .collective-session-head p:last-child,
+  .collective-session-player > p, .meditation-card p, .meditation-card span,
+  .meditation-empty p:last-child, .meditation-archive .section-head span) {
+  color: var(--meditation-soft);
+  text-shadow: var(--meditation-shadow);
+  line-height: 1.8;
+}
+.page-meditation .live-indicator span { background: #d7ffed; box-shadow: 0 0 5px #ebfff6, 0 0 14px #41f1bf; }
+.page-meditation .collective-meditation { cursor: auto; gap: 24px; }
+.page-meditation :is(.collective-copy, .collective-player) { min-width: 0; padding: clamp(26px, 3.4vw, 42px); }
+.page-meditation .collective-player h3 { font-size: clamp(25px, 3vw, 38px); line-height: 1.5; }
+.page-meditation .collective-next { border-top-color: rgba(218, 246, 255, .58); line-height: 1.7; }
+.page-meditation .collective-next :is(span, strong, b) { color: #edfbff; }
+.page-meditation :is(.collective-enter, .collective-enter.upcoming, .collective-back, .meditation-reader .back-button) {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  max-width: 100%;
+  padding: 12px 24px;
+  border: 1px solid rgba(216, 249, 255, .85);
+  border-radius: 26px 7px 26px 7px;
+  background: transparent !important;
+  color: #f3fdff;
+  box-shadow: 0 0 0 3px rgba(138, 224, 255, .08);
+  text-shadow: var(--meditation-shadow);
+  font-family: "STKaiti", "KaiTi", "Noto Serif CJK SC", serif;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.5;
+  text-align: center;
+  transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+.page-meditation .collective-enter::after {
+  content: "✧";
+  color: #c4f4ff;
+  font-size: 24px;
+}
+.page-meditation :is(.collective-enter, .collective-back, .meditation-reader .back-button):is(:hover, :focus-visible) {
+  border-color: #fff;
+  box-shadow: 0 0 18px rgba(130, 229, 255, .38);
+  transform: translateY(-2px);
+  outline: 2px solid #b5efff;
+  outline-offset: 5px;
+}
+.page-meditation .meditation-card { padding: 20px; }
+.page-meditation .meditation-card img { border-radius: 23px 7px 23px 7px; }
+.page-meditation .meditation-card:focus-visible { outline: 2px solid #c7f6ff; outline-offset: 5px; }
+.page-meditation .meditation-reader .reader-body { padding: 24px 0; text-shadow: var(--meditation-shadow); }
+.page-meditation .meditation-reader .reader-body :is(img, video, iframe) { text-shadow: none; }
+.page-meditation .meditation-reader .audio-card { border-block: 1px solid rgba(198, 239, 255, .55); border-radius: 20px 5px; }
+.page-meditation .collective-session-main { max-width: 1400px; margin-inline: auto; padding: 44px clamp(18px, 4vw, 68px) 68px; }
+.page-meditation .collective-session-shell { width: 100%; padding: 20px 0; }
+.page-meditation .collective-session-head { grid-template-columns: minmax(0, 1fr) 156px; gap: 28px; align-items: center; }
+.page-meditation .collective-session-head h1 { font-size: clamp(30px, 4vw, 48px); line-height: 1.5; }
+.page-meditation .participant-count { min-width: 0; border: 1px solid rgba(201, 241, 255, .7); border-radius: 50%; aspect-ratio: 1; padding: 20px 6px; }
+.page-meditation .participant-count :is(span, b) { color: #e8fcff; }
+.page-meditation .participant-count strong { font-family: Georgia, "Times New Roman", serif; font-size: 58px; color: #f0fcff; animation: none; text-shadow: 0 0 5px #87ddff, 0 1px 6px #092b4c; }
+.page-meditation .collective-session-figure { display: grid; min-height: 340px; padding: 24px 18px; animation: none; transform: none; }
+.page-meditation .collective-session-figure::before { background: none; filter: none; border: 1px solid rgba(204, 244, 255, .32); width: min(65vw, 460px); box-shadow: 0 0 0 22px rgba(162, 224, 255, .025); }
+.page-meditation .collective-session-figure img { width: min(64vw, 500px); max-height: 540px; animation: none; transform: none; }
+.page-meditation .collective-session-player { width: min(850px, 100%); margin: 0 auto; }
+.page-meditation :is(.meditation-orbit, .meditation-woman) { animation: none !important; }
+.page-meditation .meditation-orbit { transform: none !important; }
+.page-meditation :is(#sessionAudio, #sessionVideo)[hidden] { display: none !important; }
+@media (max-width: 760px) {
+  .page-meditation .meditation-hero { grid-template-columns: 1fr; min-height: 0; padding: 55px 22px 34px; gap: 15px; text-align: center; }
+  .page-meditation .meditation-hero h1 { font-size: clamp(44px, 12vw, 74px); }
+  .page-meditation .meditation-hero-copy > p:last-child { font-size: 16px; line-height: 1.85; }
+  .page-meditation .meditation-orbit { display: block; width: min(65vw, 280px); margin: 18px auto; }
+  .page-meditation :is(.collective-meditation, .meditation-archive, .meditation-reader) { width: calc(100% - 28px); margin-block: 30px; }
+  .page-meditation .collective-meditation { grid-template-columns: 1fr; }
+  .page-meditation :is(.collective-copy, .collective-player, .meditation-empty) { padding: 26px 23px; }
+  .page-meditation .collective-copy h2 { font-size: 36px; }
+  .page-meditation .collective-player h3 { font-size: 27px; }
+  .page-meditation .beijing-clock { font-size: 15px; }
+  .page-meditation .collective-enter { width: 100%; font-size: 19px; }
+  .page-meditation .meditation-empty h3 { font-size: 25px; line-height: 1.5; }
+  .page-meditation .collective-session-main { padding: 25px 14px 40px; }
+  .page-meditation .collective-session-head { grid-template-columns: 1fr; padding: 18px 24px 0; text-align: center; }
+  .page-meditation .collective-session-head h1 { font-size: clamp(27px, 7vw, 36px); line-height: 1.5; }
+  .page-meditation .participant-count { grid-template-columns: 1fr; justify-self: center; width: 134px; gap: 0; padding: 16px 5px; }
+  .page-meditation .participant-count strong { font-size: 45px; }
+  .page-meditation .collective-session-figure { display: grid; min-height: 250px; }
+  .page-meditation .collective-session-figure img { width: min(68vw, 340px); }
+  .page-meditation .collective-session-player { padding-inline: 25px; padding-bottom: 22px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .page-meditation .live-indicator span { animation: none; }
+  .page-meditation :is(.collective-enter, .collective-back, .meditation-card) { transition: none; }
+}

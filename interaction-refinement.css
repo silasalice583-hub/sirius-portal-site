@@ -1,0 +1,47 @@
+/* Final interaction pass, 26 September: background reaches the footer. */
+.page-home .home-hero { background: transparent !important; }
+.page-home .home-hero::before { display: none !important; }
+.page-home main,.page-home .site-header { position: relative; z-index: 2; }
+.page-home .site-disclaimer { z-index: 2; }
+.page-home .site-header { position: absolute; }
+.page-home :is(.site-disclaimer,.site-disclaimer-shell,.site-disclaimer-copy,.site-disclaimer-mark,.site-disclaimer-halo) { background: transparent !important; backdrop-filter: none !important; }
+.page-home :is(.site-header,.site-disclaimer,.site-disclaimer #motionTitle,.site-disclaimer-mark,.site-disclaimer-kicker,.top-nav,.music-pill) { color: #eefbff !important; text-shadow: var(--star-text); }
+.page-home .hero-art-card { width: clamp(210px,25vw,340px); }
+.page-home .hero-copy { position: relative; }
+.page-home .hero-copy h1 { font-size: clamp(58px,10.8vw,160px) !important; letter-spacing: .18em; text-indent: .18em; max-width: 100%; color: #056552; -webkit-text-stroke: 1px #b1ffe0; background: none; text-shadow: 0 2px 4px #032e40; filter: none; animation: none; }
+.fluid-title-canvas { position: absolute; pointer-events: none; z-index: 2; }
+.page-home .home-code-rain { position: fixed; inset: 0; height: 100svh; opacity: .72; mix-blend-mode: screen; }
+.page-home .journey-link { color: #e4fff2; border-color: #c6ffe8; text-shadow: var(--star-text); }
+.home-cosmos .cosmic-photo { background-position: center; }
+.category-tabs { cursor: grab; touch-action: pan-x pan-y; user-select: none; }
+.category-tabs.is-dragging { cursor: grabbing; scroll-snap-type: none !important; }
+.constellation-cutout { pointer-events: none; }
+.page-articles .category-tabs { --tab-width: 310px; }
+.constellation-picture { height: 230px; }
+.sirius-emblem { position: absolute; left: 35px; top: -10px; width: 170px; height: 170px; object-fit: contain; filter: drop-shadow(0 0 9px #a8dfff); }
+.cosmic-pen { width: 36px; height: 54px; filter: drop-shadow(0 0 2px #ecf7ee); }
+.cosmic-click-symbol { width: 24px; height: 24px; filter: drop-shadow(0 0 2px #a9eaff); }
+.music-pill { position: relative; overflow: visible; }
+.music-pill::before,.music-pill::after { content: "♪"; position: absolute; pointer-events: none; opacity: 0; color: #99ffe0; font: 23px Georgia,serif; text-shadow: 0 0 5px #057455; }
+.music-pill::before { right: 25%; }.music-pill::after { right: 55%; content: "♫"; }
+.music-pill.playing::before { animation: musicFloat 1.6s ease-out infinite; }
+.music-pill.playing::after { animation: musicFloat 1.6s .7s ease-out infinite; }
+@keyframes musicFloat { 0% { opacity: 0; transform: translateY(0) rotate(-10deg); } 20% { opacity: 1; } 100% { opacity: 0; transform: translate(10px,-55px) rotate(15deg); } }
+.music-status { position: absolute; z-index: 60; top: 75px; right: 20px; max-width: min(330px,90vw); padding: 16px 20px; border: 1px solid #bcf4ff; border-radius: 22px 4px; color: #f4ffff; text-shadow: var(--star-text); background: transparent; font-size: 14px; line-height: 1.8; }
+.pagination { flex-wrap: wrap; }
+.page-articles .pagination button.active { background: transparent; border-color: #8affe6; }
+/* These archive categories already carry their title in the cover artwork. */
+.page-articles #readerTitle { display: block; -webkit-line-clamp: unset; line-clamp: unset; overflow: visible; max-height: none; white-space: normal; overflow-wrap: anywhere; }
+.page-articles .reader.reader-cover-only .reader-hero { display: block; padding: 0; overflow: hidden; }
+.page-articles .reader.reader-cover-only #readerCover { display: block; width: 100%; height: auto; max-height: none; aspect-ratio: auto; object-fit: contain; margin: 0; }
+.page-articles .reader.reader-cover-only .reader-hero-copy { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.page-articles .reader.reader-no-cover .reader-hero { grid-template-columns: minmax(0,1fr); }
+@media(max-width:760px) {
+  .page-home .hero-art-card { width: clamp(200px,57vw,280px); }
+  .page-home .hero-copy h1 { font-size: clamp(36px,11.8vw,82px) !important; letter-spacing: .065em; text-indent: .065em; }
+  .page-articles .category-tabs { --tab-width: 235px; }
+  .constellation-picture { height: 190px; }
+  .sirius-emblem { left: 0; top: 4px; width: 100px; height: 110px; }
+  .pagination { gap: 5px; }.page-articles .pagination button { min-width: 31px; padding: 6px 9px; }
+}
+@media(prefers-reduced-motion:reduce) { .music-pill.playing::before,.music-pill.playing::after { animation: none; opacity: 1; transform: translateY(-24px); } }

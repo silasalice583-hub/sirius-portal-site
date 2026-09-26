@@ -26,7 +26,7 @@
     if (!normalized.includes("相关资料")) normalized.push("相关资料");
     return normalized;
   };
-  const defaultMusic = "";
+  const defaultMusic = window.SIRIUS_DEFAULT_MUSIC?.url || "";
   const defaultPage = {
     brandName: "天狼星门户",
     heroEyebrow: "Sirius Portal",
@@ -142,7 +142,7 @@
     .map((item, index) => typeof item === "string" ? { title: `背景音乐 ${index + 1}`, url: item } : item)
     .filter((item) => item?.url);
   if (!siteMusicPlaylist.length && (settings.siteMusic || defaultMusic)) {
-    siteMusicPlaylist.push({ title: "背景音乐", url: settings.siteMusic || defaultMusic });
+    siteMusicPlaylist.push({ title: settings.siteMusic ? "背景音乐" : window.SIRIUS_DEFAULT_MUSIC?.title || "背景音乐", url: settings.siteMusic || defaultMusic });
   }
   const backgroundMusicStateKey = "siriusBackgroundMusicState";
   let siteMusicIndex = 0;
@@ -167,7 +167,7 @@
       updatedAt: Date.now(),
       ...overrides,
     };
-    localStorage.setItem(backgroundMusicStateKey, JSON.stringify(state));
+    try { localStorage.setItem(backgroundMusicStateKey, JSON.stringify(state)); } catch (_) { /* Playback also works with storage disabled. */ }
   }
 
   function playlistIndexFromState(state) {
@@ -178,23 +178,51 @@
   }
 
   function setMusicTogglePlaying(isPlaying) {
-    $("#musicToggle")?.classList.toggle("playing", Boolean(isPlaying));
+    const toggle = $("#musicToggle");
+    if (!toggle) return;
+    toggle.classList.toggle("playing", Boolean(isPlaying));
+    toggle.setAttribute("aria-pressed", String(Boolean(isPlaying)));
+    toggle.title = isPlaying ? "暂停背景音乐" : "播放背景音乐";
+    const label = toggle.querySelector("b");
+    if (label) label.textContent = isPlaying ? "正在播放" : "背景音乐";
   }
 
-  function prepareBackgroundAudio() {
+  function musicNotice(message) {
+    let notice = $("#musicStatus");
+    if (!notice) {
+      notice = document.createElement("p");
+      notice.id = "musicStatus";
+      notice.className = "music-status";
+      notice.setAttribute("role", "status");
+      $("#musicToggle")?.after(notice);
+    }
+    notice.textContent = message;
+    notice.hidden = false;
+    clearTimeout(musicNotice.timer);
+    musicNotice.timer = setTimeout(() => { notice.hidden = true; }, 6000);
+  }
+
+  async function prepareBackgroundAudio() {
     if (!backgroundAudio || !siteMusicPlaylist.length) {
       if (backgroundAudio) backgroundAudio.removeAttribute("src");
       const toggle = $("#musicToggle");
       if (toggle) {
-        toggle.disabled = true;
-        toggle.title = "尚未配置背景音乐";
+        toggle.disabled = false;
+        toggle.title = "尚未配置背景音乐，点击查看说明";
       }
       return;
     }
     const saved = loadBackgroundMusicState();
     siteMusicIndex = playlistIndexFromState(saved);
-    backgroundAudio.src = siteMusicPlaylist[siteMusicIndex].url;
-    backgroundAudio.volume = Number.isFinite(Number(saved.volume)) ? Number(saved.volume) : 1;
+    try {
+      const source = siteMusicPlaylist[siteMusicIndex].url;
+      backgroundAudio.src = window.SiriusAPI?.isLocalMediaURL?.(source)
+        ? await window.SiriusAPI.resolveMediaURL(source) : source;
+    } catch (error) {
+      musicNotice("本地音乐无法读取，请在网页编辑器中重新选择音频并保存。");
+      return;
+    }
+    backgroundAudio.volume = Number.isFinite(Number(saved.volume)) ? Math.min(1, Math.max(0, Number(saved.volume))) : 1;
 
     backgroundAudio.addEventListener("loadedmetadata", () => {
       const savedAgain = loadBackgroundMusicState();
@@ -210,8 +238,8 @@
     }, { once: true });
 
     if (saved.wantsPlayback) {
-      setMusicTogglePlaying(true);
       backgroundAudio.play().then(() => {
+        setMusicTogglePlaying(true);
         saveBackgroundMusicState({ wantsPlayback: true });
       }).catch(() => {
         setMusicTogglePlaying(false);
@@ -395,24 +423,110 @@
     window.SiriusAPI?.resolveLocalMediaElements?.(grid);
   }
 
-  function renderCategories() {
+  let categoryScrollTimer;
+  let categoryProgrammaticUntil = 0;
+  function renderCategories(animate = false, center = true) {
     const categoryList = $("#categoryList");
     if (!categoryList) return;
     const categories = ["全部", ...allCategories];
-    categoryList.innerHTML = categories.map((category) => (
-      `<button type="button" class="${category === currentCategory ? "active" : ""}" data-category="${escapeHTML(category)}">${escapeHTML(category)}</button>`
-    )).join("");
+    const skySigns = {
+      "全部": ["CELESTIAL ATLAS · 星图", "atlas"],
+      "门户更新": ["PLEIADES · 昂宿星团", "pleiades"],
+      "会议": ["CASSIOPEIA · 仙后座", "cassiopeia"],
+      "访谈": ["GEMINI · 双子座", "gemini"],
+      "重要冥想": ["CYGNUS · 天鹅座", "cygnus"],
+      "文章更新": ["PERSEUS · 英仙座", "perseus"],
+      "相关资料": ["ANDROMEDA · 仙女座", "andromeda"],
+    };
+    if (!categoryList.childElementCount) {
+      categoryList.innerHTML = categories.map((category) => {
+        const [name, icon] = skySigns[category] || skySigns["全部"];
+        return `<button type="button" class="constellation-tab" data-category="${escapeHTML(category)}" aria-pressed="false">
+          <span class="constellation-picture"><img class="constellation-cutout" src="assets/constellations/${icon}.webp" width="320" height="210" alt="" decoding="async" /></span>
+          <span class="constellation-label"><strong>${escapeHTML(category)}</strong><small>${escapeHTML(name)}</small></span>
+        </button>`;
+      }).join("");
+      categoryList.setAttribute("aria-label", "文章分类，可左右拖动或滚轮切换");
+      let drag = null;
+      let ignoreClickUntil = 0;
+      categoryList.addEventListener("dragstart", (event) => event.preventDefault());
+      categoryList.addEventListener("pointerdown", (event) => {
+        if (event.pointerType !== "mouse" || event.button !== 0) return;
+        drag = { x: event.clientX, left: categoryList.scrollLeft, pointer: event.pointerId, moved: false };
+      });
+      categoryList.addEventListener("pointermove", (event) => {
+        if (!drag || event.pointerId !== drag.pointer) return;
+        const delta = event.clientX - drag.x;
+        if (!drag.moved && Math.abs(delta) < 6) return;
+        drag.moved = true;
+        categoryProgrammaticUntil = 0;
+        categoryList.classList.add("is-dragging");
+        categoryList.setPointerCapture(event.pointerId);
+        categoryList.scrollLeft = drag.left - delta;
+      });
+      const finishDrag = () => {
+        if (!drag) return;
+        if (drag.moved) ignoreClickUntil = performance.now() + 300;
+        if (categoryList.hasPointerCapture(drag.pointer)) categoryList.releasePointerCapture(drag.pointer);
+        drag = null;
+        categoryList.classList.remove("is-dragging");
+      };
+      categoryList.addEventListener("pointerup", finishDrag);
+      categoryList.addEventListener("pointercancel", finishDrag);
+      categoryList.addEventListener("click", (event) => {
+        if (performance.now() < ignoreClickUntil) { event.preventDefault(); event.stopImmediatePropagation(); }
+      }, true);
+      categoryList.addEventListener("wheel", (event) => {
+        if (event.ctrlKey) return;
+        const delta = (Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY) * (event.deltaMode === 1 ? 16 : 1);
+        const edge = categoryList.scrollWidth - categoryList.clientWidth;
+        if ((delta < 0 && categoryList.scrollLeft <= 1) || (delta > 0 && categoryList.scrollLeft >= edge - 1)) return;
+        event.preventDefault();
+        categoryProgrammaticUntil = 0;
+        categoryList.scrollLeft += delta;
+      }, { passive: false });
+      // Scroll snapping also selects the category on touchscreens and trackpads.
+      categoryList.addEventListener("scroll", () => {
+        clearTimeout(categoryScrollTimer);
+        categoryScrollTimer = setTimeout(() => {
+          if (performance.now() < categoryProgrammaticUntil) return;
+          const rect = categoryList.getBoundingClientRect();
+          const middle = rect.left + rect.width / 2;
+          const closest = [...categoryList.children].reduce((best, item) => {
+            const box = item.getBoundingClientRect();
+            const distance = Math.abs(box.left + box.width / 2 - middle);
+            return !best || distance < best.distance ? { item, distance } : best;
+          }, null)?.item;
+          if (!closest || closest.dataset.category === currentCategory) return;
+          currentCategory = closest.dataset.category;
+          currentPage = 1;
+          renderCategories(false, false);
+          renderGrid();
+        }, 160);
+      }, { passive: true });
+    }
+    categoryList.querySelectorAll("[data-category]").forEach((button) => {
+      const active = button.dataset.category === currentCategory;
+      button.classList.toggle("active", active);
+      button.setAttribute("aria-pressed", String(active));
+    });
+    document.body.dataset.categoryTheme = currentCategory;
+    if (!center) return;
+    categoryProgrammaticUntil = performance.now() + 900;
+    requestAnimationFrame(() => {
+      const active = categoryList.querySelector(".active");
+      if (!active) return;
+      const listRect = categoryList.getBoundingClientRect();
+      const activeRect = active.getBoundingClientRect();
+      categoryList.scrollTo({ left: categoryList.scrollLeft + activeRect.left - listRect.left - (listRect.width - activeRect.width) / 2,
+        behavior: animate && !matchMedia("(prefers-reduced-motion: reduce)").matches ? "smooth" : "auto" });
+    });
   }
 
   function renderHotShowcase() {
     const hotCarousel = $("#hotCarousel");
     const hotDots = $("#hotDots");
     if (!hotCarousel || !hotDots) return;
-    if (mobileLayout.matches) {
-      hotCarousel.innerHTML = "";
-      hotDots.innerHTML = "";
-      return;
-    }
     const hot = hotArticles();
     if (!hot.length) {
       hotCarousel.innerHTML = "";
@@ -441,6 +555,7 @@
     if (mobileLayout.matches) return;
     if (hot.length < 2) return;
     hotTimer = setInterval(() => {
+      if (document.hidden || !$("#reader")?.hidden) return;
       hotIndex = (hotIndex + 1) % hot.length;
       renderHotShowcase();
     }, Math.max(1200, Number(page.hotSpeed || 4500)));
@@ -496,17 +611,13 @@
       pagination.innerHTML = "";
       return;
     }
-    const leadingPageCount = 7;
-    const pages = Array.from(
-      { length: Math.min(totalPages, leadingPageCount) },
-      (_, index) => index + 1,
-    );
-    const hasCollapsedPages = totalPages > leadingPageCount + 1;
-    if (totalPages === leadingPageCount + 1) pages.push(totalPages);
+    const start = Math.max(2, Math.min(currentPage - 2, totalPages - 5));
+    const end = Math.min(totalPages - 1, Math.max(currentPage + 2, 6));
+    const pages = totalPages <= 9 ? Array.from({ length: totalPages }, (_, index) => index + 1)
+      : [1, ...(start > 2 ? [null] : []), ...Array.from({ length: end - start + 1 }, (_, index) => start + index), ...(end < totalPages - 1 ? [null] : []), totalPages];
     pagination.innerHTML = `
       <button type="button" data-page="${Math.max(1, currentPage - 1)}" ${currentPage === 1 ? "disabled" : ""}>上一页</button>
-      ${pages.map((pageNumber) => `<button type="button" class="${pageNumber === currentPage ? "active" : ""}" data-page="${pageNumber}">${pageNumber}</button>`).join("")}
-      ${hasCollapsedPages ? `<span class="pagination-ellipsis" aria-hidden="true">…</span><button type="button" class="${totalPages === currentPage ? "active" : ""}" data-page="${totalPages}">${totalPages}</button>` : ""}
+      ${pages.map((pageNumber) => pageNumber === null ? '<span class="pagination-ellipsis" aria-hidden="true">…</span>' : `<button type="button" class="${pageNumber === currentPage ? "active" : ""}" ${pageNumber === currentPage ? 'aria-current="page"' : ''} data-page="${pageNumber}">${pageNumber}</button>`).join("")}
       <button type="button" data-page="${Math.min(totalPages, currentPage + 1)}" ${currentPage === totalPages ? "disabled" : ""}>下一页</button>
     `;
   }
@@ -569,6 +680,7 @@
     const articleBand = $(".article-band");
     const hotShowcase = $(".hot-showcase");
     if (!article || !reader || !articleBand || !hotShowcase) return;
+    document.body.dataset.categoryTheme = article.category || "全部";
     articleBand.hidden = true;
     hotShowcase.hidden = true;
     document.documentElement.classList.add("article-reading");
@@ -578,16 +690,31 @@
     reader.classList.toggle("author-cangyan", themeClass === "author-cangyan");
     reader.classList.toggle("author-xiangming", themeClass === "author-xiangming");
     reader.classList.toggle("translator-geka", themeClass === "translator-geka");
+    const hasCover = Boolean(String(article.cover || "").trim());
+    const coverOnly = hasCover && ["门户更新", "访谈", "会议"].includes(article.category);
+    reader.classList.toggle("reader-cover-only", coverOnly);
+    reader.classList.toggle("reader-no-cover", !hasCover);
+    reader.dataset.articleId = article.id;
     const readerMobileCover = mobileCoverPath(article.cover);
     const readerCover = $("#readerCover");
-    const preferredCover = mobileLayout.matches && readerMobileCover ? readerMobileCover : article.cover;
-    readerCover.src = window.SiriusAPI?.isLocalMediaURL?.(preferredCover) ? defaultPage.logoImage : preferredCover;
+    // Wide cover headers need the full asset, not the small list thumbnail.
+    const preferredCover = !coverOnly && mobileLayout.matches && readerMobileCover ? readerMobileCover : article.cover;
+    readerCover.hidden = !hasCover;
+    const coverFailure = () => {
+      if (reader.dataset.articleId !== article.id) return;
+      readerCover.hidden = true;
+      reader.classList.remove("reader-cover-only");
+      reader.classList.add("reader-no-cover");
+    };
+    readerCover.onerror = coverFailure;
+    if (hasCover) readerCover.src = window.SiriusAPI?.isLocalMediaURL?.(preferredCover) ? defaultPage.logoImage : preferredCover;
+    else readerCover.removeAttribute("src");
     if (window.SiriusAPI?.isLocalMediaURL?.(preferredCover)) {
       window.SiriusAPI.resolveMediaURL(preferredCover)
-        .then((url) => { readerCover.src = url; })
-        .catch((error) => console.warn("本地封面读取失败", error));
+        .then((url) => { if (reader.dataset.articleId === article.id) readerCover.src = url; })
+        .catch((error) => { coverFailure(); console.warn("本地封面读取失败", error); });
     }
-    if (!mobileLayout.matches && readerMobileCover) {
+    if (!coverOnly && !mobileLayout.matches && readerMobileCover) {
       $("#readerCover").srcset = `${readerMobileCover} 480w, ${article.cover} 1080w`;
       $("#readerCover").sizes = "(max-width: 760px) 100vw, 390px";
     } else {
@@ -601,7 +728,13 @@
       article.author ? `<span class="reader-author">作者：${escapeHTML(article.author)}</span>` : "",
       isGekaArticle(article) ? `<span class="reader-translator">翻译：GeKa</span>` : "",
     ].filter(Boolean).join(" · ");
-    $("#readerTitle").textContent = article.title;
+    const readerTitle = $("#readerTitle");
+    readerTitle.textContent = article.title;
+    readerTitle.title = article.title;
+    const titleLength = [...article.title].length;
+    readerTitle.style.setProperty("--reader-title-size", titleLength > 64
+      ? "clamp(20px, 2.3vw, 30px)"
+      : titleLength > 38 ? "clamp(23px, 3vw, 38px)" : "clamp(29px, 4vw, 50px)");
     $("#readerExcerpt").textContent = article.excerpt;
     const articleBodyHTML = article.html || (article.paragraphs || []).map((p) => `<p>${escapeHTML(p)}</p>`).join("");
     const fallbackImagesHTML = article.html ? "" : (article.images || []).slice(1)
@@ -611,6 +744,7 @@
       ? `<p class="article-source-pdf"><a href="${escapeHTML(sourcePdf)}" target="_blank" rel="noopener noreferrer">查看或下载原始 PDF</a></p>`
       : "";
     const readerBody = $("#readerBody");
+    window.SiriusPdfInlineViewer?.disposeWithin?.(readerBody);
     readerBody.innerHTML = articleBodyHTML + fallbackImagesHTML + pdfAttachment;
     readerBody.querySelectorAll(".pdf-document").forEach((documentElement) => {
       if (sourcePdf) documentElement.dataset.pdfSrc = sourcePdf;
@@ -628,12 +762,17 @@
     const reader = $("#reader");
     const articleBand = $(".article-band");
     const hotShowcase = $(".hot-showcase");
+    window.SiriusPdfInlineViewer?.disposeWithin?.(reader);
+    reader?.querySelectorAll("audio, video").forEach((media) => media.pause());
+    $("#readerBody")?.replaceChildren();
+    $("#inlineMusic")?.replaceChildren();
     if (reader) reader.hidden = true;
     reader?.classList.remove("author-cangyan", "author-xiangming", "translator-geka");
     document.documentElement.classList.remove("article-reading");
     document.body.classList.remove("article-reading");
     if (articleBand) articleBand.hidden = false;
     if (hotShowcase) hotShowcase.hidden = false;
+    document.body.dataset.categoryTheme = currentCategory;
   }
 
   function bindEvents() {
@@ -645,13 +784,21 @@
 
     $("#musicToggle")?.addEventListener("click", async () => {
       if (!backgroundAudio) return;
+      if (!siteMusicPlaylist.length) {
+        musicNotice("尚未配置背景音乐。请在网页编辑器的背景音乐设置中添加音频并保存。");
+        return;
+      }
       if (backgroundAudio.paused) {
         try {
+          if (window.SiriusAPI?.isLocalMediaURL?.(siteMusicPlaylist[siteMusicIndex].url)) {
+            backgroundAudio.src = await window.SiriusAPI.resolveMediaURL(siteMusicPlaylist[siteMusicIndex].url);
+          }
           await backgroundAudio.play();
           setMusicTogglePlaying(true);
           saveBackgroundMusicState({ wantsPlayback: true });
         } catch (error) {
           setMusicTogglePlaying(false);
+          musicNotice("音乐暂时无法播放，请检查音频链接或稍后重试。");
           console.warn("Background music playback was blocked", error);
         }
       } else {
@@ -662,9 +809,13 @@
     });
 
     backgroundAudio?.addEventListener("ended", async () => {
+      if (!siteMusicPlaylist.length) return;
+      setMusicTogglePlaying(false);
       siteMusicIndex = (siteMusicIndex + 1) % siteMusicPlaylist.length;
-      backgroundAudio.src = siteMusicPlaylist[siteMusicIndex].url;
       try {
+        const source = siteMusicPlaylist[siteMusicIndex].url;
+        backgroundAudio.src = window.SiriusAPI?.isLocalMediaURL?.(source)
+          ? await window.SiriusAPI.resolveMediaURL(source) : source;
         await backgroundAudio.play();
         setMusicTogglePlaying(true);
         saveBackgroundMusicState({ wantsPlayback: true, currentTime: 0 });
@@ -673,7 +824,7 @@
       }
     });
 
-    backgroundAudio?.addEventListener("play", () => {
+    backgroundAudio?.addEventListener("playing", () => {
       setMusicTogglePlaying(true);
       saveBackgroundMusicState({ wantsPlayback: true });
     });
@@ -707,8 +858,30 @@
       if (!button) return;
       currentCategory = button.dataset.category;
       currentPage = 1;
-      renderCategories();
+      renderCategories(true);
       renderGrid();
+    });
+    backgroundAudio?.addEventListener("waiting", () => setMusicTogglePlaying(false));
+    backgroundAudio?.addEventListener("error", () => {
+      setMusicTogglePlaying(false);
+      if (siteMusicPlaylist.length) musicNotice("背景音乐地址无效或文件尚未上传，请在网页编辑器中重新选择音频。");
+    });
+    const shiftCategory = (direction) => {
+      const categories = ["全部", ...allCategories];
+      const index = Math.max(0, categories.indexOf(currentCategory));
+      currentCategory = categories[(index + direction + categories.length) % categories.length];
+      currentPage = 1;
+      renderCategories(true);
+      renderGrid();
+    };
+    $("#categoryPrev")?.addEventListener("click", () => shiftCategory(-1));
+    $("#categoryNext")?.addEventListener("click", () => shiftCategory(1));
+    $("#categoryList")?.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+        event.preventDefault();
+        shiftCategory(event.key === "ArrowLeft" ? -1 : 1);
+        $("#categoryList")?.querySelector(".active")?.focus();
+      }
     });
 
     $("#hotCarousel")?.addEventListener("click", (event) => {
@@ -761,7 +934,6 @@
   function bindPointerEffects() {
     if (mobileLayout.matches || window.matchMedia("(pointer: coarse)").matches || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     let lastMove = 0;
-    const icons = ["\u{1F42C}", "\u{1F40B}", "\u269C", "\u{1F981}"];
     const root = document.documentElement;
 
     document.addEventListener("pointermove", (event) => {
@@ -772,19 +944,6 @@
       root.style.setProperty("--mouse-y", `${event.clientY}px`);
     }, { passive: true });
 
-    document.addEventListener("click", (event) => {
-      if (event.target.closest("input, textarea, select, [contenteditable='true']")) return;
-      const icon = document.createElement("span");
-      icon.className = "click-icon";
-      icon.textContent = icons[Math.floor(Math.random() * icons.length)];
-      icon.style.left = `${event.clientX}px`;
-      icon.style.top = `${event.clientY}px`;
-      icon.style.setProperty("--drift-x", `${Math.round(Math.random() * 46 - 23)}px`);
-      icon.style.setProperty("--drift-y", `${Math.round(-34 - Math.random() * 34)}px`);
-      icon.style.setProperty("--spin", `${Math.round(Math.random() * 40 - 20)}deg`);
-      document.body.appendChild(icon);
-      icon.addEventListener("animationend", () => icon.remove(), { once: true });
-    });
   }
 
   applyPageText();

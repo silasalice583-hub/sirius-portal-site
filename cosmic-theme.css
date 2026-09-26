@@ -1,0 +1,266 @@
+/* Bright photographic star atlas. Public pages only; publisher controls keep their own styling. */
+:root {
+  --sky-ink: #203c53;
+  --sky-muted: #4e7080;
+  --sky-line: rgba(41, 121, 117, .25);
+  --sky-accent: #138f88;
+}
+
+body.page-home, body.page-articles, body.page-meditation, body.page-about {
+  color: var(--sky-ink);
+  background: #eefaf5 !important;
+}
+body.page-home::before, body.page-articles::before,
+body.page-meditation::before, body.page-about::before {
+  background: linear-gradient(rgba(49, 135, 119, .045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(49, 135, 119, .045) 1px, transparent 1px),
+    radial-gradient(circle at 5% 12%, rgba(102, 217, 172, .23), transparent 34%);
+  background-size: 52px 52px, 52px 52px, auto;
+}
+body.page-home::after, body.page-articles::after,
+body.page-meditation::after, body.page-about::after { opacity: .12; }
+
+.page-home .site-header, .page-articles .site-header,
+.page-meditation .site-header, .page-about .site-header {
+  color: #244e5c; border-color: rgba(51, 128, 117, .19);
+  background: rgba(251, 255, 251, .9); backdrop-filter: blur(18px);
+  box-shadow: 0 9px 28px rgba(28, 102, 90, .09);
+}
+.page-home .top-nav, .page-articles .top-nav,
+.page-meditation .top-nav, .page-about .top-nav { color: #527078; }
+.page-home .top-nav a.active, .page-articles .top-nav a.active,
+.page-meditation .top-nav a.active, .page-about .top-nav a.active { color: #0f766c; }
+.page-home .top-nav a::after, .page-articles .top-nav a::after,
+.page-meditation .top-nav a::after, .page-about .top-nav a::after { background: #39ac8a; }
+.page-home .music-pill, .page-articles .music-pill,
+.page-meditation .music-pill, .page-about .music-pill {
+  color: #16576c; border: 1px solid rgba(49, 135, 119, .28);
+  background: rgba(229, 248, 239, .86); box-shadow: none;
+}
+
+/* Real NASA/observatory photography is washed with daylight tones, never replaced by AI art. */
+.cosmic-backdrop { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; background: #def2ef; }
+.cosmic-photo { position: absolute; inset: 0; background-position: center; background-size: cover; opacity: 0; transition: opacity 2.4s ease; }
+.cosmic-photo.is-visible { opacity: .64; }
+.cosmic-backdrop::after { position: absolute; inset: 0; content: ""; background: linear-gradient(90deg, rgba(246, 255, 249, .34), rgba(239, 250, 255, .21) 55%, rgba(247, 255, 250, .33)); }
+.page-articles main, .page-meditation main { position: relative; z-index: 1; }
+
+/* Home: a luminous signal-garden with binary ornament. */
+.page-home .home-hero {
+  width: 100%; min-height: min(690px, 88vh); margin: 0; display: grid; align-items: center;
+  color: #1b5460; box-shadow: none;
+  background: #010904;
+}
+.page-home .home-hero::before {
+  background: repeating-linear-gradient(90deg, transparent 0 39px, rgba(21, 151, 121, .075) 40px, transparent 41px),
+    linear-gradient(180deg, transparent, rgba(222, 250, 245, .48));
+  mask-image: none;
+}
+.page-home .home-hero::after { height: 90px; background: linear-gradient(180deg, transparent, #eefaf5); }
+.page-home .home-code-rain { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; pointer-events: none; opacity: .88; mix-blend-mode: multiply; mask-image: linear-gradient(90deg, rgba(0, 0, 0, .4), rgba(0, 0, 0, .86) 58%, #000); }
+.page-home .hero-inner { position: relative; z-index: 1; }
+.page-home .hero-copy { position: relative; }
+.page-home .hero-copy::before {
+  content: "01001011  00110101  11001010  00101001";
+  position: absolute; top: -72px; left: 0; max-width: 100%; overflow: hidden;
+  font: 11px/1.8 Consolas, monospace; letter-spacing: .44em; white-space: nowrap;
+  color: #0b9a72; opacity: .72;
+}
+.page-home .hero-copy h1 { color: #195c63; text-shadow: 0 8px 30px rgba(28, 134, 128, .18); }
+.page-home .hero-copy p { color: #305a68; }
+.page-home .eyebrow, .page-home .home-hero .eyebrow { color: #148467; letter-spacing: .25em; }
+.page-home .hero-art-card { border: 1px solid rgba(39, 151, 127, .27); background: rgba(251, 255, 251, .35); backdrop-filter: blur(7px); }
+.page-home .hero-art-card img { filter: drop-shadow(0 16px 25px rgba(30, 123, 136, .2)); }
+.page-home .search-panel { border-color: rgba(42, 153, 121, .23); background: rgba(255, 255, 255, .52); box-shadow: 0 16px 42px rgba(46, 142, 121, .12); }
+.page-home .search-panel input { color: #264e62; background: rgba(255, 255, 255, .72); }
+.page-home .search-panel input::placeholder { color: #64898a; }
+.page-home .search-panel button { background: #138f83; }
+.page-home .home-section { position: relative; z-index: 1; color: #245369; }
+.page-home .section-head h2 { color: #1e6973; text-shadow: none; }
+.page-home .home-feature-card { color: #294964; border: 1px solid var(--sky-line); background: rgba(252, 255, 252, .66); box-shadow: 0 17px 48px rgba(30, 122, 118, .11); }
+.page-home .home-feature-card span, .page-home .home-feature-card p { color: #537783; }
+
+/* Article atlas: constellation line drawings and a corresponding photographic sky. */
+.page-articles .archive-hero, .page-about .about-page-hero {
+  color: #22546d; border: 1px solid rgba(73, 142, 147, .24);
+  background: rgba(251, 255, 253, .46); backdrop-filter: blur(6px);
+  box-shadow: 0 20px 55px rgba(43, 122, 129, .12);
+}
+.page-articles .archive-hero::after, .page-about .about-page-hero::after { background: linear-gradient(90deg, rgba(248, 255, 252, .2), rgba(239, 255, 255, .04)); }
+.page-articles .archive-hero h1, .page-about .about-page-hero h1 { color: #236b7c; text-shadow: 0 8px 30px rgba(31, 133, 139, .12); }
+.page-articles .archive-hero .eyebrow, .page-about .about-page-hero .eyebrow { color: #168b78; }
+.hero-constellation { position: relative; z-index: 2; display: grid; place-items: center; gap: 8px; color: #199e9a; letter-spacing: .2em; font: 12px/1.4 Georgia, serif; text-align: center; }
+.hero-constellation svg { width: min(100%, 330px); height: 185px; overflow: visible; filter: drop-shadow(0 0 9px rgba(35, 176, 169, .34)); }
+.hero-constellation polyline, .constellation-tab polyline { fill: none; stroke: currentColor; stroke-width: .55; }
+.page-articles .hot-showcase { background: transparent; }
+.page-articles .hot-overlay,
+.page-articles .hot-slide.author-cangyan .hot-overlay,
+.page-articles .hot-slide.author-xiangming .hot-overlay {
+  color: #22566b; border-color: rgba(60, 149, 137, .35);
+  background: rgba(251, 255, 251, .72); backdrop-filter: blur(11px);
+}
+.page-articles .hot-overlay span,
+.page-articles .hot-slide.author-cangyan .hot-overlay span,
+.page-articles .hot-slide.author-xiangming .hot-overlay span { color: #167d77; }
+.page-articles .hot-overlay p { color: #4d7180; }
+.page-articles .article-band { padding: clamp(18px, 3vw, 32px); border: 1px solid var(--sky-line); background: rgba(251, 255, 253, .56); backdrop-filter: blur(6px); }
+.page-articles .article-band .section-head h2 { color: #1f697a; text-shadow: none; }
+.page-articles .article-band .section-head .eyebrow, .page-articles #articleCount { color: #527683; }
+.page-articles .category-tabs { gap: 12px; border: 0; padding: 0; background: transparent; }
+.page-articles .category-tabs .constellation-tab {
+  display: flex; align-items: center; gap: 8px; min-height: 56px; padding: 7px 12px;
+  color: #2d7d86; border: 1px solid rgba(47, 144, 138, .25); border-radius: 4px;
+  background: rgba(251, 255, 253, .72); transition: background .25s, border-color .25s, transform .25s;
+}
+.page-articles .category-tabs .constellation-tab:hover,
+.page-articles .category-tabs .constellation-tab.active { color: #136675; border-color: #60baa8; background: rgba(205, 246, 228, .86); transform: translateY(-2px); }
+.constellation-tab svg { width: 53px; height: 31px; flex: none; }
+.constellation-label { display: grid; gap: 1px; text-align: left; }
+.constellation-label strong { font: 900 14px/1.2 "STKaiti", "KaiTi", serif; letter-spacing: .08em; }
+.constellation-label small { font: 8px/1.2 Georgia, serif; letter-spacing: .09em; white-space: nowrap; opacity: .7; }
+.page-articles .inline-search, .page-articles .sort-row select { color: #315c68; border-color: var(--sky-line); background: rgba(255, 255, 255, .8); }
+.page-articles .inline-search::placeholder { color: #719399; }
+.page-articles .sort-row label { color: #456e78; }
+.page-articles .article-card { color: #284e64; border: 1px solid rgba(57, 143, 132, .23); background: rgba(255, 255, 255, .64); box-shadow: 0 15px 42px rgba(41, 131, 127, .12); }
+.page-articles .article-card:hover { border-color: #52b7a4; }
+.page-articles .article-card p { color: #577983; }
+.page-articles .meta-row { color: #157873; background: rgba(211, 246, 231, .77); }
+.page-articles .article-card.author-cangyan .meta-row { background: linear-gradient(135deg, rgba(255, 240, 244, .76), rgba(255, 245, 239, .62)); }
+.page-articles .article-card.author-xiangming .meta-row { background: linear-gradient(135deg, rgba(237, 249, 255, .76), rgba(243, 251, 255, .64)); }
+.page-articles .pagination button { color: #225e6d; border-color: var(--sky-line); background: rgba(255,255,255,.82); }
+.page-articles .pagination button.active { color: #fff; background: #1a9082; }
+.page-articles .pagination-ellipsis { color: #477b84; }
+body.page-articles[data-category-theme="门户更新"] { --sky-accent: #159278; }
+body.page-articles[data-category-theme="会议"] { --sky-accent: #1a8fad; }
+body.page-articles[data-category-theme="访谈"] { --sky-accent: #8070bd; }
+body.page-articles[data-category-theme="重要冥想"] { --sky-accent: #b47c3a; }
+.page-articles .hero-constellation, .page-articles .category-tabs .active { color: var(--sky-accent); }
+
+/* Reading sheets retain original PDF and author text colours. */
+.page-articles .reader { position: relative; z-index: 1; }
+.page-articles .reader-hero { color: #2a556a; border-color: var(--sky-line); background: rgba(253, 255, 252, .62); backdrop-filter: blur(8px); box-shadow: 0 20px 55px rgba(47, 133, 127, .14); }
+.page-articles .reader.author-cangyan .reader-hero { background: radial-gradient(circle at 88% 12%, rgba(255, 89, 61, .11), transparent 34%), linear-gradient(135deg, rgba(255, 255, 255, .68), rgba(255, 240, 244, .56)); }
+.page-articles .reader.author-xiangming .reader-hero { background: radial-gradient(circle at 88% 12%, rgba(121, 217, 255, .18), transparent 36%), linear-gradient(135deg, rgba(255, 255, 255, .68), rgba(237, 249, 255, .56)); }
+.page-articles .reader.translator-geka .reader-hero { background: radial-gradient(circle at 88% 12%, rgba(168, 85, 247, .14), transparent 36%), linear-gradient(135deg, rgba(255, 255, 255, .68), rgba(245, 240, 255, .56)); }
+.page-articles .reader-hero p { color: #527888; }
+.page-articles #readerTitle {
+  font-size: var(--reader-title-size, clamp(29px, 4vw, 50px));
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
+  overflow: hidden; overflow-wrap: anywhere; line-height: 1.25;
+}
+.page-articles .reader-body { background: rgba(255, 255, 255, .73); border-color: rgba(80, 149, 145, .23); backdrop-filter: blur(5px); }
+.page-articles .reader-body:has(> .pdf-document) { background: rgba(255, 255, 255, .32); backdrop-filter: blur(4px); }
+.page-articles .comments, .page-articles .audio-card, .page-articles .side-section { background: rgba(255, 255, 255, .62); border-color: var(--sky-line); backdrop-filter: blur(6px); }
+.page-articles .comment-form input, .page-articles .comment-form textarea, .page-articles .comment-notice { background: rgba(255, 255, 255, .76); }
+.page-articles .back-button { background: #218f85; }
+
+/* A full-page code-native SVG Flower of Life, rather than a hero icon. */
+.page-about { background: linear-gradient(130deg, #effaf4, #e4f8f7 58%, #f5fbf1) !important; }
+.page-about .about-page-hero { min-height: 470px; grid-template-columns: 1fr; background: rgba(248, 255, 251, .48); }
+.page-about .about-page-hero p { color: #3c6676; max-width: 680px; }
+.page-about .flower-of-life-stage {
+  position: fixed; inset: 0; z-index: 0; display: grid; place-items: center;
+  min-height: 0; width: 100vw; height: 100vh; overflow: hidden;
+  pointer-events: none; opacity: .31; filter: none;
+}
+.page-about .flower-glow { position: absolute; width: min(105vw, 880px); background: radial-gradient(circle, rgba(96, 228, 184, .24), transparent 70%); animation: none; }
+.page-about .flower-of-life-vector { position: relative; width: min(112vmin, 900px); max-width: none; overflow: visible; color: #158f8a; filter: drop-shadow(0 0 17px rgba(39, 184, 160, .28)); }
+.flower-ring-inner { color: #d6aa58; transform-origin: 100px 100px; }
+.page-about main, .page-about .site-disclaimer { position: relative; z-index: 1; }
+.page-about .about-cards article { color: #2e5c6d; border: 1px solid var(--sky-line); background: rgba(255, 255, 255, .56); backdrop-filter: blur(5px); box-shadow: 0 15px 44px rgba(35, 131, 129, .1); }
+.page-about .about-cards article h2 { color: #187b7b; }
+.page-about .about-cards article p { color: #4c7180; }
+
+/* Meditation: a stable figure over lightened real starfields. */
+.page-meditation .meditation-main { background: transparent !important; }
+.page-meditation .meditation-hero { min-height: 620px; color: #255b76; }
+.page-meditation .meditation-hero h1 { color: #1e7f8e; text-shadow: 0 9px 32px rgba(44, 160, 154, .2); }
+.page-meditation .meditation-hero-copy > p:last-child { color: #3c6f7d; }
+.page-meditation .nebula-layer { opacity: .16; animation: none; }
+.page-meditation .meditation-orbit { animation: none !important; transform: none !important; border-color: rgba(35, 151, 155, .34); }
+.page-meditation .meditation-woman { animation: none !important; }
+.page-meditation .collective-copy, .page-meditation .collective-player,
+.page-meditation .meditation-card, .page-meditation .meditation-reader {
+  color: #2c5873; border-color: var(--sky-line); background: rgba(255, 255, 255, .54); backdrop-filter: blur(7px); box-shadow: 0 16px 44px rgba(37, 119, 133, .1);
+}
+.page-meditation .collective-copy h2, .page-meditation .meditation-archive h2 { color: #177e8a; }
+.page-meditation .meditation-card p, .page-meditation .meditation-card span,
+.page-meditation .meditation-reader .reader-body { color: #4d7182; }
+.page-meditation .meditation-archive .section-head { color: #276374; }
+.page-meditation .meditation-archive .section-head span { color: #557c87; }
+.page-meditation .meditation-empty { color: #2e5e72; border-color: var(--sky-line); background: rgba(255, 255, 255, .58); }
+.page-meditation .meditation-empty p:last-child { color: #577986; }
+.page-meditation .live-indicator, .page-meditation .collective-status { color: #1b887c; }
+.page-meditation .collective-enter { background: #1a978d; color: #fff; }
+
+/* Public footer stays in the same light palette. */
+.page-home .site-disclaimer, .page-articles .site-disclaimer,
+.page-meditation .site-disclaimer, .page-about .site-disclaimer {
+  color: #315d6a; border-color: var(--sky-line); background: rgba(236, 250, 247, .91);
+}
+.page-home .site-disclaimer::before, .page-articles .site-disclaimer::before,
+.page-meditation .site-disclaimer::before, .page-about .site-disclaimer::before { opacity: .1; }
+.page-home .site-disclaimer #motionTitle, .page-articles .site-disclaimer #motionTitle,
+.page-meditation .site-disclaimer #motionTitle, .page-about .site-disclaimer #motionTitle { color: #416a76; }
+
+/* Screen-lit binary rain, with a subtle scanning texture and no dark overlay. */
+.matrix-transition { position: fixed; inset: 0; z-index: 10000; display: grid; place-items: center; overflow: hidden; pointer-events: none; color: #18916d; background: radial-gradient(circle at 50% 42%, #edfff5, #ccefe6 65%, #a8ddd1); opacity: 0; visibility: hidden; transition: opacity .26s ease, visibility .26s; }
+.matrix-transition.is-active { opacity: 1; visibility: visible; }
+.matrix-rain-canvas, .matrix-scanline { position: absolute; inset: 0; width: 100%; height: 100%; }
+.matrix-scanline { pointer-events: none; opacity: .3; background: repeating-linear-gradient(0deg, transparent 0 3px, rgba(255, 255, 255, .4) 4px, transparent 5px); }
+.matrix-status { position: relative; z-index: 1; padding: 14px 22px; border: 1px solid rgba(34, 155, 116, .38); background: rgba(255, 255, 255, .77); backdrop-filter: blur(4px); font: 12px/1.4 Consolas, monospace; letter-spacing: .24em; box-shadow: 0 0 30px rgba(85, 206, 153, .18); }
+.matrix-status i { font-style: normal; color: #d39c48; }
+
+/* A detailed iris nib, starlight trail, and four alternating SVG click seals. */
+.cosmic-pointer, .cosmic-pointer a, .cosmic-pointer button { cursor: none !important; }
+.cosmic-pointer input, .cosmic-pointer textarea, .cosmic-pointer select, .cosmic-pointer [contenteditable="true"] { cursor: text !important; }
+.cosmic-pen { position: fixed; top: 0; left: 0; z-index: 9999; width: 48px; height: 58px; pointer-events: none; opacity: 0; filter: drop-shadow(0 0 6px rgba(120, 221, 173, .63)); will-change: transform; }
+.cosmic-pen.is-visible { opacity: 1; }
+.cosmic-pen svg { width: 100%; height: 100%; }
+.cosmic-spark { position: fixed; z-index: 9998; width: 4px; height: 4px; border-radius: 50%; pointer-events: none; background: #f5cd72; box-shadow: 0 0 9px #9adbd4, 0 0 17px #9bd7e7; animation: cosmicSpark .55s ease-out forwards; }
+@keyframes cosmicSpark { to { opacity: 0; transform: translate(-8px, 15px) scale(.2); } }
+.cosmic-click-symbol { position: fixed; z-index: 9997; width: 48px; height: 48px; pointer-events: none; filter: drop-shadow(0 0 5px rgba(255, 245, 192, .8)); transform: translate(-50%, -50%) scale(.45); animation: cosmicSeal .75s ease-out forwards; }
+.cosmic-click-symbol svg { display: block; width: 100%; height: 100%; }
+@keyframes cosmicSeal { 25% { opacity: 1; transform: translate(-50%, -65%) scale(1.12) rotate(8deg); } to { opacity: 0; transform: translate(-50%, -130%) scale(1.3) rotate(-10deg); } }
+
+@media (max-width: 760px) {
+  body.page-home .site-header, body.page-articles .site-header,
+  body.page-meditation .site-header, body.page-about .site-header {
+    color: #244e5c; border-bottom-color: var(--sky-line);
+    background: rgba(251, 255, 251, .96); backdrop-filter: blur(14px);
+  }
+  body.page-home .top-nav, body.page-articles .top-nav,
+  body.page-meditation .top-nav, body.page-about .top-nav { color: #527078; }
+  body.page-home .top-nav a.active, body.page-articles .top-nav a.active,
+  body.page-meditation .top-nav a.active, body.page-about .top-nav a.active {
+    color: #0e796d; background: rgba(207, 247, 228, .68);
+  }
+  .page-home .home-hero { min-height: auto; padding-top: 96px; background: #010904; }
+  .page-home .hero-copy::before { top: -48px; font-size: 9px; letter-spacing: .14em; }
+  .cosmic-photo.is-visible { opacity: .5; }
+  .page-articles .archive-hero, .page-about .about-page-hero { width: calc(100% - 24px); margin-top: 18px; padding: 24px; min-height: 0; }
+  .page-articles .archive-hero { display: grid; grid-template-columns: 1fr; gap: 10px; }
+  .hero-constellation { justify-items: start; text-align: left; }
+  .hero-constellation svg { width: 180px; height: 82px; }
+  .page-articles .article-band { width: calc(100% - 20px); padding: 14px; }
+  .page-articles .article-filter-row { grid-template-columns: 1fr; }
+  .page-articles .category-tabs { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 8px; scroll-snap-type: x proximity; }
+  .page-articles .category-tabs .constellation-tab { flex: 0 0 auto; scroll-snap-align: start; }
+  .page-articles .article-list .article-card { display: block; }
+  .page-articles .article-list .article-card img { width: 100%; height: auto; min-height: 0; aspect-ratio: 16 / 9; }
+  .page-articles .reader { width: calc(100% - 16px); }
+  .page-articles .reader-hero { display: block; padding: 15px; }
+  .page-articles .reader-body { padding: 18px; }
+  .page-about .about-page-hero { grid-template-columns: 1fr; background: rgba(248, 255, 251, .55); }
+  .page-about .flower-of-life-stage { display: grid; min-height: 0; opacity: .2; }
+  .page-about .flower-of-life-vector { width: 135vmin; }
+  .page-meditation .meditation-hero { min-height: 530px; }
+  .page-meditation .meditation-orbit { display: block; width: min(58vw, 270px); margin: 28px auto 0; animation: none !important; }
+  .matrix-status { max-width: calc(100vw - 32px); font-size: 9px; letter-spacing: .13em; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cosmic-photo, .matrix-transition, .flower-of-life-vector, .flower-ring-inner,
+  .page-meditation .nebula-stars { animation: none !important; transition: none !important; }
+  .cosmic-spark, .cosmic-pen, .cosmic-click-symbol, .home-code-rain { display: none !important; }
+}

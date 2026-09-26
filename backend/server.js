@@ -46,6 +46,7 @@ const pool = new Pool({
 });
 
 app.use(cors({
+  exposedHeaders: ["Accept-Ranges", "Content-Range", "Content-Length"],
   origin(origin, callback) {
     if (!origin || allowedOrigins.includes("*") || allowedOrigins.includes(origin)) {
       callback(null, true);
@@ -294,6 +295,10 @@ function normalizeArticle(article) {
     video: article.video || "",
     sourceDoc: article.sourceDoc || "",
     sourcePdf: article.sourcePdf || "",
+    showSourcePdf: Boolean(article.showSourcePdf),
+    pdfLayoutMode: article.pdfLayoutMode || "",
+    author: article.author || "",
+    canonicalAuthor: article.canonicalAuthor || "",
     images: article.images || [],
     paragraphs: article.paragraphs || [],
     html: article.html || "",

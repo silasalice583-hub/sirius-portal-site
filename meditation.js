@@ -122,14 +122,14 @@
       $("#collectiveStatus").textContent = "当前时段已进入集体冥想";
       $("#collectiveTitle").textContent = active.title || "集体冥想";
       $("#collectiveTime").textContent = `${active.start} - ${active.end} · 北京时间`;
-      $("#collectiveEnter").textContent = "进入正在进行的集体冥想";
-      $("#collectiveEnter").classList.remove("disabled");
+      $("#collectiveEnter").textContent = "参加集体冥想";
+      $("#collectiveEnter").classList.remove("upcoming");
     } else {
       $("#collectiveStatus").textContent = "此刻暂无进行中的集体冥想";
       $("#collectiveTitle").textContent = "下一场集体冥想敬请期待";
       $("#collectiveTime").textContent = "";
-      $("#collectiveEnter").textContent = "了解集体冥想";
-      $("#collectiveEnter").classList.add("disabled");
+        $("#collectiveEnter").textContent = "参加集体冥想";
+      $("#collectiveEnter").classList.add("upcoming");
     }
     $("#collectiveNext").innerHTML = upcoming
       ? `<span>下一场</span><strong>${escapeHTML(upcoming.title || "集体冥想")}</strong><b>${escapeHTML(upcoming.start || "")} - ${escapeHTML(upcoming.end || "")}</b>`
@@ -140,11 +140,8 @@
     const card = event.target.closest("[data-meditation-id]");
     if (card) openMeditation(card.dataset.meditationId);
   });
-  $("#collective").addEventListener("click", (event) => {
-    if (event.target.closest("a")) return;
-    location.href = "collective-meditation.html";
-  });
   $("#meditationBack").addEventListener("click", () => {
+    $("#meditationMedia").querySelectorAll("audio, video").forEach((media) => media.pause());
     $("#meditationReader").hidden = true;
     $(".meditation-archive").hidden = false;
   });

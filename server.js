@@ -198,6 +198,43 @@ const server = http.createServer(async (req, res) => {
     }
 
     const finalPath = stats.isDirectory() ? path.join(filePath, "index.html") : filePath;
+    // PDF pages and audio seeking use byte ranges; stream rather than buffering
+    // a full document or track in the preview server.
+    if (stats.isFile() && [".pdf", ".mp3", ".mp4", ".webm"].includes(path.extname(finalPath).toLowerCase())) {
+      const total = stats.size;
+      const headers = {
+        "Content-Type": mimeTypes[path.extname(finalPath).toLowerCase()],
+        "Cache-Control": "public, max-age=3600",
+        "X-Content-Type-Options": "nosniff",
+        "Accept-Ranges": "bytes",
+      };
+      let start = 0;
+      let end = total - 1;
+      if (req.headers.range) {
+        const range = /^bytes=(\d*)-(\d*)$/.exec(req.headers.range);
+        if (range && (range[1] || range[2])) {
+          start = range[1] ? Number(range[1]) : Math.max(0, total - Number(range[2]));
+          end = range[1] && range[2] ? Math.min(total - 1, Number(range[2])) : total - 1;
+        } else start = total;
+        if (!Number.isSafeInteger(start) || !Number.isSafeInteger(end) || start > end || start >= total) {
+          res.writeHead(416, { ...headers, "Content-Range": `bytes */${total}` });
+          res.end();
+          return;
+        }
+        headers["Content-Range"] = `bytes ${start}-${end}/${total}`;
+      }
+      headers["Content-Length"] = String(Math.max(0, end - start + 1));
+      res.writeHead(req.headers.range ? 206 : 200, headers);
+      if (req.method === "HEAD" || !total) {
+        res.end();
+        return;
+      }
+      const stream = fs.createReadStream(finalPath, { start, end });
+      stream.on("error", () => res.destroy());
+      res.on("close", () => stream.destroy());
+      stream.pipe(res);
+      return;
+    }
     fs.readFile(finalPath, (readError, data) => {
       if (readError) {
         send(res, 404, "Not Found");

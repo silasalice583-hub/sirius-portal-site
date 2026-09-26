@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script>if (new URLSearchParams(location.search).has("article")) document.documentElement.classList.add("article-reading");</script>
     <title>文章 · 天狼星门户</title>
-    <link rel="stylesheet" href="styles.css?v=20260920-5" />
+    <link rel="stylesheet" href="styles.css?v=20260926-final3" />
+    <link rel="stylesheet" href="cosmic-theme.css?v=20260926-final3" />
+    <link rel="stylesheet" href="cosmic-refinement.css?v=20260926-final3" />
+    <link rel="stylesheet" href="interaction-refinement.css?v=20260926-final3" />
   </head>
   <body class="page-articles">
     <header class="site-header">
@@ -26,14 +29,14 @@
 
     <main>
       <section class="archive-hero">
-        <img class="hero-pattern-bg" id="articleBannerImage" src="assets/articles-emerald.jpg" srcset="assets/mobile/articles-emerald.webp 960w, assets/articles-emerald.jpg 1882w" sizes="100vw" alt="" aria-hidden="true" />
         <div class="hero-heading-copy">
           <p class="eyebrow" id="popularEyebrow">Popular</p>
           <h1 id="popularTitle">热门文章</h1>
         </div>
-        <div class="lion-mermaid-stage" aria-hidden="true">
-          <img src="assets/lion-mermaid.png" srcset="assets/mobile/lion-mermaid.webp 520w, assets/lion-mermaid.png 1000w" sizes="(max-width: 760px) 1px, 420px" alt="" loading="lazy" decoding="async" />
-          <span class="mascot-ledge"></span>
+        <div class="sirius-beacon" aria-label="天狼星 Sirius">
+          <span class="sirius-halo" aria-hidden="true"></span>
+          <img class="sirius-emblem" src="assets/icons/skywalker-emblem.webp" alt="天行者风格徽记" width="170" height="170" decoding="async" />
+          <span class="sirius-name">SIRIUS <small>天狼星</small></span>
         </div>
       </section>
 
@@ -55,7 +58,11 @@
           <span id="articleCount"></span>
         </div>
         <div class="article-filter-row">
-          <div class="category-tabs" id="categoryList"></div>
+          <div class="category-selector" aria-label="文章星图分类选择器">
+            <button class="category-joystick" id="categoryPrev" type="button" aria-label="上一类文章">‹</button>
+            <div class="category-tabs" id="categoryList"></div>
+            <button class="category-joystick" id="categoryNext" type="button" aria-label="下一类文章">›</button>
+          </div>
           <input id="articleSearchInput" class="inline-search" type="search" placeholder="搜索标题或正文" />
         </div>
         <div class="sort-row">
@@ -70,11 +77,11 @@
         <div class="pagination" id="pagination"></div>
       </section>
 
-      <article class="reader" id="reader" hidden>
+      <article class="reader" id="reader" aria-labelledby="readerTitle" hidden>
         <button class="back-button" id="backButton" type="button">返回文章列表</button>
         <div class="reader-hero">
           <img id="readerCover" alt="" />
-          <div>
+          <div class="reader-hero-copy">
             <p class="eyebrow" id="readerMeta"></p>
             <h2 id="readerTitle"></h2>
             <p id="readerExcerpt"></p>
@@ -107,10 +114,11 @@
 
     <audio id="backgroundAudio" preload="none"></audio>
     <script src="articles-data.js?v=20260906-1"></script>
-    <script src="config.js"></script>
-    <script src="api-client.js?v=20260919-3"></script>
+    <script src="config.js?v=20260926-final3"></script>
+    <script src="api-client.js?v=20260926-final3"></script>
     <script src="pdf-vector-text.js?v=20260920-1"></script>
-    <script src="pdf-inline-viewer.js?v=20260920-8"></script>
-    <script src="app.js?v=20260919-4"></script>
+    <script src="pdf-inline-viewer.js?v=20260926-final3"></script>
+    <script src="app.js?v=20260926-final3"></script>
+    <script src="cosmic-ui.js?v=20260926-final3"></script>
   </body>
 </html>

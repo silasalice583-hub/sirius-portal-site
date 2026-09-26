@@ -2172,6 +2172,15 @@ button { cursor: pointer; }
   background: #fff;
   box-shadow: none;
 }
+.pdf-live-page[data-render-state="waiting"],
+.pdf-live-page[data-render-state="loading"] {
+  background: linear-gradient(110deg, #f6f7f7, #ffffff 48%, #f2f6f6 70%, #f6f7f7);
+  background-size: 200% 100%;
+}
+.pdf-live-page[data-render-state="loading"] { animation: pdfPagePending 2.2s ease-in-out infinite; }
+@keyframes pdfPagePending { to { background-position-x: -200%; } }
+.pdf-live-page[data-render-state="error"] { display: grid; place-items: center; background: #f9f8f5; }
+.pdf-page-retry { max-width: min(90%, 400px); padding: 12px 18px; border: 1px solid #ad5a50; border-radius: 4px; color: #842d24; background: #fff; }
 .pdf-page-surface {
   position: absolute;
   inset: 0 auto auto 0;

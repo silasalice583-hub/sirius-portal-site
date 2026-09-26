@@ -3,16 +3,25 @@
 
   const core = window.SiriusPdfImportCore;
   if (!core) return;
-  const vendorBase = new URL("/vendor/", window.location.origin).href;
+  const scriptBase = new URL(".", window.document?.currentScript?.src || window.location.href || window.location.origin + "/");
+  const vendorBase = new URL("vendor/", scriptBase).href;
   let pdfjsPromise;
   let ocrWorkerPromise;
 
   function loadPdfJs() {
     if (!pdfjsPromise) {
       if (!Promise.try) Promise.try = (fn, ...args) => Promise.resolve().then(() => fn(...args));
-      pdfjsPromise = import(`${vendorBase}pdfjs/pdf.min.mjs`).then((pdfjs) => {
-        pdfjs.GlobalWorkerOptions.workerSrc = `${vendorBase}pdfjs/pdf.worker.min.mjs`;
+      if (!Promise.withResolvers) Promise.withResolvers = function () {
+        let resolve, reject;
+        const promise = new this((res, rej) => { resolve = res; reject = rej; });
+        return { promise, resolve, reject };
+      };
+      pdfjsPromise = import(`${vendorBase}pdfjs/pdf.min.mjs?v=20260926-legacy1`).then((pdfjs) => {
+        pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdf-worker-compat.mjs?v=20260926-legacy1", scriptBase).href;
         return pdfjs;
+      }).catch((error) => {
+        pdfjsPromise = null;
+        throw error;
       });
     }
     return pdfjsPromise;
@@ -35,11 +44,18 @@
       standardFontDataUrl: `${vendorBase}pdfjs/standard_fonts/`,
       wasmUrl: `${vendorBase}pdfjs/wasm/`, iccUrl: `${vendorBase}pdfjs/iccs/`,
     });
-    return { pdfjs, pdf: await task.promise, task };
+    try {
+      return { pdfjs, pdf: await task.promise, task };
+    } catch (error) {
+      await task.destroy().catch(() => {});
+      throw error;
+    }
   }
 
   async function renderPage(pdf, pageNumber, scale = 2) {
     const page = await pdf.getPage(pageNumber);
+    const base = page.getViewport({ scale: 1 });
+    scale = Math.min(scale, 6000 / Math.max(base.width, base.height), Math.sqrt(3000000 / (base.width * base.height)));
     const viewport = page.getViewport({ scale });
     const canvas = document.createElement("canvas");
     canvas.width = Math.ceil(viewport.width);
@@ -47,7 +63,14 @@
     const context = canvas.getContext("2d", { willReadFrequently: true });
     context.fillStyle = "#ffffff";
     context.fillRect(0, 0, canvas.width, canvas.height);
-    await page.render({ canvasContext: context, canvas, viewport }).promise;
+    try {
+      await page.render({ canvasContext: context, canvas, viewport }).promise;
+    } catch (error) {
+      canvas.width = 0;
+      canvas.height = 0;
+      page.cleanup();
+      throw error;
+    }
     return { page, canvas, context, viewport };
   }
 
@@ -69,10 +92,11 @@
         return await api.uploadMedia(new File([file], file.name, { type: file.type || "application/octet-stream" }));
       } catch (error) {
         lastError = error;
+        if ([400, 401, 403, 413].includes(error.status)) break;
         if (attempt < 3) await wait(attempt * 900);
       }
     }
-    throw new Error(`${label}上传失败（已重试 3 次）：${lastError?.message || lastError}`);
+    throw new Error(`${label}上传失败：${lastError?.message || lastError}`);
   }
 
   function loadTesseractScript() {
@@ -250,6 +274,11 @@
           row.status = "error";
         }
         updateRow(row);
+      }
+      if (ocrWorkerPromise) {
+        const worker = await ocrWorkerPromise.catch(() => null);
+        ocrWorkerPromise = null;
+        await worker?.terminate();
       }
       renderRows();
       setSummary(`已选择 ${files.length} 个 PDF；${indexedCount} 个匹配拆分索引，${coveredCount} 个匹配同名封面。请核对标题、日期与分类，再开始导入。`);

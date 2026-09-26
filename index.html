@@ -4,7 +4,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>天狼星门户</title>
-    <link rel="stylesheet" href="styles.css?v=20260920-1" />
+    <link rel="stylesheet" href="styles.css?v=20260926-final3" />
+    <link rel="stylesheet" href="cosmic-theme.css?v=20260926-final3" />
+    <link rel="stylesheet" href="cosmic-refinement.css?v=20260926-final3" />
+    <link rel="stylesheet" href="interaction-refinement.css?v=20260926-final3" />
   </head>
   <body class="page-home">
     <header class="site-header">
@@ -25,34 +28,16 @@
 
     <main>
       <section class="hero home-hero" id="home">
-        <img class="home-hero-pattern" src="assets/home-footer-emerald.jpg" srcset="assets/mobile/home-emerald.webp 960w, assets/home-footer-emerald.jpg 1897w" sizes="100vw" alt="" aria-hidden="true" />
         <div class="hero-inner">
-          <div class="hero-copy">
-            <p class="eyebrow" id="heroEyebrow">Sirius Portal</p>
-            <h1 id="heroTitle">天狼星门户</h1>
-            <p id="heroDescription">我们来自不同领域，因为对灵性成长、公共福祉与人类未来的关注而聚在一起，志愿协作，致力于本平台的资讯整理与共享。我们筛选、整理并传播具备启发性的文章与实践资料，倡导每一位读者保有独立判断，将所思所悟转化成清醒且心怀善意的行动。</p>
-            <form class="search-panel" id="searchForm">
-              <input id="searchInput" type="search" placeholder="搜索文章标题、简介、正文或分类" autocomplete="off" />
-              <button type="submit">搜索文章</button>
-            </form>
-          </div>
           <div class="hero-art-card">
-            <img id="heroLogoImage" src="assets/logo-original.png" srcset="assets/mobile/logo-original.webp 640w, assets/logo-original.png 2048w" sizes="(max-width: 760px) 180px, 360px" alt="天狼星门户 logo 主视觉" loading="lazy" decoding="async" />
+            <img id="heroLogoImage" src="assets/logo-original.png" srcset="assets/mobile/logo-original.webp 640w, assets/logo-original.png 2048w" sizes="(max-width: 760px) 57vw, 340px" alt="天狼星门户图标勋章" decoding="async" />
+          </div>
+          <div class="hero-copy">
+            <h1 id="heroTitle">天狼星门户</h1>
+            <a class="journey-link" href="articles.html"><span>开始旅程</span><small>ENTER THE PORTAL</small></a>
           </div>
         </div>
       </section>
-
-      <section class="home-section">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow" id="homeLatestEyebrow">Signal</p>
-            <h2 id="homeLatestTitle">最新文章</h2>
-          </div>
-          <a class="text-link" href="articles.html">查看全部</a>
-        </div>
-        <div class="home-feature-grid" id="homeFeatureGrid"></div>
-      </section>
-
     </main>
 
     <footer class="site-disclaimer" aria-labelledby="motionEyebrow">
@@ -76,8 +61,10 @@
 
     <audio id="backgroundAudio" preload="none"></audio>
     <script src="articles-data.js?v=20260906-1"></script>
-    <script src="config.js"></script>
-    <script src="api-client.js?v=20260919-3"></script>
-    <script src="app.js?v=20260919-4"></script>
+    <script src="config.js?v=20260926-final3"></script>
+    <script src="api-client.js?v=20260926-final3"></script>
+    <script src="app.js?v=20260926-final3"></script>
+    <script src="cosmic-ui.js?v=20260926-final3"></script>
+    <script src="home-title.js?v=20260926-final3"></script>
   </body>
 </html>

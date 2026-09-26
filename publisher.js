@@ -190,7 +190,8 @@
         documentElement.insertAdjacentHTML("afterbegin", '<p class="pdf-loading">正在载入原 PDF 版式…</p>');
       }
       documentElement.removeAttribute("data-pdf-rendered");
-      documentElement.removeAttribute("data-pdf-src");
+      // Keep the durable source handle; sourcePdf remains the canonical field.
+      if (documentElement.dataset.pdfSrc?.startsWith("blob:")) documentElement.removeAttribute("data-pdf-src");
       documentElement.setAttribute("contenteditable", "false");
     });
     container.querySelectorAll("img").forEach((image, index) => {
@@ -235,6 +236,7 @@
     const sourcePdf = editor.querySelector(".pdf-document")?.dataset.pdfSrc
       || allArticles().find((article) => article.id === editingId)?.sourcePdf || "";
     const previewBody = document.getElementById("previewBody");
+    window.SiriusPdfInlineViewer?.disposeWithin?.(previewBody);
     previewBody.innerHTML = normalizeArticleHTML(editor.innerHTML, title);
     previewBody.querySelectorAll(".pdf-document").forEach((documentElement) => {
       if (sourcePdf) documentElement.dataset.pdfSrc = sourcePdf;
@@ -498,7 +500,7 @@
       music: document.getElementById("articleMusic").value.trim(),
       video: document.getElementById("articleVideo").value.trim(),
       sourceDoc: original.sourceDoc || "",
-      sourcePdf: original.sourcePdf || "",
+      sourcePdf: editor.querySelector(".pdf-document")?.dataset.pdfSrc || original.sourcePdf || "",
       showSourcePdf: Boolean(original.showSourcePdf),
       pdfLayoutMode: original.pdfLayoutMode || "",
       images: original.images || [],

@@ -4,7 +4,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>集体冥想 · 天狼星门户</title>
-    <link rel="stylesheet" href="styles.css?v=20260920-1" />
+    <link rel="stylesheet" href="styles.css?v=20260926-final3" />
+    <link rel="stylesheet" href="cosmic-theme.css?v=20260926-final3" />
+    <link rel="stylesheet" href="cosmic-refinement.css?v=20260926-final3" />
+    <link rel="stylesheet" href="interaction-refinement.css?v=20260926-final3" />
+    <link rel="stylesheet" href="meditation-refinement.css?v=20260926-final3" />
   </head>
   <body class="page-meditation page-collective-session">
     <header class="site-header">
@@ -25,7 +29,7 @@
       <div class="nebula-layer nebula-two"></div>
       <div class="nebula-stars"></div>
       <a class="collective-back" href="meditation.html">← 返回冥想空间</a>
-      <section class="collective-session-shell">
+      <section class="collective-session-shell" aria-labelledby="sessionTitle">
         <div class="collective-session-head">
           <div>
             <p class="eyebrow">Beijing Time · Collective Field</p>
@@ -39,12 +43,12 @@
           </aside>
         </div>
         <div class="collective-session-figure" aria-hidden="true">
-          <img src="assets/meditation-woman-1.png" srcset="assets/mobile/meditation-woman.webp 520w, assets/meditation-woman-1.png 1100w" sizes="(max-width: 760px) 1px, 420px" alt="" loading="lazy" decoding="async" />
+          <img src="assets/meditation-woman-1.png" srcset="assets/mobile/meditation-woman.webp 520w, assets/meditation-woman-1.png 1100w" sizes="(max-width: 760px) 68vw, 500px" alt="" loading="lazy" decoding="async" />
         </div>
         <div class="collective-session-player">
           <div class="live-indicator"><span></span>与北京时间同步</div>
           <p id="sessionStatus">正在读取当前时段...</p>
-          <audio id="sessionAudio" controls preload="none"></audio>
+          <audio id="sessionAudio" controls preload="none" aria-label="集体冥想音频" hidden></audio>
           <div id="sessionVideo"></div>
         </div>
       </section>
@@ -71,9 +75,10 @@
 
     <audio id="backgroundAudio" preload="none"></audio>
     <script src="articles-data.js?v=20260906-1"></script>
-    <script src="config.js"></script>
-    <script src="api-client.js?v=20260919-3"></script>
-    <script src="app.js?v=20260919-4"></script>
+    <script src="config.js?v=20260926-final3"></script>
+    <script src="api-client.js?v=20260926-final3"></script>
+    <script src="app.js?v=20260926-final3"></script>
     <script src="collective-meditation.js?v=20260830-2"></script>
+    <script src="cosmic-ui.js?v=20260926-final3"></script>
   </body>
 </html>

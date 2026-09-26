@@ -4,16 +4,25 @@
   const core = window.SiriusPdfImportCore;
   if (!core) return;
 
-  const vendorBase = new URL("/vendor/", window.location.origin).href;
+  const scriptBase = new URL(".", window.document?.currentScript?.src || window.location.href || window.location.origin + "/");
+  const vendorBase = new URL("vendor/", scriptBase).href;
   let pdfjsPromise;
   let ocrWorkerPromise;
 
   function loadPdfJs() {
     if (!pdfjsPromise) {
       if (!Promise.try) Promise.try = (fn, ...args) => Promise.resolve().then(() => fn(...args));
-      pdfjsPromise = import(`${vendorBase}pdfjs/pdf.min.mjs`).then((pdfjs) => {
-        pdfjs.GlobalWorkerOptions.workerSrc = `${vendorBase}pdfjs/pdf.worker.min.mjs`;
+      if (!Promise.withResolvers) Promise.withResolvers = function () {
+        let resolve, reject;
+        const promise = new this((res, rej) => { resolve = res; reject = rej; });
+        return { promise, resolve, reject };
+      };
+      pdfjsPromise = import(`${vendorBase}pdfjs/pdf.min.mjs?v=20260926-legacy1`).then((pdfjs) => {
+        pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdf-worker-compat.mjs?v=20260926-legacy1", scriptBase).href;
         return pdfjs;
+      }).catch((error) => {
+        pdfjsPromise = null;
+        throw error;
       });
     }
     return pdfjsPromise;
@@ -58,7 +67,12 @@
       wasmUrl: `${vendorBase}pdfjs/wasm/`,
       iccUrl: `${vendorBase}pdfjs/iccs/`,
     });
-    return { pdfjs, pdf: await task.promise, task };
+    try {
+      return { pdfjs, pdf: await task.promise, task };
+    } catch (error) {
+      await task.destroy().catch(() => {});
+      throw error;
+    }
   }
 
   async function renderPage(page, scale = 1.65) {

@@ -7,6 +7,9 @@
   const localMediaDatabase = "siriusLocalMedia";
   const localMediaStore = "media";
   const localMediaObjectURLs = new Map();
+  const localMediaElements = new Map();
+  const migratedMedia = new Map();
+  let localMediaObserver;
   let localMediaDatabasePromise;
   const retiredArticleIds = new Set([
     "article-1", "article-2", "article-3", "article-4", "article-5",
@@ -103,8 +106,18 @@
             database.createObjectStore(localMediaStore, { keyPath: "id" });
           }
         };
-        request.onsuccess = () => resolve(request.result);
+        request.onsuccess = () => {
+          const database = request.result;
+          database.onversionchange = () => {
+            database.close();
+            localMediaDatabasePromise = null;
+          };
+          resolve(database);
+        };
         request.onerror = () => reject(request.error || new Error("无法打开浏览器本地大文件存储"));
+      }).catch((error) => {
+        localMediaDatabasePromise = null;
+        throw error;
       });
     }
     return localMediaDatabasePromise;
@@ -167,18 +180,60 @@
     if (!isLocalMediaURL(source)) return source;
     if (localMediaObjectURLs.has(source)) return localMediaObjectURLs.get(source);
     const record = await readLocalMedia(source);
-    if (!record?.blob) throw new Error("本地媒体文件不存在，请重新选择原文件导入");
+    if (!record?.blob) throw new Error("此附件仅保存在导入时的浏览器。请在原设备同步文章和附件到网站后再打开");
     const objectURL = URL.createObjectURL(record.blob);
     localMediaObjectURLs.set(source, objectURL);
+    // Compatibility callers use this for a current cover preview. Article
+    // images and PDFs use leases below so their lifetime follows the DOM.
+    while (localMediaObjectURLs.size > 8) {
+      const oldest = localMediaObjectURLs.keys().next().value;
+      URL.revokeObjectURL(localMediaObjectURLs.get(oldest));
+      localMediaObjectURLs.delete(oldest);
+    }
     return objectURL;
   }
 
+  async function acquireMediaURL(value) {
+    const source = String(value || "");
+    if (!isLocalMediaURL(source)) return { url: source, release() {} };
+    const record = await readLocalMedia(source);
+    if (!record?.blob) throw new Error("此附件仅保存在导入时的浏览器。请在原设备同步文章和附件到网站后再打开");
+    const url = URL.createObjectURL(record.blob);
+    let released = false;
+    return {
+      url,
+      release() {
+        if (released) return;
+        released = true;
+        URL.revokeObjectURL(url);
+      },
+    };
+  }
+
   async function resolveLocalMediaElements(root = document) {
+    if (!localMediaObserver && typeof MutationObserver === "function") {
+      localMediaObserver = new MutationObserver(() => {
+        for (const [element, lease] of localMediaElements) {
+          if (element.isConnected) continue;
+          lease.release();
+          localMediaElements.delete(element);
+        }
+      });
+      localMediaObserver.observe(document.documentElement, { childList: true, subtree: true });
+    }
     const elements = Array.from(root?.querySelectorAll?.("[data-local-media-src]") || []);
     await Promise.all(elements.map(async (element) => {
       const source = element.dataset.localMediaSrc;
+      if (localMediaElements.get(element)?.source === source) return;
       try {
-        element.src = await resolveMediaURL(source);
+        const lease = await acquireMediaURL(source);
+        if (!element.isConnected || element.dataset.localMediaSrc !== source) {
+          lease.release();
+          return;
+        }
+        localMediaElements.get(element)?.release();
+        localMediaElements.set(element, { ...lease, source });
+        element.src = lease.url;
       } catch (error) {
         console.warn("本地媒体读取失败", error);
       }
@@ -198,7 +253,15 @@
     const uploaded = new Map();
     const uploadHandle = async (handle) => {
       if (!isLocalMediaURL(handle)) return handle;
-      if (!uploaded.has(handle)) uploaded.set(handle, await uploadMedia(await localMediaFile(handle)));
+      const migrationKey = `${apiBase()}|${handle}`;
+      if (!uploaded.has(handle)) {
+        let url = migratedMedia.get(migrationKey);
+        if (!url) {
+          url = await uploadMedia(await localMediaFile(handle));
+          migratedMedia.set(migrationKey, url);
+        }
+        uploaded.set(handle, url);
+      }
       return uploaded.get(handle);
     };
     for (const field of ["cover", "coverMobile", "sourcePdf", "music", "video", "sourceDoc"]) {
@@ -206,6 +269,10 @@
     }
     const handles = [...new Set(String(next.html || "").match(/local-media:\/\/[a-z0-9-]+/gi) || [])];
     for (const handle of handles) next.html = next.html.split(handle).join(await uploadHandle(handle));
+    if (Array.isArray(next.images)) {
+      next.images = [];
+      for (const image of article.images) next.images.push(await uploadHandle(image));
+    }
     return next;
   }
 
@@ -401,11 +468,14 @@
 
   async function saveArticle(article) {
     if (hasApi()) {
+      // A public article cannot point at another device's IndexedDB. Upload
+      // local attachments before publishing; retain originals on any failure.
+      article = await migrateArticleMedia(article);
       const payload = JSON.stringify(article);
       try {
         return await request("/api/articles", { method: "POST", body: payload });
       } catch (error) {
-        if (/API (413|500|502|503)/.test(error.message)) return saveLargeArticle(article);
+        if ([413, 500, 502, 503].includes(error.status)) return saveLargeArticle(article);
         throw error;
       }
     }
@@ -503,11 +573,15 @@
   async function uploadMedia(file) {
     if (!file) throw new Error("没有选择媒体文件");
     if (!hasApi()) throw new Error("本地预览模式不能上传媒体，请在部署后的网站后台操作");
+    if (file.size > 48 * 1024 * 1024) throw new Error("单个附件不能超过 48MB，请压缩 PDF 内的大图后再上传（保留原文字和版式）");
+    const extension = String(file.name || "").split(".").pop().toLowerCase();
+    const types = { pdf: "application/pdf", png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg", webp: "image/webp", gif: "image/gif" };
+    const contentType = !file.type || file.type === "application/octet-stream" ? (types[extension] || file.type) : file.type;
     const result = await request("/api/media", {
       method: "POST",
       body: JSON.stringify({
         filename: file.name,
-        contentType: file.type,
+        contentType,
         base64: await fileToBase64(file),
       }),
     });
@@ -562,6 +636,7 @@
     deleteLocalMedia,
     isLocalMediaURL,
     resolveMediaURL,
+    acquireMediaURL,
     resolveLocalMediaElements,
     migrateLocalToApi,
     requestEditorCode,

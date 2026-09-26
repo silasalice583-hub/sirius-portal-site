@@ -21,7 +21,7 @@
     if (!normalized.includes("相关资料")) normalized.push("相关资料");
     return normalized;
   };
-  const defaultMusic = "";
+  const defaultMusic = window.SIRIUS_DEFAULT_MUSIC?.url || "";
   const defaultPage = {
     brandName: "天狼星门户",
     heroEyebrow: "Sirius Portal",
@@ -269,7 +269,7 @@
       .map((item, index) => typeof item === "string" ? { title: `背景音乐 ${index + 1}`, url: item } : item)
       .filter((item) => item?.url);
     if (!siteMusicPlaylistState.length) {
-      siteMusicPlaylistState = [{ title: "背景音乐", url: settingsState.siteMusic || defaultMusic }];
+      siteMusicPlaylistState = [{ title: settingsState.siteMusic ? "背景音乐" : window.SIRIUS_DEFAULT_MUSIC?.title || "背景音乐", url: settingsState.siteMusic || defaultMusic }];
     }
     meditationScheduleState = (settingsState.collectiveMeditationSchedule || []).map((item) => ({ ...item }));
     fontSizesState = normalizeFontSizes(page.fontSizes || {});

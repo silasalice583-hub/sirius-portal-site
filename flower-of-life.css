@@ -1,0 +1,80 @@
+/* Full-size luminous geometry. No bitmap, blur filter, or rotating icon is used. */
+body.page-about {
+  color: #244761;
+  background: radial-gradient(ellipse at 72% 35%, #e6efff 0%, #e4f7fb 43%, #ecf8ed 75%, #fff8e9 100%) !important;
+}
+.page-about .flower-of-life-stage {
+  position: fixed; inset: 0; z-index: 0; display: grid; place-items: center;
+  width: 100%; height: 100%; min-height: 0; overflow: hidden;
+  isolation: isolate; pointer-events: none; opacity: 1; filter: none;
+}
+.page-about .flower-atmosphere {
+  position: absolute; inset: -15%;
+  background: radial-gradient(ellipse at 78% 37%, #d6dcffb0, transparent 57%),
+    radial-gradient(ellipse at 30% 79%, #bff0e880, transparent 54%),
+    radial-gradient(ellipse at 86% 90%, #ffe4ba70, transparent 48%);
+  animation: lifeAtmosphere 32s ease-in-out infinite alternate;
+}
+.page-about .flower-of-life-vector {
+  position: absolute; top: 50%; left: 68%;
+  width: max(100vh, 76vw); width: max(100svh, 76vw);
+  height: auto; max-width: none; overflow: visible;
+  transform: translate(-50%, -50%); filter: none; animation: none;
+}
+.life-disk { opacity: .13; }
+.life-petals { opacity: .38; }
+.life-lattice { stroke-width: .72; opacity: .47; }
+.life-spectrum { animation: lifeSpectrum 48s ease-in-out infinite alternate; }
+.life-light-paths { stroke-width: 1.12; opacity: .76; }
+.life-light-paths circle {
+  stroke-dasharray: 28 130 8 834;
+  animation: lifeFilament 29s linear infinite; animation-delay: var(--life-delay);
+}
+.life-boundary { stroke-width: .95; opacity: .58; }
+.life-boundary-glints { stroke-width: 1.8; opacity: .86; }
+.life-boundary-glints circle { stroke-dasharray: 70 430; animation: lifeFilament 38s linear infinite; }
+.life-boundary-glints circle + circle { animation-direction: reverse; animation-duration: 49s; }
+.page-about .site-header, .page-about .music-pill {
+  background: transparent !important; backdrop-filter: none !important; box-shadow: none;
+}
+.page-about .about-page-hero, .page-about .about-cards article,
+.page-about .site-disclaimer {
+  background: transparent !important; backdrop-filter: none !important;
+  box-shadow: none !important; position: relative;
+  border: 0; border-radius: 34px 6px 34px 6px;
+}
+.page-about .about-cards { height: auto; background: transparent; box-shadow: none; }
+.page-about .about-page-hero::before, .page-about .about-cards article::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  border: 1px solid transparent; border-radius: inherit;
+  background: linear-gradient(115deg, #5cabb2a6, transparent 24% 67%, #ac86b687) border-box;
+  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+}
+.page-about .about-page-hero h1, .page-about .about-cards h2 {
+  font-family: "STKaiti", "KaiTi", "Noto Serif SC", serif;
+  color: #22516a; text-shadow: 0 1px 0 #fff, 0 0 3px #f5fcff;
+}
+.page-about .about-page-hero h1 { letter-spacing: .12em; }
+.page-about .about-page-hero p, .page-about .about-cards article p,
+.page-about .site-disclaimer #motionTitle {
+  color: #28465c; text-shadow: 0 1px 0 #ffffff, 0 0 2px #f8fcff;
+}
+.page-about .eyebrow, .page-about .site-disclaimer-kicker { color: #326b80; }
+.page-about .site-disclaimer { border-top: 1px solid #77aabd80; }
+.flower-of-life-stage.is-paused *, .flower-of-life-stage.is-paused *::before { animation-play-state: paused !important; }
+@keyframes lifeFilament { to { stroke-dashoffset: -1000; } }
+@keyframes lifeSpectrum { to { filter: hue-rotate(64deg); opacity: .82; } }
+@keyframes lifeAtmosphere { to { transform: translate3d(-3%, 2%, 0); opacity: .64; } }
+@media (max-width: 760px) {
+  .page-about .flower-of-life-stage { opacity: 1; }
+  .page-about .flower-of-life-vector { left: 61%; width: max(145vw, 82svh); }
+  .life-petals { opacity: .29; }
+  .life-lattice { opacity: .35; }
+  .life-light-paths { opacity: .59; }
+  .page-about .about-page-hero, .page-about .about-cards article { border-radius: 26px 4px 26px 4px; }
+  .page-about .about-page-hero p, .page-about .about-cards article p { line-height: 1.9; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .page-about .flower-of-life-stage *, .page-about .flower-of-life-stage *::before { animation: none !important; }
+}
