@@ -6,16 +6,16 @@
   const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const photograph = (name) => `assets/space/${name}${isMobile ? "-mobile" : ""}.webp`;
   const scenePairs = {
-    "全部": ["sirius-sky", "milky-way-center"],
+    "全部": ["sirius-sky", "milky-way-mountains", "milky-way-panorama", "milky-way-nevada", "milky-way-spitzer", "milky-way-center"],
     "门户更新": ["pleiades-cluster"],
-    "会议": ["milky-way-center"],
-    "访谈": ["gemini-sky"],
+    "会议": ["milky-way-center", "milky-way-panorama"],
+    "访谈": ["medusa-nebula"],
     "重要冥想": ["earth", "sirius-sky"],
     "文章更新": ["pillars-hd"],
     "相关资料": ["andromeda-m31"],
   };
 
-  if (body.matches(".page-home, .page-articles, .page-meditation")) {
+  if (body.matches(".page-home, .page-articles, .page-meditation, .page-about")) {
     const backdrop = document.createElement("div");
     backdrop.className = body.classList.contains("page-home") ? "cosmic-backdrop home-cosmos" : "cosmic-backdrop";
     backdrop.setAttribute("aria-hidden", "true");
@@ -30,13 +30,16 @@
     let activePair = [];
     let photoIndex = 0;
     let sceneRevision = 0;
+    let photoRequest = 0;
     let sceneKey = "";
     const showPhoto = (name, revision) => {
+      const request = ++photoRequest;
       const nextPhoto = photograph(name);
       const preload = new Image();
       preload.onload = () => {
-        if (revision !== sceneRevision) return;
+        if (revision !== sceneRevision || request !== photoRequest) return;
         const incoming = 1 - activeLayer;
+        layers[incoming].dataset.scene = name;
         layers[incoming].style.backgroundImage = `url("${nextPhoto}")`;
         layers[incoming].classList.add("is-visible");
         layers[activeLayer].classList.remove("is-visible");
@@ -53,7 +56,8 @@
       sceneRevision += 1;
       activePair = body.classList.contains("page-home") ? ["earth", "sirius-artwork"] : body.classList.contains("page-articles")
         ? scenePairs[body.dataset.categoryTheme] || scenePairs["全部"]
-        : ["sirius-sky", "andromeda-m31", "milky-way-center"];
+        : body.classList.contains("page-about") ? ["notre-dame-paris"]
+          : ["sirius-sky", "andromeda-m31", "milky-way-mountains", "milky-way-nevada", "milky-way-spitzer", "milky-way-panorama"];
       photoIndex = 0;
       showPhoto(activePair[0], sceneRevision);
     };

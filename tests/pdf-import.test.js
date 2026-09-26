@@ -106,7 +106,7 @@ test("original-layout PDF viewer saves text edits and renders borderless linked 
   const viewer = fs.readFileSync(path.join(__dirname, "../pdf-inline-viewer.js"), "utf8");
   const styles = fs.readFileSync(path.join(__dirname, "../styles.css"), "utf8");
   assert.match(viewer, /dataset\.pdfEdits = JSON\.stringify\(edits\)/);
-  assert.match(viewer, /removeFooterNumbers\(pdfjs, textContent, renderViewport, context\)/);
+  assert.match(viewer, /removeFooterNumbers\(pdfjs, textContent, renderViewport, context, transparentPaper\)/);
   assert.match(viewer, /trimmedVerticalBounds\(context, canvas, outputScale, viewport\.height\)/);
   assert.match(viewer, /await addLinks\(page, viewport, surface, textLayerElement\)/);
   assert.match(styles, /\.pdf-rendered-pages \{ display: block; width: 100%; \}/);

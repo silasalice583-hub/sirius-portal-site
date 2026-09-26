@@ -13,6 +13,8 @@ body:is(.page-articles,.page-meditation) { background: #215b86 !important; color
 .cosmic-backdrop::after { display: none; }
 .cosmic-photo { filter: none; transform: none; }
 .cosmic-photo.is-visible { opacity: 1; }
+/* The supplied Medusa alternative fills Gemini's scene without letterboxing. */
+.cosmic-photo { background-size: cover; background-repeat: no-repeat; }
 body:is(.page-home,.page-about,.page-articles,.page-meditation) .site-header {
   background: transparent !important; backdrop-filter: none !important;
   box-shadow: none; border: 0;
@@ -123,9 +125,17 @@ body:is(.page-home,.page-articles,.page-meditation,.page-about) .site-disclaimer
 .page-articles .reader-body > p.wechat-signature { background: none; color: inherit; text-shadow: var(--ink-halo); }
 .page-articles .reader.author-cangyan .reader-body > p.wechat-signature { color: #d51f58; }
 .page-articles .reader.author-xiangming .reader-body > p.wechat-signature { color: #24afe9; }
-/* Never tint, outline or blur PDF text, images, or the PDF's own paper. */
+/* Keep selection text invisible and preserve the original PDF artwork colours. */
 .page-articles .reader-body .pdf-document,.page-articles .reader-body .pdf-document * { text-shadow: none !important; -webkit-text-stroke: 0 !important; }
 .page-articles .reader-body:has(> .pdf-document) { padding: 12px; border-block: 1px solid var(--edge); border-radius: 22px 4px; }
+.page-articles .pdf-transparent-paper :is(.pdf-rendered-pages,.pdf-live-page,.pdf-page-surface,.pdf-page-canvas) {
+  background: transparent; box-shadow: none;
+}
+/* Only actual glyphs receive a tight light halo; photos stay fully opaque and
+   unfiltered. No whole-page opacity or blend mode can wash out the content. */
+.page-articles .pdf-transparent-paper .pdf-vector-text {
+  filter: drop-shadow(0 0 1px #fff) drop-shadow(0 0 .6px #fff);
+}
 .page-articles :is(.comments,.audio-card,.side-section) { color: #f5fcff; text-shadow: var(--star-text); }
 .page-articles :is(.comment-form input,.comment-form textarea,.comment-notice,.inline-search,.sort-row select) {
   color: #f6fcff; background: transparent !important; backdrop-filter: none;

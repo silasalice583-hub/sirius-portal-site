@@ -232,7 +232,7 @@
       && baseline >= height - margin && x >= width * .35 && x <= width * .65;
   }
 
-  function removeFooterNumbers(pdfjs, textContent, viewport, context) {
+  function removeFooterNumbers(pdfjs, textContent, viewport, context, transparentPaper = false) {
     const rectangles = [];
     for (const item of textContent.items || []) {
       if (!item.transform || !footerNumber(item.str)) continue;
@@ -241,8 +241,8 @@
       const baseline = transform[5];
       const fontHeight = Math.max(8, Math.hypot(transform[2], transform[3]));
       if (!isFooterPosition(item.str, x, baseline, fontHeight, viewport.width, viewport.height)) continue;
-      context.fillStyle = "#fff";
-      context.fillRect(Math.max(0, x - 5), Math.max(0, baseline - fontHeight * 1.25),
+      if (!transparentPaper) context.fillStyle = "#fff";
+      context[transparentPaper ? "clearRect" : "fillRect"](Math.max(0, x - 5), Math.max(0, baseline - fontHeight * 1.25),
         Math.min(viewport.width - x + 5, (item.width || fontHeight) * viewport.scale + 12), fontHeight * 1.7);
       rectangles.push({ left: (x - 5) / viewport.scale, right: (x + (item.width || fontHeight) * viewport.scale + 7) / viewport.scale,
         top: (baseline - fontHeight * 1.25) / viewport.scale, bottom: (baseline + fontHeight * .45) / viewport.scale });
@@ -267,7 +267,8 @@
       let colored = 0;
       for (let x = 0; x < width; x += 2) {
         const index = offset + x * 4;
-        if (blockPixels[index] < 246 || blockPixels[index + 1] < 246 || blockPixels[index + 2] < 246) {
+        if (blockPixels[index + 3] > 8 &&
+          (blockPixels[index] < 246 || blockPixels[index + 1] < 246 || blockPixels[index + 2] < 246)) {
           if (++colored >= threshold) return true;
         }
       }
@@ -354,10 +355,9 @@
     canvas.height = Math.ceil(renderViewport.height);
     canvas.style.width = `${viewport.width}px`;
     canvas.style.height = `${viewport.height}px`;
-    const context = canvas.getContext("2d", { alpha: false, willReadFrequently: true });
+    const transparentPaper = controller.transparentPaper;
+    const context = canvas.getContext("2d", { alpha: transparentPaper, willReadFrequently: true });
     if (!context) throw new Error("浏览器无法分配 PDF 画布，请关闭其他阅读页后重试");
-    context.fillStyle = "#fff";
-    context.fillRect(0, 0, canvas.width, canvas.height);
 
     const textLayerElement = document.createElement("div");
     textLayerElement.className = "pdf-text-layer textLayer";
@@ -369,14 +369,18 @@
     const vectorCapture = window.SiriusPdfVectorText?.capture(context, outputScale);
     const paint = async () => {
       if (controller.disposed) throw new Error("PDF 阅读已关闭");
-      const task = page.render({ canvas, canvasContext: context, viewport: renderViewport });
+      // A transparent repaint must discard the first pass's raster glyphs;
+      // otherwise they remain behind the vector text and become doubled.
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      const task = page.render({ canvas, canvasContext: context, viewport: renderViewport,
+        background: transparentPaper ? "rgba(0,0,0,0)" : "#fff" });
       controller.renderTasks.add(task);
       try { await task.promise; } finally { controller.renderTasks.delete(task); }
     };
     try {
       await paint();
       const textContent = await page.getTextContent();
-      const footerRects = removeFooterNumbers(pdfjs, textContent, renderViewport, context);
+      const footerRects = removeFooterNumbers(pdfjs, textContent, renderViewport, context, transparentPaper);
       const crop = trimmedVerticalBounds(context, canvas, outputScale, viewport.height);
       if (vectorCapture) {
         try {
@@ -384,7 +388,7 @@
           if (vectorLayer) {
             vectorCapture.replay();
             await paint();
-            removeFooterNumbers(pdfjs, textContent, renderViewport, context);
+            removeFooterNumbers(pdfjs, textContent, renderViewport, context, transparentPaper);
             surface.insertBefore(vectorLayer, textLayerElement);
             pageElement.dataset.pdfTextRendering = "vector";
           } else pageElement.dataset.pdfTextRendering = "source-image";
@@ -393,7 +397,7 @@
           if (controller.disposed) throw error;
           console.warn("PDF 矢量文字暂不可用，保留原页面显示", error);
           await paint();
-          removeFooterNumbers(pdfjs, textContent, renderViewport, context);
+          removeFooterNumbers(pdfjs, textContent, renderViewport, context, transparentPaper);
         } finally {
           vectorCapture.restore();
         }
@@ -455,8 +459,12 @@
     }
   }
 
-  async function renderDocument(element, editable) {
+  async function renderDocument(element, editable, transparentPaper = false) {
     if (!element || [...activeControllers].some((controller) => controller.element === element && !controller.disposed)) return;
+    // Public reading uses transparent paper; authoring keeps the source's white
+    // workspace. Do not colour-key pixels: photos and white artwork are content.
+    transparentPaper = Boolean(transparentPaper && !editable);
+    element.classList.toggle("pdf-transparent-paper", transparentPaper);
     // Render flags and canvas snapshots sometimes survive an old editor save.
     // They do not mean that this browser has a live document/worker.
     element.querySelectorAll(":scope > .pdf-rendered-pages,:scope > .pdf-viewer-error").forEach((node) => node.remove());
@@ -475,7 +483,7 @@
     const pages = document.createElement("div");
     pages.className = "pdf-rendered-pages";
     const controller = {
-      element, task: null, mediaLease: null, observer: null, pages: [], queue: [], queued: new Set(),
+      element, transparentPaper, task: null, mediaLease: null, observer: null, pages: [], queue: [], queued: new Set(),
       rendered: new Set(), renderTasks: new Set(), working: false, disposed: false,
     };
     activeControllers.add(controller);
@@ -624,7 +632,7 @@
       retry.addEventListener("click", () => {
         message.remove();
         delete element.dataset.pdfRendered;
-        void renderDocument(element, editable);
+        void renderDocument(element, editable, transparentPaper);
       });
       message.append(document.createElement("br"), retry);
       // A normal HTTP attachment can still be opened in the browser's own
@@ -651,7 +659,7 @@
     const documents = [];
     if (root.matches?.(".pdf-document")) documents.push(root);
     documents.push(...(root.querySelectorAll?.(".pdf-document") || []));
-    return Promise.all(documents.map((element) => renderDocument(element, Boolean(options.editable))));
+    return Promise.all(documents.map((element) => renderDocument(element, Boolean(options.editable), Boolean(options.transparentPaper))));
   }
 
   window.SiriusPdfInlineViewer = { renderWithin, disposeWithin, formatActive, activeEditableText, isFooterPosition, renderScale };
