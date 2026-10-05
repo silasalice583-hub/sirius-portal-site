@@ -4,6 +4,8 @@
   const scriptBase = new URL(".", window.document?.currentScript?.src || window.location.href || window.location.origin + "/");
   const vendorBase = new URL("vendor/", scriptBase).href;
   let pdfjsPromise;
+  let preparedReader;
+  let preparedReaderPromise;
   let activeText = null;
   const activeControllers = new Set();
 
@@ -92,6 +94,9 @@
   }
 
   function configureTextLayer(documentElement, textLayerElement, pageNumber, editable, viewport) {
+    // Original-layout articles use PDF.js's invisible selection layer as-is.
+    // Saved edits and footer heuristics must not replace or hide source content.
+    if (documentElement.dataset.pdfPreserveOriginal === "true") return;
     const edits = storedEdits(documentElement);
     const spans = [...textLayerElement.querySelectorAll("span")].filter((span) => !span.closest(".markedContent"));
     spans.forEach((span, index) => {
@@ -328,6 +333,7 @@
       });
     }
     for (const span of textLayerElement.querySelectorAll("span")) {
+      if (span.hidden) continue;
       const match = span.textContent?.match(/https?:\/\/[^\s<>"'，。]+/i);
       if (!match) continue;
       const href = match[0].replace(/[),;；）]+$/, "");
@@ -338,12 +344,82 @@
     if (layer.childElementCount) surface.append(layer);
   }
 
+  function originalPageSlots(sourcePageNumber, viewport) {
+    // Keep the PDF byte-for-byte intact. Tall exports are virtual canvas slices
+    // of one source page, so each visible canvas gets its own resolution budget.
+    const tileHeight = viewport.height > viewport.width * 3 ? viewport.width * 2 : viewport.height;
+    const slots = [];
+    for (let top = 0; top < viewport.height; top += tileHeight) {
+      slots.push({ sourcePageNumber, top, width: viewport.width, height: Math.min(tileHeight, viewport.height - top) });
+    }
+    return slots;
+  }
+
+  function tileSelectionViewport(viewport, fullViewport, slot) {
+    if (!slot || slot.height === fullViewport.height) return viewport;
+    // PDF.js TextLayer positions spans from rawDims rather than offsetY.
+    // Shift its coordinate origin too; the visible PDF drawing remains untouched.
+    if (!viewport.rotation) {
+      const selectionViewport = Object.create(viewport);
+      Object.defineProperty(selectionViewport, "rawDims", { value: {
+        ...fullViewport.rawDims,
+        pageHeight: slot.height,
+        pageY: fullViewport.rawDims.pageY + fullViewport.rawDims.pageHeight - slot.top - slot.height,
+      } });
+      return selectionViewport;
+    }
+    return fullViewport;
+  }
+
+  function limitTileSelection(textLayerElement, viewport, offset = 0, tileHeight = viewport.height, source = {}) {
+    const spans = source.textLayer?.textDivs || textLayerElement.querySelectorAll("span");
+    const items = source.textContent?.items.filter((item) => typeof item.str === "string") || [];
+    for (const [index, span] of [...spans].entries()) {
+      if (span.classList.contains("markedContent")) continue;
+      const top = span.style.top.endsWith("%")
+        ? parseFloat(span.style.top) * viewport.height / 100 : parseFloat(span.style.top);
+      const fontHeight = parseFloat(span.style.getPropertyValue?.("--font-height")) || parseFloat(span.style.fontSize) || 10;
+      // Own each line in exactly one tile. A glyph may cross a canvas boundary,
+      // but copying the article must not include the same source text twice.
+      let center = top + fontHeight / 2 - offset;
+      const item = items[index];
+      if (item?.transform && source.pdfjs?.Util?.transform && source.fullViewport) {
+        // The real TextLayer rounds percentage positions. Assign ownership from
+        // unrounded source coordinates so adjacent tiles cannot both own a line.
+        const transform = source.pdfjs.Util.transform(source.fullViewport.transform, item.transform);
+        center = transform[5] - Math.hypot(transform[2], transform[3]) * .4 - source.top;
+      }
+      if (Number.isFinite(center) && (center < 0 || center >= tileHeight)) {
+        span.hidden = true;
+        if (span.nextSibling?.tagName === "BR") span.nextSibling.hidden = true;
+      }
+    }
+  }
+
+  function originalTextContent(controller, page, sourcePageNumber) {
+    controller.textContents ||= new Map();
+    let pending = controller.textContents.get(sourcePageNumber);
+    if (!pending) {
+      pending = page.getTextContent().catch((error) => {
+        controller.textContents.delete(sourcePageNumber);
+        throw error;
+      });
+      controller.textContents.set(sourcePageNumber, pending);
+    }
+    return pending;
+  }
+
   async function renderPage(pdfjs, pdf, pageNumber, pageElement, documentElement, editable, controller) {
-    const page = await pdf.getPage(pageNumber);
+    const slot = controller.preserveOriginal ? controller.slots?.[pageNumber - 1] : null;
+    const sourcePageNumber = slot?.sourcePageNumber || pageNumber;
+    const page = await pdf.getPage(sourcePageNumber);
     if (controller.disposed) return;
-    const viewport = page.getViewport({ scale: 1 });
+    const fullViewport = page.getViewport({ scale: 1 });
+    const viewport = slot ? page.getViewport({ scale: 1, offsetY: -slot.top }) : fullViewport;
+    if (slot) viewport.height = slot.height;
     const outputScale = renderScale(viewport, pageElement);
-    const renderViewport = page.getViewport({ scale: outputScale });
+    const renderViewport = page.getViewport({ scale: outputScale, offsetY: -(slot?.top || 0) * outputScale });
+    if (slot) renderViewport.height = slot.height * outputScale;
 
     const surface = document.createElement("div");
     surface.className = "pdf-page-surface";
@@ -355,7 +431,8 @@
     canvas.height = Math.ceil(renderViewport.height);
     canvas.style.width = `${viewport.width}px`;
     canvas.style.height = `${viewport.height}px`;
-    const transparentPaper = controller.transparentPaper;
+    const preserveOriginal = controller.preserveOriginal;
+    const transparentPaper = controller.transparentPaper && !preserveOriginal;
     const context = canvas.getContext("2d", { alpha: transparentPaper, willReadFrequently: true });
     if (!context) throw new Error("浏览器无法分配 PDF 画布，请关闭其他阅读页后重试");
 
@@ -366,7 +443,7 @@
     surface.append(canvas, textLayerElement);
     pageElement.append(surface);
 
-    const vectorCapture = window.SiriusPdfVectorText?.capture(context, outputScale);
+    const vectorCapture = preserveOriginal ? null : window.SiriusPdfVectorText?.capture(context, outputScale);
     const paint = async () => {
       if (controller.disposed) throw new Error("PDF 阅读已关闭");
       // A transparent repaint must discard the first pass's raster glyphs;
@@ -379,9 +456,11 @@
     };
     try {
       await paint();
-      const textContent = await page.getTextContent();
-      const footerRects = removeFooterNumbers(pdfjs, textContent, renderViewport, context, transparentPaper);
-      const crop = trimmedVerticalBounds(context, canvas, outputScale, viewport.height);
+      const textContent = preserveOriginal ? await originalTextContent(controller, page, sourcePageNumber) : await page.getTextContent();
+      const footerRects = preserveOriginal ? [] : removeFooterNumbers(pdfjs, textContent, renderViewport, context, transparentPaper);
+      const crop = preserveOriginal ? { top: 0, bottom: viewport.height }
+        : trimmedVerticalBounds(context, canvas, outputScale, viewport.height);
+      if (preserveOriginal) pageElement.dataset.pdfTextRendering = "original";
       if (vectorCapture) {
         try {
           const vectorLayer = window.SiriusPdfVectorText.makeLayer(vectorCapture, viewport, footerRects, documentElement);
@@ -405,13 +484,19 @@
       pageElement._pdfResizeCleanup?.();
       pageElement.style.aspectRatio = `${viewport.width} / ${Math.max(1, crop.bottom - crop.top)}`;
       pageElement._pdfResizeCleanup = fitSurface(pageElement, surface, viewport.width, viewport.height, crop.top, crop.bottom);
+      const selectionViewport = preserveOriginal ? tileSelectionViewport(viewport, fullViewport, slot) : viewport;
       const textLayer = new pdfjs.TextLayer({
         textContentSource: textContent,
         container: textLayerElement,
-        viewport,
+        viewport: selectionViewport,
       });
       await textLayer.render();
-      configureTextLayer(documentElement, textLayerElement, pageNumber, editable, viewport);
+      if (slot && slot.height !== fullViewport.height) {
+        if (viewport.rotation) textLayerElement.style.top = `${-slot.top}px`;
+        limitTileSelection(textLayerElement, selectionViewport, viewport.rotation ? slot.top : 0, slot.height,
+          { textLayer, textContent, pdfjs, fullViewport, top: slot.top });
+      }
+      configureTextLayer(documentElement, textLayerElement, sourcePageNumber, editable, viewport);
       if (!editable) {
         try {
           await addLinks(page, viewport, surface, textLayerElement);
@@ -442,16 +527,18 @@
     controller.viewportCleanup?.();
     controller.renderTasks.forEach((task) => task.cancel());
     controller.queue.length = 0;
+    controller.textContents?.clear();
     controller.pages?.forEach((page) => {
       releasePage(page);
     });
     if (controller.task) controller.task.destroy().catch(() => {}).finally(() => controller.mediaLease?.release());
     else controller.mediaLease?.release();
-    window.SiriusPdfVectorText?.restoreFonts(controller.element);
+    if (!controller.preserveOriginal) window.SiriusPdfVectorText?.restoreFonts(controller.element);
     activeControllers.delete(controller);
   }
 
   function disposeWithin(root) {
+    preparedReader?.disposeWithin(root);
     for (const controller of [...activeControllers]) {
       if (!controller.element.isConnected || root === controller.element || root?.contains?.(controller.element)) {
         disposeController(controller);
@@ -460,10 +547,19 @@
   }
 
   async function renderDocument(element, editable, transparentPaper = false) {
+    if (element?.dataset.pdfPreviewSrc && element.dataset.pdfPreserveOriginal === "true") {
+      preparedReaderPromise ||= import(new URL("pdf-prepared-reader.js?v=20261005-fast1", scriptBase).href);
+      preparedReader = await preparedReaderPromise;
+      preparedReader.disposeWithin(null);
+      if (element.isConnected) await preparedReader.render(element);
+      return;
+    }
     if (!element || [...activeControllers].some((controller) => controller.element === element && !controller.disposed)) return;
+    const preserveOriginal = element.dataset.pdfPreserveOriginal === "true";
+    editable = Boolean(editable && !preserveOriginal);
     // Public reading uses transparent paper; authoring keeps the source's white
     // workspace. Do not colour-key pixels: photos and white artwork are content.
-    transparentPaper = Boolean(transparentPaper && !editable);
+    transparentPaper = Boolean(transparentPaper && !editable && !preserveOriginal);
     element.classList.toggle("pdf-transparent-paper", transparentPaper);
     // Render flags and canvas snapshots sometimes survive an old editor save.
     // They do not mean that this browser has a live document/worker.
@@ -483,7 +579,8 @@
     const pages = document.createElement("div");
     pages.className = "pdf-rendered-pages";
     const controller = {
-      element, transparentPaper, task: null, mediaLease: null, observer: null, pages: [], queue: [], queued: new Set(),
+      element, transparentPaper, preserveOriginal, task: null, mediaLease: null, observer: null, pages: [], slots: [],
+      textContents: new Map(), queue: [], queued: new Set(),
       rendered: new Set(), renderTasks: new Set(), working: false, disposed: false,
     };
     activeControllers.add(controller);
@@ -511,16 +608,33 @@
       if (controller.disposed) return;
       const firstPage = await pdf.getPage(1);
       const firstViewport = firstPage.getViewport({ scale: 1 });
-      const aspectRatio = `${firstViewport.width} / ${firstViewport.height}`;
+      if (preserveOriginal) {
+        for (let sourcePageNumber = 1; sourcePageNumber <= pdf.numPages; sourcePageNumber += 1) {
+          const sourceViewport = sourcePageNumber === 1 ? firstViewport
+            : (await pdf.getPage(sourcePageNumber)).getViewport({ scale: 1 });
+          if (controller.disposed) return;
+          controller.slots.push(...originalPageSlots(sourcePageNumber, sourceViewport));
+        }
+      } else {
+        controller.slots = Array.from({ length: pdf.numPages }, (_, index) => ({
+          sourcePageNumber: index + 1, top: 0, width: firstViewport.width, height: firstViewport.height,
+        }));
+      }
       element.append(pages);
-      for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
+      for (let pageNumber = 1; pageNumber <= controller.slots.length; pageNumber += 1) {
+        const slot = controller.slots[pageNumber - 1];
         const pageElement = document.createElement("div");
         pageElement.className = "pdf-live-page";
         pageElement.dataset.pageNumber = String(pageNumber);
+        if (preserveOriginal) {
+          pageElement.dataset.pdfSourcePageNumber = String(slot.sourcePageNumber);
+          pageElement.dataset.pdfTileTop = String(slot.top);
+          pageElement.dataset.pdfTileHeight = String(slot.height);
+        }
         pageElement.dataset.renderState = "waiting";
-        pageElement.style.aspectRatio = aspectRatio;
+        pageElement.style.aspectRatio = `${slot.width} / ${slot.height}`;
         pageElement.setAttribute("role", "group");
-        pageElement.setAttribute("aria-label", `PDF 第 ${pageNumber} 页`);
+        pageElement.setAttribute("aria-label", `PDF 第 ${slot.sourcePageNumber} 页${preserveOriginal && slot.top ? "（续）" : ""}`);
         pages.append(pageElement);
         controller.pages.push(pageElement);
       }

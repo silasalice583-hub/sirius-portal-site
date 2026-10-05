@@ -1,0 +1,3011 @@
+{
+  "version": 2,
+  "articleCount": 12,
+  "sourcePdfsUnaltered": true,
+  "totalWebsiteArticles": 180,
+  "articles": [
+    {
+      "id": "goddess-return-01",
+      "title": "女神回归（一）",
+      "date": "2026-09-09",
+      "sourceFile": "女神回归（一）.pdf",
+      "originalPdf": "content/goddess-return/01/original.pdf",
+      "sourceSha256": "29fc539c8d2efb29a3c905fe04dffcac29f7fdc21c9c3ec5ef86ca5341f143fa",
+      "websiteSha256": "29fc539c8d2efb29a3c905fe04dffcac29f7fdc21c9c3ec5ef86ca5341f143fa",
+      "bytes": 45869840,
+      "pageCount": 1,
+      "pageSizePt": [
+        402,
+        24642.959
+      ],
+      "coverSource": {
+        "page": 1,
+        "resource": "X15",
+        "description": "爱希斯女神肖像",
+        "boundsFromTopPt": [
+          10.04999958125,
+          6217.934860919369,
+          391.94998366875,
+          6899.32483252812
+        ],
+        "beforeFooter": true
+      },
+      "cover": "assets/articles/goddess-return/01/cover.webp",
+      "coverMobile": "assets/articles/goddess-return/01/cover-mobile.webp",
+      "preparedReader": "assets/articles/goddess-return/01/reader-7b38db17a581.json",
+      "transparentPaper": true
+    },
+    {
+      "id": "goddess-return-02",
+      "title": "女神回归（二）",
+      "date": "2026-09-10",
+      "sourceFile": "女神回归 （二）.pdf",
+      "originalPdf": "content/goddess-return/02/original.pdf",
+      "sourceSha256": "1dee898461c7310d7d0f7f97f4b828a7056a8b3eea72b2ce561393f494924eb4",
+      "websiteSha256": "1dee898461c7310d7d0f7f97f4b828a7056a8b3eea72b2ce561393f494924eb4",
+      "bytes": 22522066,
+      "pageCount": 1,
+      "pageSizePt": [
+        402,
+        11973.1201
+      ],
+      "coverSource": {
+        "page": 1,
+        "resource": "X11",
+        "description": "灵魂之光",
+        "boundsFromTopPt": [
+          10.04999958125,
+          1369.814942924375,
+          391.94998366875,
+          1751.7149270118753
+        ],
+        "beforeFooter": true
+      },
+      "cover": "assets/articles/goddess-return/02/cover.webp",
+      "coverMobile": "assets/articles/goddess-return/02/cover-mobile.webp",
+      "preparedReader": "assets/articles/goddess-return/02/reader-882fcbe0807e.json",
+      "transparentPaper": true
+    },
+    {
+      "id": "goddess-return-03",
+      "title": "女神回归（三）",
+      "date": "2026-09-11",
+      "sourceFile": "女神回归 （三）.pdf",
+      "originalPdf": "content/goddess-return/03/original.pdf",
+      "sourceSha256": "900ec0716a6764698cdd30afffcad05ab7b47883f2af916eeb2a2de206c99223",
+      "websiteSha256": "900ec0716a6764698cdd30afffcad05ab7b47883f2af916eeb2a2de206c99223",
+      "bytes": 6602555,
+      "pageCount": 1,
+      "pageSizePt": [
+        402,
+        13104
+      ],
+      "coverSource": {
+        "page": 1,
+        "resource": "X9",
+        "description": "女祭司的神圣圆阵",
+        "boundsFromTopPt": [
+          10.04999958125,
+          479.3849800256248,
+          391.94998366875,
+          878.3699634012501
+        ],
+        "beforeFooter": true
+      },
+      "cover": "assets/articles/goddess-return/03/cover.webp",
+      "coverMobile": "assets/articles/goddess-return/03/cover-mobile.webp",
+      "preparedReader": "assets/articles/goddess-return/03/reader-988779931c33.json",
+      "transparentPaper": true
+    },
+    {
+      "id": "goddess-return-04",
+      "title": "女神回归（四）",
+      "date": "2026-09-12",
+      "sourceFile": "女神回归 （四）.pdf",
+      "originalPdf": "content/goddess-return/04/original.pdf",
+      "sourceSha256": "193e53f2229e0e90d8bad76d83c587459c22648056773068206d79b72328c2da",
+      "websiteSha256": "193e53f2229e0e90d8bad76d83c587459c22648056773068206d79b72328c2da",
+      "bytes": 9028374,
+      "pageCount": 1,
+      "pageSizePt": [
+        402,
+        8647.9199
+      ],
+      "coverSource": {
+        "page": 1,
+        "resource": "X11",
+        "description": "女神与女祭司",
+        "boundsFromTopPt": [
+          10.04999958125,
+          1865.2799222800004,
+          391.94998366875,
+          2562.74989321875
+        ],
+        "beforeFooter": true
+      },
+      "cover": "assets/articles/goddess-return/04/cover.webp",
+      "coverMobile": "assets/articles/goddess-return/04/cover-mobile.webp",
+      "preparedReader": "assets/articles/goddess-return/04/reader-c51bd05ca0b0.json",
+      "transparentPaper": true
+    },
+    {
+      "id": "goddess-return-05",
+      "title": "女神回归（五）",
+      "date": "2026-09-13",
+      "sourceFile": "女神回归 （五）.pdf",
+      "originalPdf": "content/goddess-return/05/original.pdf",
+      "sourceSha256": "c3a62ff9dfb501535cda35e907005d6fc3a3818789060cf4812fcf1828a100ba",
+      "websiteSha256": "c3a62ff9dfb501535cda35e907005d6fc3a3818789060cf4812fcf1828a100ba",
+      "bytes": 6695611,
+      "pageCount": 1,
+      "pageSizePt": [
+        402,
+        10407.1201
+      ],
+      "coverSource": {
+        "page": 1,
+        "resource": "X11",
+        "description": "爱的召唤与女神之光",
+        "boundsFromTopPt": [
+          10.04999958125,
+          2918.519878395,
+          391.94998366875,
+          3377.8048592581254
+        ],
+        "beforeFooter": true
+      },
+      "cover": "assets/articles/goddess-return/05/cover.webp",
+      "coverMobile": "assets/articles/goddess-return/05/cover-mobile.webp",
+      "preparedReader": "assets/articles/goddess-return/05/reader-aac4b4552ede.json",
+      "transparentPaper": true
+    },
+    {
+      "id": "goddess-return-06",
+      "title": "女神回归（六）",
+      "date": "2026-09-14",
+      "sourceFile": "女神回归 （六）.pdf",
+      "originalPdf": "content/goddess-return/06/original.pdf",
+      "sourceSha256": "cfe1b4955e56e5636808f602ef91f58e7275c8a48564ca1b56f577b23ca4bbf8",
+      "websiteSha256": "cfe1b4955e56e5636808f602ef91f58e7275c8a48564ca1b56f577b23ca4bbf8",
+      "bytes": 10471508,
+      "pageCount": 1,
+      "pageSizePt": [
+        402,
+        8896.0801
+      ],
+      "coverSource": {
+        "page": 1,
+        "resource": "X10",
+        "description": "玫瑰花园",
+        "boundsFromTopPt": [
+          10.04999958125,
+          1302.4799697299995,
+          391.9500124687488,
+          1769.8049262581253
+        ],
+        "beforeFooter": true
+      },
+      "cover": "assets/articles/goddess-return/06/cover.webp",
+      "coverMobile": "assets/articles/goddess-return/06/cover-mobile.webp",
+      "preparedReader": "assets/articles/goddess-return/06/reader-0f1ae0accd23.json",
+      "transparentPaper": true
+    },
+    {
+      "id": "goddess-return-07",
+      "title": "女神回归（七）",
+      "date": "2026-09-16",
+      "sourceFile": "女神回归 （七）.pdf",
+      "originalPdf": "content/goddess-return/07/original.pdf",
+      "sourceSha256": "b9233bc5c3672197a66341e712b4d58e7f7bdba50be0359bff400910e815c3f6",
+      "websiteSha256": "b9233bc5c3672197a66341e712b4d58e7f7bdba50be0359bff400910e815c3f6",
+      "bytes": 7021266,
+      "pageCount": 1,
+      "pageSizePt": [
+        402,
+        10380.96
+      ],
+      "coverSource": {
+        "page": 1,
+        "resource": "X13",
+        "description": "环绕地球的爱的火焰",
+        "boundsFromTopPt": [
+          10.04999958125,
+          6723.449839856245,
+          391.94998366875,
+          7009.87482792187
+        ],
+        "beforeFooter": true
+      },
+      "cover": "assets/articles/goddess-return/07/cover.webp",
+      "coverMobile": "assets/articles/goddess-return/07/cover-mobile.webp",
+      "preparedReader": "assets/articles/goddess-return/07/reader-db040926aafd.json",
+      "transparentPaper": true
+    },
+    {
+      "id": "goddess-return-08",
+      "title": "女神回归（八）",
+      "date": "2026-09-17",
+      "sourceFile": "女神回归（八）.pdf",
+      "originalPdf": "content/goddess-return/08/original.pdf",
+      "sourceSha256": "4211015b18d14b6ec873a48b4b731d17525c25015906374d9f58ddc275df3004",
+      "websiteSha256": "4211015b18d14b6ec873a48b4b731d17525c25015906374d9f58ddc275df3004",
+      "bytes": 10233452,
+      "pageCount": 1,
+      "pageSizePt": [
+        402,
+        14974.0801
+      ],
+      "coverSource": {
+        "page": 1,
+        "resource": "X10",
+        "description": "展开双翼的女神",
+        "boundsFromTopPt": [
+          10.04999958125,
+          1443.1799398674993,
+          391.94998366875,
+          1988.8949171293752
+        ],
+        "beforeFooter": true
+      },
+      "cover": "assets/articles/goddess-return/08/cover.webp",
+      "coverMobile": "assets/articles/goddess-return/08/cover-mobile.webp",
+      "preparedReader": "assets/articles/goddess-return/08/reader-474ccc2d413e.json",
+      "transparentPaper": true
+    },
+    {
+      "id": "goddess-return-09",
+      "title": "女神回归（九）",
+      "date": "2026-09-18",
+      "sourceFile": "女神回归（九）.pdf",
+      "originalPdf": "content/goddess-return/09/original.pdf",
+      "sourceSha256": "c277a1081c46977bf573ad24afd1622de67939eaf3bc34767562c8db49d5ff6e",
+      "websiteSha256": "c277a1081c46977bf573ad24afd1622de67939eaf3bc34767562c8db49d5ff6e",
+      "bytes": 7025048,
+      "pageCount": 1,
+      "pageSizePt": [
+        402,
+        9837.1201
+      ],
+      "coverSource": {
+        "page": 1,
+        "resource": "X10",
+        "description": "神殿中的爱希斯女神",
+        "boundsFromTopPt": [
+          10.04999958125,
+          1581.8699340887488,
+          391.9500124687488,
+          2055.2249143656245
+        ],
+        "beforeFooter": true
+      },
+      "cover": "assets/articles/goddess-return/09/cover.webp",
+      "coverMobile": "assets/articles/goddess-return/09/cover-mobile.webp",
+      "preparedReader": "assets/articles/goddess-return/09/reader-3e57077bebe5.json",
+      "transparentPaper": true
+    },
+    {
+      "id": "goddess-return-10",
+      "title": "女神回归（十）",
+      "date": "2026-09-19",
+      "sourceFile": "女神回归（十）.pdf",
+      "originalPdf": "content/goddess-return/10/original.pdf",
+      "sourceSha256": "c0007308c57d0718daebd6e37f605e778281ca06fedba70467facc1dfdd59123",
+      "websiteSha256": "c0007308c57d0718daebd6e37f605e778281ca06fedba70467facc1dfdd59123",
+      "bytes": 14741456,
+      "pageCount": 1,
+      "pageSizePt": [
+        402,
+        11253.1201
+      ],
+      "coverSource": {
+        "page": 1,
+        "resource": "X10",
+        "description": "神殿中的粉红火焰",
+        "boundsFromTopPt": [
+          10.04999958125,
+          1461.2699391137503,
+          391.94998366875,
+          1936.6349193068745
+        ],
+        "beforeFooter": true
+      },
+      "cover": "assets/articles/goddess-return/10/cover.webp",
+      "coverMobile": "assets/articles/goddess-return/10/cover-mobile.webp",
+      "preparedReader": "assets/articles/goddess-return/10/reader-203a81cfcdb9.json",
+      "transparentPaper": true
+    },
+    {
+      "id": "goddess-return-11",
+      "title": "女神回归（十一）",
+      "date": "2026-09-20",
+      "sourceFile": "女神回归（十一）.pdf",
+      "originalPdf": "content/goddess-return/11/original.pdf",
+      "sourceSha256": "4cecfbf1ad880e28a2bb9b86acbf32f282cef3f09ed9fc5201f8762e90ed1286",
+      "websiteSha256": "4cecfbf1ad880e28a2bb9b86acbf32f282cef3f09ed9fc5201f8762e90ed1286",
+      "bytes": 8434442,
+      "pageCount": 1,
+      "pageSizePt": [
+        402,
+        6960.96
+      ],
+      "coverSource": {
+        "page": 1,
+        "resource": "X14",
+        "description": "女神与盖亚的相逢",
+        "boundsFromTopPt": [
+          10.04999958125,
+          5029.019910457494,
+          391.94998366875,
+          5267.204900533119
+        ],
+        "beforeFooter": true
+      },
+      "cover": "assets/articles/goddess-return/11/cover.webp",
+      "coverMobile": "assets/articles/goddess-return/11/cover-mobile.webp",
+      "preparedReader": "assets/articles/goddess-return/11/reader-d18622eea077.json",
+      "transparentPaper": true
+    },
+    {
+      "id": "goddess-return-12",
+      "title": "女神回归（十二）",
+      "date": "2026-09-21",
+      "sourceFile": "女神回归（十二）.pdf",
+      "originalPdf": "content/goddess-return/12/original.pdf",
+      "sourceSha256": "a733a3677920dec2843de61b521dcd75bc04e16b07826fa8b335f760c7152084",
+      "websiteSha256": "a733a3677920dec2843de61b521dcd75bc04e16b07826fa8b335f760c7152084",
+      "bytes": 9425570,
+      "pageCount": 1,
+      "pageSizePt": [
+        402,
+        7766.8799
+      ],
+      "coverSource": {
+        "page": 1,
+        "resource": "X15",
+        "description": "爱希斯与盖亚的神圣联合",
+        "boundsFromTopPt": [
+          10.04999958125,
+          5821.96487741812,
+          391.9500124687488,
+          6356.62485514062
+        ],
+        "beforeFooter": true
+      },
+      "cover": "assets/articles/goddess-return/12/cover.webp",
+      "coverMobile": "assets/articles/goddess-return/12/cover-mobile.webp",
+      "preparedReader": "assets/articles/goddess-return/12/reader-d7f1b7f4aa45.json",
+      "transparentPaper": true
+    }
+  ],
+  "files": [
+    {
+      "path": "content/goddess-return/12/original.pdf",
+      "bytes": 9425570,
+      "sha256": "a733a3677920dec2843de61b521dcd75bc04e16b07826fa8b335f760c7152084"
+    },
+    {
+      "path": "assets/articles/goddess-return/12/cover.webp",
+      "bytes": 119556,
+      "sha256": "50f58eb5f902a02d8e798403088305f6d9e81d13c1a1c0b2342c3a2578759e22"
+    },
+    {
+      "path": "assets/articles/goddess-return/12/cover-mobile.webp",
+      "bytes": 75508,
+      "sha256": "cf0c450e8789c3560ae1b1878358d98f4b694a744ba87e6e831295dfc410d941"
+    },
+    {
+      "path": "assets/articles/goddess-return/12/reader-d7f1b7f4aa45.json",
+      "bytes": 33912,
+      "sha256": "d68203fc68c009fc9da1bed0faf2386cb0c2b01e45b8057e047d6277f482a940"
+    },
+    {
+      "path": "assets/articles/goddess-return/12/tile-001-c4f50afa0543.webp",
+      "bytes": 206994,
+      "sha256": "c4f50afa0543842e9d1a48a2fcaddef3112a514747944080842830a88886ba7e"
+    },
+    {
+      "path": "assets/articles/goddess-return/12/tile-001-mobile-1b13636034a0.webp",
+      "bytes": 249790,
+      "sha256": "1b13636034a0d9723dea26d29f7ca0c6dcbd518caeb5cde4865b972e5c2bcd7f"
+    },
+    {
+      "path": "assets/articles/goddess-return/12/tile-002-9ebf4bfd3b33.webp",
+      "bytes": 327960,
+      "sha256": "9ebf4bfd3b33d8a43271f4ed2784ad5a0aa998d19fe26ba840c00368f043ebe8"
+    },
+    {
+      "path": "assets/articles/goddess-return/12/tile-002-mobile-a71e52fd1880.webp",
+      "bytes": 424562,
+      "sha256": "a71e52fd188024d6c2b90abedb3d04c3968e6513401b13774597d751d1a79cff"
+    },
+    {
+      "path": "assets/articles/goddess-return/12/tile-003-f0f006df0e6b.webp",
+      "bytes": 447212,
+      "sha256": "f0f006df0e6bf29ffaaf4fd577d9a50a1af43309d4653a8b975cf5d349fdb39f"
+    },
+    {
+      "path": "assets/articles/goddess-return/12/tile-003-mobile-82717e6b3a48.webp",
+      "bytes": 587634,
+      "sha256": "82717e6b3a48cdf923e2e0b28e17260b6cf9bd0f0979a21d2905c8d0a9ebb5e7"
+    },
+    {
+      "path": "assets/articles/goddess-return/12/tile-004-71c61bfbec87.webp",
+      "bytes": 486164,
+      "sha256": "71c61bfbec875ec7eb74a857dd3d4fc466144eac0a850988d497b3b1e27ac229"
+    },
+    {
+      "path": "assets/articles/goddess-return/12/tile-004-mobile-5358ddab1dae.webp",
+      "bytes": 387200,
+      "sha256": "5358ddab1daed072f71a56b1a376762dd9dcd1d77e149e2156258fa804327e20"
+    },
+    {
+      "path": "assets/articles/goddess-return/12/tile-005-72202fab3365.webp",
+      "bytes": 130602,
+      "sha256": "72202fab33651c13fbc0930da256235b9cbec7b8cd71bb14f120411087417a7a"
+    },
+    {
+      "path": "assets/articles/goddess-return/12/tile-005-mobile-edc65b07c837.webp",
+      "bytes": 206850,
+      "sha256": "edc65b07c83701cd80af7826a19a464cee5286cd40d2876b9e3d2d48d9e3fba1"
+    },
+    {
+      "path": "assets/articles/goddess-return/12/tile-006-cdf72c46f3e8.webp",
+      "bytes": 577746,
+      "sha256": "cdf72c46f3e812449d0d4d27867cac0b87e5040e0f6d381dde99795c59ff7fec"
+    },
+    {
+      "path": "assets/articles/goddess-return/12/tile-006-mobile-14c4099d48af.webp",
+      "bytes": 717894,
+      "sha256": "14c4099d48afd955ac14cb28b9bc91d71267d945e4a229f09ebfc122926412c5"
+    },
+    {
+      "path": "assets/articles/goddess-return/12/tile-007-d749e0a6dfcb.webp",
+      "bytes": 251462,
+      "sha256": "d749e0a6dfcbb73901e0e9c2d098bbbc49f7ab4bfe5a871782fa97c83e15210d"
+    },
+    {
+      "path": "assets/articles/goddess-return/12/tile-007-mobile-2c849b6f0825.webp",
+      "bytes": 463838,
+      "sha256": "2c849b6f0825916e675408e2aa16e6254ae70fda37904298a2d4f2414ed35f81"
+    },
+    {
+      "path": "assets/articles/goddess-return/12/tile-008-ae6da87fd1cd.webp",
+      "bytes": 545434,
+      "sha256": "ae6da87fd1cdb7dd083c8d51526849dad567dcfd01049b051179cbb8032d1d66"
+    },
+    {
+      "path": "assets/articles/goddess-return/12/tile-008-mobile-ddcc85114c39.webp",
+      "bytes": 650906,
+      "sha256": "ddcc85114c3969b86297cea198afbc33a95aada855f9b5511ad631392501b4da"
+    },
+    {
+      "path": "assets/articles/goddess-return/12/tile-009-2a8b693eac4b.webp",
+      "bytes": 603990,
+      "sha256": "2a8b693eac4bd30dadf1c41ce65ed498b3d03b89da0dd927e0b57c3d527d89c7"
+    },
+    {
+      "path": "assets/articles/goddess-return/12/tile-009-mobile-cd4a733c5957.webp",
+      "bytes": 482048,
+      "sha256": "cd4a733c59577f1f56c90f0251d3dfff06bf94b37a69fd4b46447e5135900688"
+    },
+    {
+      "path": "assets/articles/goddess-return/12/tile-010-850a6f253561.webp",
+      "bytes": 472122,
+      "sha256": "850a6f2535616f74a1542a3da504bdd76068b3a127b429ef0dbda8b522d7248f"
+    },
+    {
+      "path": "assets/articles/goddess-return/12/tile-010-mobile-28a5be6d74ed.webp",
+      "bytes": 481916,
+      "sha256": "28a5be6d74ed574408fb204bcac4d0b574b36dda14bada4c7290ba0092b190ca"
+    },
+    {
+      "path": "assets/articles/goddess-return/12/tile-011-92cae8d54d5a.webp",
+      "bytes": 664176,
+      "sha256": "92cae8d54d5a8434e6707bfa2001f43bfeeac7723ac5d097b8fb0447437aa7bb"
+    },
+    {
+      "path": "assets/articles/goddess-return/12/tile-011-mobile-d54c99e149ed.webp",
+      "bytes": 776988,
+      "sha256": "d54c99e149ed9d3f33c900199d7e168990bc2bd21a26e1a273fb3aadb4bc164f"
+    },
+    {
+      "path": "assets/articles/goddess-return/12/tile-012-d40a92ce3772.webp",
+      "bytes": 1568352,
+      "sha256": "d40a92ce377258b25af2b96d986992def50aff81e0c69879c914457e01de590e"
+    },
+    {
+      "path": "assets/articles/goddess-return/12/tile-012-mobile-f56f6459f7d8.webp",
+      "bytes": 864248,
+      "sha256": "f56f6459f7d8b6775e04ade482673db8c99976fe15396a1a37f918da8900d050"
+    },
+    {
+      "path": "assets/articles/goddess-return/12/tile-013-395c3472ad58.webp",
+      "bytes": 1053900,
+      "sha256": "395c3472ad582f478944c54e7599f13f0868c37687d87f8c730771f51306eab4"
+    },
+    {
+      "path": "assets/articles/goddess-return/12/tile-013-mobile-60a53a4524f3.webp",
+      "bytes": 432386,
+      "sha256": "60a53a4524f3ca34f9e8645119ee083e7d25f260e19a0c8dcc6b9ce0800b9013"
+    },
+    {
+      "path": "content/goddess-return/11/original.pdf",
+      "bytes": 8434442,
+      "sha256": "4cecfbf1ad880e28a2bb9b86acbf32f282cef3f09ed9fc5201f8762e90ed1286"
+    },
+    {
+      "path": "assets/articles/goddess-return/11/cover.webp",
+      "bytes": 106322,
+      "sha256": "829cb688637be0544bc36aa6cef0980847cf5c5396a6336eed93f9c3d442fe7b"
+    },
+    {
+      "path": "assets/articles/goddess-return/11/cover-mobile.webp",
+      "bytes": 48116,
+      "sha256": "08d4d838376edc42e51f2d2d88147998e3c91b638572e65e42a180ee08e4ec67"
+    },
+    {
+      "path": "assets/articles/goddess-return/11/reader-d18622eea077.json",
+      "bytes": 34520,
+      "sha256": "e3e13e4ecfcd839a27a39000cc343c40bb62a2d3ed98821f71c75855fccff090"
+    },
+    {
+      "path": "assets/articles/goddess-return/11/tile-001-48f9903da7e6.webp",
+      "bytes": 236978,
+      "sha256": "48f9903da7e614a569e11b2b35b3415ccca2c4f81a2e597e683b127dfcd23ca6"
+    },
+    {
+      "path": "assets/articles/goddess-return/11/tile-001-mobile-025d8f2f8a1f.webp",
+      "bytes": 286722,
+      "sha256": "025d8f2f8a1f803b3ef8ca571be17441f0947f0d00a3c7c69e3fed41bb2f31cc"
+    },
+    {
+      "path": "assets/articles/goddess-return/11/tile-002-b2517e23ef4f.webp",
+      "bytes": 335840,
+      "sha256": "b2517e23ef4f5ca8bf90ae11a7606e7eed78466664f64553656beed39ce8e14c"
+    },
+    {
+      "path": "assets/articles/goddess-return/11/tile-002-mobile-d8d9f380ab5c.webp",
+      "bytes": 422626,
+      "sha256": "d8d9f380ab5c6d93617e049fdb6fdfd119f41bc4cd5f88920ced05b7c0f97e33"
+    },
+    {
+      "path": "assets/articles/goddess-return/11/tile-003-55dfc8a91e36.webp",
+      "bytes": 503886,
+      "sha256": "55dfc8a91e36254a442d954c3e0d55ba19d23e5775c803beca8e618c274c3f2e"
+    },
+    {
+      "path": "assets/articles/goddess-return/11/tile-003-mobile-4926b4348fc2.webp",
+      "bytes": 634662,
+      "sha256": "4926b4348fc2a06a961df2a39d8c296c0bd4d47d17ae177ab224b53d923759b6"
+    },
+    {
+      "path": "assets/articles/goddess-return/11/tile-004-82d1791920d4.webp",
+      "bytes": 571042,
+      "sha256": "82d1791920d4c3061697ff32a83c4f7a780fbb771c03bdab8dc3b46e78a62f8c"
+    },
+    {
+      "path": "assets/articles/goddess-return/11/tile-004-mobile-0e0e1e0cd2be.webp",
+      "bytes": 716820,
+      "sha256": "0e0e1e0cd2be5f198c38a23fdeed9cf63f2606f33ede8a9d276212ffd4f82d6a"
+    },
+    {
+      "path": "assets/articles/goddess-return/11/tile-005-46314c561565.webp",
+      "bytes": 178800,
+      "sha256": "46314c5615657e9673d611809602276ce88805613d95df7f4e64213e37e15f11"
+    },
+    {
+      "path": "assets/articles/goddess-return/11/tile-005-mobile-6295a218f31c.webp",
+      "bytes": 290166,
+      "sha256": "6295a218f31c4f318bca155faddf1a3477d4b4b407531df8fc43f5f18ee94055"
+    },
+    {
+      "path": "assets/articles/goddess-return/11/tile-006-f19b725fb139.webp",
+      "bytes": 409680,
+      "sha256": "f19b725fb139ef752a717fa3d2e0e0bd7502c41e06a5419dcc1d7fda2b9b1e04"
+    },
+    {
+      "path": "assets/articles/goddess-return/11/tile-006-mobile-16eba7671f67.webp",
+      "bytes": 509266,
+      "sha256": "16eba7671f67d44751a457f66d8a55e2fad2b9fe175e60a924f93a566f073417"
+    },
+    {
+      "path": "assets/articles/goddess-return/11/tile-007-2fb1c1af0678.webp",
+      "bytes": 385156,
+      "sha256": "2fb1c1af06781456fd5d2012f7fc500ebd9051edb23c20dcb0c33eec63b8776e"
+    },
+    {
+      "path": "assets/articles/goddess-return/11/tile-007-mobile-91c61461bee2.webp",
+      "bytes": 529752,
+      "sha256": "91c61461bee2b2883c1972874b38f45a50a614f17ecc2bd41769790ae60a6f61"
+    },
+    {
+      "path": "assets/articles/goddess-return/11/tile-008-ade4dfd59edd.webp",
+      "bytes": 529822,
+      "sha256": "ade4dfd59eddc92740477bc937d2b1a3b5e345ffe1ed70bf2adbe17b8cdc66d1"
+    },
+    {
+      "path": "assets/articles/goddess-return/11/tile-008-mobile-5c6b4f53863a.webp",
+      "bytes": 337650,
+      "sha256": "5c6b4f53863ae892deebf5127a83169c8ddee8f954987351ed3a2ef4e33c4e00"
+    },
+    {
+      "path": "assets/articles/goddess-return/11/tile-009-8aa842abef75.webp",
+      "bytes": 808724,
+      "sha256": "8aa842abef75fbf747b687750ad7e21643c8f8d3ae39b47e808367f497daf9d6"
+    },
+    {
+      "path": "assets/articles/goddess-return/11/tile-009-mobile-e8832c62ac13.webp",
+      "bytes": 577334,
+      "sha256": "e8832c62ac1388462fedab14312d20662d6a39d6ec0b155945c144428c2cf6e1"
+    },
+    {
+      "path": "assets/articles/goddess-return/11/tile-010-08fec8beecfa.webp",
+      "bytes": 775400,
+      "sha256": "08fec8beecfadbbe0cf08dc70bf862051db09cae6797dde240892570a44729a9"
+    },
+    {
+      "path": "assets/articles/goddess-return/11/tile-010-mobile-e153f68cfd43.webp",
+      "bytes": 594200,
+      "sha256": "e153f68cfd43cd23fb38b83cf73885bb18d232fc60bc712ad3f9533e1660462c"
+    },
+    {
+      "path": "assets/articles/goddess-return/11/tile-011-00d666bc7d1d.webp",
+      "bytes": 686080,
+      "sha256": "00d666bc7d1d8d760199f465f57d06a3f7c695a8f246c8f7a7362f364a250984"
+    },
+    {
+      "path": "assets/articles/goddess-return/11/tile-011-mobile-5caf22353eb7.webp",
+      "bytes": 456286,
+      "sha256": "5caf22353eb789a17492f2359851256a247c6b4a1107768c29a8e7d7634e5c56"
+    },
+    {
+      "path": "assets/articles/goddess-return/11/tile-012-a196635c2769.webp",
+      "bytes": 942118,
+      "sha256": "a196635c2769781c62c516da867e8ce862beb7b67cb8920386aebd494187018e"
+    },
+    {
+      "path": "assets/articles/goddess-return/11/tile-012-mobile-b8cf5812c37d.webp",
+      "bytes": 357016,
+      "sha256": "b8cf5812c37d1369489b7b87aff2531c3d83373a1418cd5bee0e0f01950bae92"
+    },
+    {
+      "path": "content/goddess-return/10/original.pdf",
+      "bytes": 14741456,
+      "sha256": "c0007308c57d0718daebd6e37f605e778281ca06fedba70467facc1dfdd59123"
+    },
+    {
+      "path": "assets/articles/goddess-return/10/cover.webp",
+      "bytes": 29974,
+      "sha256": "e5a6a716d1810d910b91bf82155a52dc44d8395904b52f138e8e7d1026ee0e6c"
+    },
+    {
+      "path": "assets/articles/goddess-return/10/cover-mobile.webp",
+      "bytes": 26922,
+      "sha256": "98a21253af31c2a3a19aa1094f64829f415b9cbfd96ffc9d8183b1d98c0d1a3c"
+    },
+    {
+      "path": "assets/articles/goddess-return/10/reader-203a81cfcdb9.json",
+      "bytes": 55255,
+      "sha256": "7e1f9857e84d6f711eb6c89826078aa66caca296aa68d7ee259c5118cc3d4aef"
+    },
+    {
+      "path": "assets/articles/goddess-return/10/tile-001-6cc68c7c7f68.webp",
+      "bytes": 193126,
+      "sha256": "6cc68c7c7f68650fe2b0dd5c4463b3ad7ad3a85a6461d12dcc9812fec82e4c41"
+    },
+    {
+      "path": "assets/articles/goddess-return/10/tile-001-mobile-af4f3a18f153.webp",
+      "bytes": 228820,
+      "sha256": "af4f3a18f153dfab432bb55be849b2e20294e8e4c7075fabd32310585351335d"
+    },
+    {
+      "path": "assets/articles/goddess-return/10/tile-002-21409fc5daa5.webp",
+      "bytes": 389474,
+      "sha256": "21409fc5daa5db9367348e37d3cfbefb24d270b4d362f24a8e313ba85d62f32c"
+    },
+    {
+      "path": "assets/articles/goddess-return/10/tile-002-mobile-8ceca86b5e90.webp",
+      "bytes": 492276,
+      "sha256": "8ceca86b5e900d3fcca55644911c723b568a16a3f9d3ef8280c250409ca12173"
+    },
+    {
+      "path": "assets/articles/goddess-return/10/tile-003-863814b444b4.webp",
+      "bytes": 368436,
+      "sha256": "863814b444b41fc95593e12e697507b4f1cfb096e67a268aa359066c77768f75"
+    },
+    {
+      "path": "assets/articles/goddess-return/10/tile-003-mobile-98cb5ea40fa8.webp",
+      "bytes": 483844,
+      "sha256": "98cb5ea40fa897931b882f715619c23d381b0d0a031d2bcec97c4dceb560d08b"
+    },
+    {
+      "path": "assets/articles/goddess-return/10/tile-004-8d5e843e0739.webp",
+      "bytes": 496904,
+      "sha256": "8d5e843e073941f0bb437b332ae1e602e901066efb265b94c399a6792b60b10e"
+    },
+    {
+      "path": "assets/articles/goddess-return/10/tile-004-mobile-951093af2570.webp",
+      "bytes": 616278,
+      "sha256": "951093af257082704250126e1e6e2057602f5aa28c981eeacb40016f84257810"
+    },
+    {
+      "path": "assets/articles/goddess-return/10/tile-005-67c5671fce3d.webp",
+      "bytes": 540124,
+      "sha256": "67c5671fce3d12cfb30d925b2da3dd8e0a215b0ac8d6f5fc348ab58af4983e6f"
+    },
+    {
+      "path": "assets/articles/goddess-return/10/tile-005-mobile-9c0dd023df4e.webp",
+      "bytes": 639242,
+      "sha256": "9c0dd023df4e4b75094d71f232bd611d321332dd29cc4f6198d16fa0669f05f3"
+    },
+    {
+      "path": "assets/articles/goddess-return/10/tile-006-a4800f2f8720.webp",
+      "bytes": 728990,
+      "sha256": "a4800f2f8720cdbabb70ebdc67c1c396faabb99c2abbc52b62d2b88d2ce41748"
+    },
+    {
+      "path": "assets/articles/goddess-return/10/tile-006-mobile-30167e26bfb7.webp",
+      "bytes": 561124,
+      "sha256": "30167e26bfb7bb0e351f909372570472909334fed90eb149a97e65d40ebf486c"
+    },
+    {
+      "path": "assets/articles/goddess-return/10/tile-007-92445e87f37a.webp",
+      "bytes": 513384,
+      "sha256": "92445e87f37af8eb94cfffa8dc3ce7e36f12e4466c3c10d6231daa21a4c0ba3c"
+    },
+    {
+      "path": "assets/articles/goddess-return/10/tile-007-mobile-0754f8f464c4.webp",
+      "bytes": 669324,
+      "sha256": "0754f8f464c4b7014ba0aff4f0610870095af68244f2b95fa5e390a879be6594"
+    },
+    {
+      "path": "assets/articles/goddess-return/10/tile-008-45ca30f1279a.webp",
+      "bytes": 976042,
+      "sha256": "45ca30f1279aa0c7df5a4b4400bd4b684144f7f1cbe1cafdfbb7e2b8180edb59"
+    },
+    {
+      "path": "assets/articles/goddess-return/10/tile-008-mobile-83472253d885.webp",
+      "bytes": 639306,
+      "sha256": "83472253d8852767a54f425d8722f6fabcf0a48779614acde294d08f5487a6d0"
+    },
+    {
+      "path": "assets/articles/goddess-return/10/tile-009-828950245ce7.webp",
+      "bytes": 501898,
+      "sha256": "828950245ce701a94e446e848678c4309ac5f650f97dd1d62e6dd64e4e049ed2"
+    },
+    {
+      "path": "assets/articles/goddess-return/10/tile-009-mobile-f62542b5fc03.webp",
+      "bytes": 623328,
+      "sha256": "f62542b5fc03eaf5afae1bb1352bdc1af905282bd81864a7e19d2e7b66fedcdf"
+    },
+    {
+      "path": "assets/articles/goddess-return/10/tile-010-7826b2dbf8ae.webp",
+      "bytes": 191612,
+      "sha256": "7826b2dbf8ae083dfcfd3e798f1bea3506212cce1bfe2d87f5056b4112b18b11"
+    },
+    {
+      "path": "assets/articles/goddess-return/10/tile-010-mobile-69de010cce7e.webp",
+      "bytes": 291160,
+      "sha256": "69de010cce7ec46faf32e12af89cfc9f713b5b67c841d801eecd6471e15c8572"
+    },
+    {
+      "path": "assets/articles/goddess-return/10/tile-011-a9ed0d25d454.webp",
+      "bytes": 934922,
+      "sha256": "a9ed0d25d454fd20a5c99c614f5cc8171a03e7594ab432bae245aac1aeeaf1c1"
+    },
+    {
+      "path": "assets/articles/goddess-return/10/tile-011-mobile-5cdbe67c15d0.webp",
+      "bytes": 630632,
+      "sha256": "5cdbe67c15d01cca8e1240ee89d1399b4b4d20e3bc07899987bd17e864ee5e26"
+    },
+    {
+      "path": "assets/articles/goddess-return/10/tile-012-4dd6ca5aff0b.webp",
+      "bytes": 817338,
+      "sha256": "4dd6ca5aff0b427a5a6e4cfba716fd27054fccc8d511ecaead1f0a71a0ac811e"
+    },
+    {
+      "path": "assets/articles/goddess-return/10/tile-012-mobile-cf10dc8edc33.webp",
+      "bytes": 583090,
+      "sha256": "cf10dc8edc3300f6890298184cd9b20c25d2df2ab4044bb6abbe0e006b644bf3"
+    },
+    {
+      "path": "assets/articles/goddess-return/10/tile-013-b83f69d9b17f.webp",
+      "bytes": 528848,
+      "sha256": "b83f69d9b17f454bb4a21d3ede05a418081a69b48062da0fca733b38407dc5ce"
+    },
+    {
+      "path": "assets/articles/goddess-return/10/tile-013-mobile-c02a7be5c64a.webp",
+      "bytes": 506346,
+      "sha256": "c02a7be5c64a7c5e99ed32e25ca7a65b0352342a3a474b8b777823841f904ea2"
+    },
+    {
+      "path": "assets/articles/goddess-return/10/tile-014-73396bc54d3e.webp",
+      "bytes": 975022,
+      "sha256": "73396bc54d3e35387de880c2a893a7ab5724c8fd2ac4acaf53bc0414a2969c6e"
+    },
+    {
+      "path": "assets/articles/goddess-return/10/tile-014-mobile-9df4f581fd94.webp",
+      "bytes": 650036,
+      "sha256": "9df4f581fd949bf7b00b30e4e5e530bac4249030334ca2078951219be37afd04"
+    },
+    {
+      "path": "assets/articles/goddess-return/10/tile-015-86291898e2e4.webp",
+      "bytes": 473280,
+      "sha256": "86291898e2e485aadf5b08a8a90d56ce9ec8aabf9fea4372ecdca8a97d547832"
+    },
+    {
+      "path": "assets/articles/goddess-return/10/tile-015-mobile-b4f4ac9b0db7.webp",
+      "bytes": 682184,
+      "sha256": "b4f4ac9b0db73eded13d9f4679c14a36995201c24e5a1343d7eac07d84d0afee"
+    },
+    {
+      "path": "assets/articles/goddess-return/10/tile-016-7db3edc63708.webp",
+      "bytes": 442440,
+      "sha256": "7db3edc63708cdcf0f3cd2663c344d2de090c8b755b05dd82e966f264dab8ce1"
+    },
+    {
+      "path": "assets/articles/goddess-return/10/tile-016-mobile-fa88f1682bd7.webp",
+      "bytes": 611166,
+      "sha256": "fa88f1682bd73089cffe04f7d735a650d79951a8b2644674c69fdea4321be0f6"
+    },
+    {
+      "path": "assets/articles/goddess-return/10/tile-017-6ffe7eb7ea0c.webp",
+      "bytes": 403250,
+      "sha256": "6ffe7eb7ea0c165a65617b457ee951cc03a053017628d2a4f33682502a273186"
+    },
+    {
+      "path": "assets/articles/goddess-return/10/tile-017-mobile-47fad7ec5828.webp",
+      "bytes": 517462,
+      "sha256": "47fad7ec5828b1bd7b04290d16e1cfc7e56e00b08e10727547d9ed93d37515cf"
+    },
+    {
+      "path": "assets/articles/goddess-return/10/tile-018-fb1e8600cdbd.webp",
+      "bytes": 478354,
+      "sha256": "fb1e8600cdbd1e070afe708a58bef834a01aea3da252daf5459e9f614a09b102"
+    },
+    {
+      "path": "assets/articles/goddess-return/10/tile-018-mobile-100c35d699cd.webp",
+      "bytes": 595118,
+      "sha256": "100c35d699cd5c65b72d2e0f96e1c4d9a68d1985758fd596d394e04cb34859f3"
+    },
+    {
+      "path": "assets/articles/goddess-return/10/tile-019-795abba9109c.webp",
+      "bytes": 1026286,
+      "sha256": "795abba9109cacd89d78078ccb1949406564aaac84a85503c6d45480abc05edd"
+    },
+    {
+      "path": "assets/articles/goddess-return/10/tile-019-mobile-bcd508fba4ea.webp",
+      "bytes": 403646,
+      "sha256": "bcd508fba4ea8a338b65d861a8662d3241520ef1e5dfb0c4619db32ff115e0a3"
+    },
+    {
+      "path": "content/goddess-return/09/original.pdf",
+      "bytes": 7025048,
+      "sha256": "c277a1081c46977bf573ad24afd1622de67939eaf3bc34767562c8db49d5ff6e"
+    },
+    {
+      "path": "assets/articles/goddess-return/09/cover.webp",
+      "bytes": 64316,
+      "sha256": "468bb08a15544f19d5aae9ce07dd2d80c809382d9d5b8bc6fc5c79660b1ba12b"
+    },
+    {
+      "path": "assets/articles/goddess-return/09/cover-mobile.webp",
+      "bytes": 55250,
+      "sha256": "3d13efd9e3c4c76e92907fccb06c3d18dbbc1b8d7feed03183b21a79260a72f2"
+    },
+    {
+      "path": "assets/articles/goddess-return/09/reader-3e57077bebe5.json",
+      "bytes": 78951,
+      "sha256": "bc43e7739c9926ec15d5ad79145b7e4b051e7b32a5ba9bde47b273ece48eae31"
+    },
+    {
+      "path": "assets/articles/goddess-return/09/tile-001-b4f540ef10d5.webp",
+      "bytes": 183988,
+      "sha256": "b4f540ef10d5d930cea59e1966f125f7fb2da6a12640388bdb60715bd263cf80"
+    },
+    {
+      "path": "assets/articles/goddess-return/09/tile-001-mobile-d015ee5f618c.webp",
+      "bytes": 230440,
+      "sha256": "d015ee5f618cc594660e95960f5978bfc6fe91cc048c08bbef12fd7dea28512b"
+    },
+    {
+      "path": "assets/articles/goddess-return/09/tile-002-5f0daaec317e.webp",
+      "bytes": 260672,
+      "sha256": "5f0daaec317ef55265c8c7f653a831d3970922bdea452f45e6f8bf1e757629dc"
+    },
+    {
+      "path": "assets/articles/goddess-return/09/tile-002-mobile-fd3ec6be4931.webp",
+      "bytes": 468074,
+      "sha256": "fd3ec6be493186de316d2c66d8301915645cdfbde9a28bdf4a90697e90146870"
+    },
+    {
+      "path": "assets/articles/goddess-return/09/tile-003-c60c458d3d1b.webp",
+      "bytes": 485512,
+      "sha256": "c60c458d3d1ba7861174ab316c067349c7017d572aee5de5ac05656e3a7361d7"
+    },
+    {
+      "path": "assets/articles/goddess-return/09/tile-003-mobile-ea271d0c274b.webp",
+      "bytes": 616790,
+      "sha256": "ea271d0c274b8568370d784cdf40f9a7552b0e88fd48ebf34d0a46c10d62ea4f"
+    },
+    {
+      "path": "assets/articles/goddess-return/09/tile-004-85f9b9458b63.webp",
+      "bytes": 400234,
+      "sha256": "85f9b9458b63f8fdea9e2d94f1988193fee3ec157f4a8b09f5950f364218f698"
+    },
+    {
+      "path": "assets/articles/goddess-return/09/tile-004-mobile-f87919997228.webp",
+      "bytes": 473764,
+      "sha256": "f87919997228119b8c04d3c4a3fa91207a8621f13f15c7d7cb2d82c10cd6918f"
+    },
+    {
+      "path": "assets/articles/goddess-return/09/tile-005-c20adf3171bf.webp",
+      "bytes": 168222,
+      "sha256": "c20adf3171bf7d36757afa3acf87af860735980d3d5e05a1d5907c25a067d7bf"
+    },
+    {
+      "path": "assets/articles/goddess-return/09/tile-005-mobile-b3cf780375b0.webp",
+      "bytes": 278962,
+      "sha256": "b3cf780375b08fab705473143ff91dae8149172b56eff05102c710565e077e57"
+    },
+    {
+      "path": "assets/articles/goddess-return/09/tile-006-055605692df2.webp",
+      "bytes": 672902,
+      "sha256": "055605692df269082555c73c17759128b25499f82182effcc51d96173e37924e"
+    },
+    {
+      "path": "assets/articles/goddess-return/09/tile-006-mobile-7cf24099aa43.webp",
+      "bytes": 537290,
+      "sha256": "7cf24099aa43a0a644d14dd2abad2443758fabd105441854938d5a8a651c219c"
+    },
+    {
+      "path": "assets/articles/goddess-return/09/tile-007-2c827cd7136a.webp",
+      "bytes": 449418,
+      "sha256": "2c827cd7136a685922bf98c1cb8e8dfdb6a5471e9aaa10d5b37ec14da471a0fe"
+    },
+    {
+      "path": "assets/articles/goddess-return/09/tile-007-mobile-ed792bd5f555.webp",
+      "bytes": 546768,
+      "sha256": "ed792bd5f555f4fe0335f7fc3ad97aad069a098c56b84873927adf3f262b44ff"
+    },
+    {
+      "path": "assets/articles/goddess-return/09/tile-008-0660664beeb5.webp",
+      "bytes": 517072,
+      "sha256": "0660664beeb541026042dad17aad5ac765c126212b0142727dd53da3525d0f3b"
+    },
+    {
+      "path": "assets/articles/goddess-return/09/tile-008-mobile-28d6bbf6ee97.webp",
+      "bytes": 534960,
+      "sha256": "28d6bbf6ee97c752ec28d1c55109be40521ddbc9afdfee05334ed32a8b9e80ec"
+    },
+    {
+      "path": "assets/articles/goddess-return/09/tile-009-e3f51b9d5d98.webp",
+      "bytes": 893116,
+      "sha256": "e3f51b9d5d9827869674fec70de75d65f0ea3137479ab92ddcac95ff60291f2e"
+    },
+    {
+      "path": "assets/articles/goddess-return/09/tile-009-mobile-add0fb831cd0.webp",
+      "bytes": 798382,
+      "sha256": "add0fb831cd0662eac3ac988453b566915a21fe4db807f88fe517d9472a991b3"
+    },
+    {
+      "path": "assets/articles/goddess-return/09/tile-010-f59ff2027a7b.webp",
+      "bytes": 174872,
+      "sha256": "f59ff2027a7b59267315dc3dd140df2d786464fda3cc9f38ccd4f8797acfa53e"
+    },
+    {
+      "path": "assets/articles/goddess-return/09/tile-010-mobile-8b82b5478673.webp",
+      "bytes": 274110,
+      "sha256": "8b82b54786737d2b9abe643a549a5ffc0c6cfd3c93753d82a95342e82f12cf52"
+    },
+    {
+      "path": "assets/articles/goddess-return/09/tile-011-dc7ce5d41f58.webp",
+      "bytes": 445526,
+      "sha256": "dc7ce5d41f580abf6e1d72adef69d14b1cb1dc42bb2262dcb49505c9c9208e44"
+    },
+    {
+      "path": "assets/articles/goddess-return/09/tile-011-mobile-c775cdf40c7b.webp",
+      "bytes": 616838,
+      "sha256": "c775cdf40c7b16497cf22bf8662eed86c54c0b968786a927682184ee0aeb22b9"
+    },
+    {
+      "path": "assets/articles/goddess-return/09/tile-012-fd3e88c443f9.webp",
+      "bytes": 182802,
+      "sha256": "fd3e88c443f9fca6f102ba0ddec7d3d5c240a84d2bdaaa75a397515a34c645ac"
+    },
+    {
+      "path": "assets/articles/goddess-return/09/tile-012-mobile-74bb977a0af5.webp",
+      "bytes": 288914,
+      "sha256": "74bb977a0af5ad1ca9cacf9bd8ffdfa9e25c4dc55402ebb05c33dbfc897df8a8"
+    },
+    {
+      "path": "assets/articles/goddess-return/09/tile-013-1b155f4769ad.webp",
+      "bytes": 175722,
+      "sha256": "1b155f4769ad800fa07ff7fa64e0c17c8bbb6a0e64f12e5881211821de6edd53"
+    },
+    {
+      "path": "assets/articles/goddess-return/09/tile-013-mobile-7797af04a0e5.webp",
+      "bytes": 284284,
+      "sha256": "7797af04a0e576e4b0095010e0f5411df28f4c876e58cd2e51874720879d1fb8"
+    },
+    {
+      "path": "assets/articles/goddess-return/09/tile-014-9ef780d65ca1.webp",
+      "bytes": 162998,
+      "sha256": "9ef780d65ca16a61e4e79ef97dc9df9e45f2b6bed76510feec27d0d88ffa8edf"
+    },
+    {
+      "path": "assets/articles/goddess-return/09/tile-014-mobile-0b609ebff91a.webp",
+      "bytes": 273522,
+      "sha256": "0b609ebff91aa3ccddc48ba1a703a37aad20adc2078d7c21393f2e33bf003937"
+    },
+    {
+      "path": "assets/articles/goddess-return/09/tile-015-505874c9945c.webp",
+      "bytes": 538800,
+      "sha256": "505874c9945c1d2464c27ef69886a5423d2b7e62daac00e3b6bf33039dde959c"
+    },
+    {
+      "path": "assets/articles/goddess-return/09/tile-015-mobile-a11fb678dea9.webp",
+      "bytes": 663002,
+      "sha256": "a11fb678dea9d8993bef8b4b8b71da6003bacefd12c3e825c491fb38d23434d7"
+    },
+    {
+      "path": "assets/articles/goddess-return/09/tile-016-12f620c6afd4.webp",
+      "bytes": 812688,
+      "sha256": "12f620c6afd4dfb9f454e6bd309b5244b359f86eab21f47278a111f71ec2650b"
+    },
+    {
+      "path": "assets/articles/goddess-return/09/tile-016-mobile-288a1407fae1.webp",
+      "bytes": 490324,
+      "sha256": "288a1407fae158a9de9ef4725ff262e2f5f10d55105990576d6ca39340e8f565"
+    },
+    {
+      "path": "assets/articles/goddess-return/09/tile-017-11b775b9d05c.webp",
+      "bytes": 436112,
+      "sha256": "11b775b9d05c6df139bff0269b1f036ea14af4127534ea861eeb162569f26156"
+    },
+    {
+      "path": "assets/articles/goddess-return/09/tile-017-mobile-dffdad7149b4.webp",
+      "bytes": 167014,
+      "sha256": "dffdad7149b4474253339fa425ea509f0b46c18a7d56e88c14e8209d8c43f42e"
+    },
+    {
+      "path": "content/goddess-return/08/original.pdf",
+      "bytes": 10233452,
+      "sha256": "4211015b18d14b6ec873a48b4b731d17525c25015906374d9f58ddc275df3004"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/cover.webp",
+      "bytes": 63644,
+      "sha256": "de5f865197589558cd13bf76ad1659f32f00d2d09406622466694666bf496faa"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/cover-mobile.webp",
+      "bytes": 45836,
+      "sha256": "bf3608cc9fdec0f5672571f0efb89729edbe6d62f2cb6292af12a5b6eb4b608c"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/reader-474ccc2d413e.json",
+      "bytes": 93269,
+      "sha256": "c19154f692aab044967cc39829e38dcd8c23f92f3f5533b68ca06371d2f0d79b"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-001-377546a74be8.webp",
+      "bytes": 253332,
+      "sha256": "377546a74be8709ed99534d30837a6e612e8eb53c326ae57b0280123021c97c4"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-001-mobile-082530b02a5b.webp",
+      "bytes": 233340,
+      "sha256": "082530b02a5b180aa86fc0fd2ed69d235f2e527584aa898d425b4d3403d9f1d1"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-002-686fc07c2688.webp",
+      "bytes": 777846,
+      "sha256": "686fc07c268808b84af9b669dfbff066e3932658e4eb26fd466448784e6144dc"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-002-mobile-3d864be8bb91.webp",
+      "bytes": 528240,
+      "sha256": "3d864be8bb91f59b1be1489ce3079ec6ef5fd03eefbd8cbe8bbaee9f21d05990"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-003-346eeefb9012.webp",
+      "bytes": 406230,
+      "sha256": "346eeefb9012e9fe6903859c364736c0d6dfb5b19d6fd437661a7f496f3428d2"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-003-mobile-9c284a849bfa.webp",
+      "bytes": 511068,
+      "sha256": "9c284a849bfaa281552d7c0d5d2589738cc0482bd14d53cfbbaffc35a0d3456b"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-004-49e1d0201cf9.webp",
+      "bytes": 420640,
+      "sha256": "49e1d0201cf98902564ece1d73e2315eb9524277b811443e6b906eda329a2bda"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-004-mobile-9cc778b3e96b.webp",
+      "bytes": 532360,
+      "sha256": "9cc778b3e96b4eb3b098c99e6eb1dded21f874b89dabedf8a72528910776a721"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-005-eebbcd32522f.webp",
+      "bytes": 335048,
+      "sha256": "eebbcd32522fc18c3b80f3586ca19a89422b3a7ee03acd9fd9822a0575f2c2d4"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-005-mobile-440513c60d3a.webp",
+      "bytes": 340366,
+      "sha256": "440513c60d3acf67006e091e9c7618b7590021365b9a0573c2e0b654bcc5ea71"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-006-b1c908a0010f.webp",
+      "bytes": 416376,
+      "sha256": "b1c908a0010f28b7035d93fd92d4e37b8e5ab7f50d9d0066f1e8b121a9959456"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-006-mobile-941442d911c2.webp",
+      "bytes": 357728,
+      "sha256": "941442d911c26c2e769e4aef88a164a82e4a04fc1c54c9556b8126d0642e78f3"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-007-24ee96269abd.webp",
+      "bytes": 490062,
+      "sha256": "24ee96269abda90a2fc2ea099e54c926731b9387c8701b9465b4ef4281259e22"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-007-mobile-c21013471052.webp",
+      "bytes": 339248,
+      "sha256": "c2101347105231b64940c794f42d29aa46520d155586bc1b9637f86c6101f39a"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-008-ecc0b22bdabc.webp",
+      "bytes": 365356,
+      "sha256": "ecc0b22bdabc4727a203e480795701f18b1abfead5d51cf5f8531ef46b8a26f8"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-008-mobile-8126ce35988e.webp",
+      "bytes": 317700,
+      "sha256": "8126ce35988e4b4e55215fa6e2c0cc2e6f4e1c97dde3ab43edbcdd6a02a25957"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-009-c2604db5fc2c.webp",
+      "bytes": 346904,
+      "sha256": "c2604db5fc2c272e2ab9d54dd391c3e515b1567b630f30ca14811770ef195ac4"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-009-mobile-5c9c25e7b5f8.webp",
+      "bytes": 356778,
+      "sha256": "5c9c25e7b5f8aa36dfca4a3bd001e8f931997a8c2a7027b9b70761d8941a3b86"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-010-c151b11764ab.webp",
+      "bytes": 469028,
+      "sha256": "c151b11764abef6adc7a9d1f87795989109ee7f0d180d3519ab63b9868d8e2ff"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-010-mobile-1c7e6c7f55b0.webp",
+      "bytes": 569440,
+      "sha256": "1c7e6c7f55b0a8190c0fb03dfb16960fa1fccd1dd6c8545e62724333ed1df558"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-011-c8c5d003a034.webp",
+      "bytes": 496968,
+      "sha256": "c8c5d003a0346b25b04cf1de9c58aa6db60aca257f8ef7a70e039af9bf32c1c8"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-011-mobile-3da03c9e9bfe.webp",
+      "bytes": 604926,
+      "sha256": "3da03c9e9bfe4463e5c5765c11e051016663e41863bf1357698c79cebced913f"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-012-d672fa5e0758.webp",
+      "bytes": 344602,
+      "sha256": "d672fa5e0758e83e6b9b5b70b5b6528c2d23ee98656da63caab6164bbcf721e8"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-012-mobile-7c8f128b479f.webp",
+      "bytes": 355452,
+      "sha256": "7c8f128b479fd08a26d73b1b2f4554668b92dbb8d5e6d1b98d6aed4745a02eef"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-013-5a0921c5d892.webp",
+      "bytes": 377306,
+      "sha256": "5a0921c5d892e04607cd5d44c9366b2cf50b36c5979f5ec9da79cab9acac5a98"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-013-mobile-34ace9c241c9.webp",
+      "bytes": 464302,
+      "sha256": "34ace9c241c975a85616e651e2e49443e4890a16fe9c4d0b9cea3af3c2a21fbd"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-014-ecca37538694.webp",
+      "bytes": 258606,
+      "sha256": "ecca375386943faea9d35c24ee7444c9b84680cf719708f24593fe220cf27b0e"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-014-mobile-89e97d38e46c.webp",
+      "bytes": 308302,
+      "sha256": "89e97d38e46cda0947756369aada0e8f00ea0f0a5cdbc25c0a3ece0b144264be"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-015-3da707a69314.webp",
+      "bytes": 168620,
+      "sha256": "3da707a69314204134515ea800139ff970ddab150a10b4ca6f6bdaf104634bc6"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-015-mobile-c493feabfab8.webp",
+      "bytes": 268752,
+      "sha256": "c493feabfab8d15af76de8f322d04f2ea2d80260756efe9079b3f672053d345f"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-016-23c62d290e79.webp",
+      "bytes": 185284,
+      "sha256": "23c62d290e7957c70fbb32d5a29a6776bde60051253c4261c138ba789978a936"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-016-mobile-af3b87a038bc.webp",
+      "bytes": 303130,
+      "sha256": "af3b87a038bcedb2047415b2127bbb16068fae67e1d815c53b493aa24e43d483"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-017-51eb113afb96.webp",
+      "bytes": 608008,
+      "sha256": "51eb113afb96219406d2d5241c5bd71e96ddc1cd006271c2a00d6845320fb442"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-017-mobile-3367f6b8a0b8.webp",
+      "bytes": 765148,
+      "sha256": "3367f6b8a0b8f4d4ef9cea67b84345743277eac6bd7e5b4e7723f5d27dfe8711"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-018-fa925e312717.webp",
+      "bytes": 185630,
+      "sha256": "fa925e312717a279ccb3dffe5bf1c8adc999f29fb0d4332453060feb1ea914f5"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-018-mobile-eb740a762aa4.webp",
+      "bytes": 322826,
+      "sha256": "eb740a762aa49145545e1b7a3d27bc6d4fe6c13756bc797d0646d5eb7cc6db56"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-019-69d632d770d0.webp",
+      "bytes": 161960,
+      "sha256": "69d632d770d0ac1b8730daf67e62564e3b66024d7cb759319b29261a3b4c8d6d"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-019-mobile-10c409d8093b.webp",
+      "bytes": 240128,
+      "sha256": "10c409d8093bd8331a33d8be671dd5b52f569dfabfbf63331a09130330a29246"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-020-afdc3b0e1347.webp",
+      "bytes": 341412,
+      "sha256": "afdc3b0e1347999ae1d2b95b2f35a3d3ed061209bee4a3c240fb1fc7f9703305"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-020-mobile-0a8711805360.webp",
+      "bytes": 493510,
+      "sha256": "0a87118053603dd1669e948b5e1c17ab86cf851aad11dfe079f495dc6a203f93"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-021-ea088dfa7115.webp",
+      "bytes": 149984,
+      "sha256": "ea088dfa7115e27caa2e2a11d6c859467bb609daebd2e9229d958b76b52323b3"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-021-mobile-8bb8543611e6.webp",
+      "bytes": 334312,
+      "sha256": "8bb8543611e697635712359186ffc11a559fbc8ce030c4a00e37ca2993c2c520"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-022-77d53c4a7693.webp",
+      "bytes": 154030,
+      "sha256": "77d53c4a7693d3df64661f5121758b9871bb62b3e1f6e8e241c0f1ebb0782ffb"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-022-mobile-b48874dd621b.webp",
+      "bytes": 221674,
+      "sha256": "b48874dd621b7424e38b498eeab4f16091ec3679ab332e0cd6d072a4be0273b9"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-023-ba2d31b0dcfe.webp",
+      "bytes": 346560,
+      "sha256": "ba2d31b0dcfe496e842f9a50d2c389aa72c3c607dd907a4bc91f39c4efb7de33"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-023-mobile-2920297e2aff.webp",
+      "bytes": 552550,
+      "sha256": "2920297e2affa9c96891295cb042b7573f3fbd4719b4e951289a61f381cc7dd4"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-024-0e011ac5087b.webp",
+      "bytes": 801328,
+      "sha256": "0e011ac5087b342efd9d56feaf21af168a094f1811daffdfd8a70bc577ba25d6"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-024-mobile-db365db7ae2f.webp",
+      "bytes": 1034758,
+      "sha256": "db365db7ae2fee02a5e55af080d8aa14d19dc0450437223f4abf4f4d4a429f50"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-025-964212b90b26.webp",
+      "bytes": 1050738,
+      "sha256": "964212b90b266ca452ee8fc57081958631aa666558129ca6873f7f7cc9ccf65b"
+    },
+    {
+      "path": "assets/articles/goddess-return/08/tile-025-mobile-052d67f0524c.webp",
+      "bytes": 426410,
+      "sha256": "052d67f0524cc9973215d6e1281477af3cbf4d5d9959410ead615d1ea23bd2a8"
+    },
+    {
+      "path": "content/goddess-return/07/original.pdf",
+      "bytes": 7021266,
+      "sha256": "b9233bc5c3672197a66341e712b4d58e7f7bdba50be0359bff400910e815c3f6"
+    },
+    {
+      "path": "assets/articles/goddess-return/07/cover.webp",
+      "bytes": 55770,
+      "sha256": "c937e6e403d28da05715374ebfee1722451a87b44dfd103a3ffa328aa2b0a013"
+    },
+    {
+      "path": "assets/articles/goddess-return/07/cover-mobile.webp",
+      "bytes": 27494,
+      "sha256": "4f8e816d7e02a050808db5ac98ec1a4cdc899b2de6762c7db9ab40b725fbdfe5"
+    },
+    {
+      "path": "assets/articles/goddess-return/07/reader-db040926aafd.json",
+      "bytes": 81948,
+      "sha256": "4cf92ec30711fa1f11a0469edb3c6751fd276cf8d703a8f00c2a5ff28ac82510"
+    },
+    {
+      "path": "assets/articles/goddess-return/07/tile-001-2023e5794dc5.webp",
+      "bytes": 284432,
+      "sha256": "2023e5794dc5877ca244c50d0e9e0a509dbb14d40d461095ea8ae88cf46c429f"
+    },
+    {
+      "path": "assets/articles/goddess-return/07/tile-001-mobile-75534ac62029.webp",
+      "bytes": 158716,
+      "sha256": "75534ac62029ea26e9531352de2b7c3441579ee80e47ce822e4f0981d2ae27f0"
+    },
+    {
+      "path": "assets/articles/goddess-return/07/tile-002-3547ad67bc54.webp",
+      "bytes": 393034,
+      "sha256": "3547ad67bc54d066748bc3d236f4ec97b0c9e0c2e326c3b490e9fd3ebe71a6c1"
+    },
+    {
+      "path": "assets/articles/goddess-return/07/tile-002-mobile-0cc3052ca909.webp",
+      "bytes": 307590,
+      "sha256": "0cc3052ca90936ea180a3ba227d50cc92ec12d67aebd8189b5f22498e120e5da"
+    },
+    {
+      "path": "assets/articles/goddess-return/07/tile-003-5caa1b7dfe4e.webp",
+      "bytes": 371022,
+      "sha256": "5caa1b7dfe4e9d71530f5097e3076da3c9c039329787997aed10c3a895605735"
+    },
+    {
+      "path": "assets/articles/goddess-return/07/tile-003-mobile-d1c7aa61afcf.webp",
+      "bytes": 450786,
+      "sha256": "d1c7aa61afcf4c7dcd88fcc83b67162e3a9d4459370388011d36e0837642c153"
+    },
+    {
+      "path": "assets/articles/goddess-return/07/tile-004-e6d087a5e61c.webp",
+      "bytes": 166196,
+      "sha256": "e6d087a5e61c9dcc4e3d8e05674dd443d6a136e938139aebc4985adce6bce48e"
+    },
+    {
+      "path": "assets/articles/goddess-return/07/tile-004-mobile-0392f81b43fe.webp",
+      "bytes": 272640,
+      "sha256": "0392f81b43fefd0be10a0f5dc637a310a01c3f94a7038460844f9d7edf3b2a6c"
+    },
+    {
+      "path": "assets/articles/goddess-return/07/tile-005-7470286662a3.webp",
+      "bytes": 571398,
+      "sha256": "7470286662a3913cf3825e53b13f99cf51d168745ae7b2c8e01a4fbe9527cbd4"
+    },
+    {
+      "path": "assets/articles/goddess-return/07/tile-005-mobile-d940451e0dd5.webp",
+      "bytes": 716856,
+      "sha256": "d940451e0dd53d66812d198c0d43dc3e94cfb50ba7fd3985b604cbf066491cf0"
+    },
+    {
+      "path": "assets/articles/goddess-return/07/tile-006-28282dfead9d.webp",
+      "bytes": 187542,
+      "sha256": "28282dfead9d31aafe0a4855da743bf6d207b60df9a2ea608805faa9fc7bcc4d"
+    },
+    {
+      "path": "assets/articles/goddess-return/07/tile-006-mobile-a5a2f419a5b1.webp",
+      "bytes": 288140,
+      "sha256": "a5a2f419a5b11812d402706b44eb21db5fee2bddbab9c94b046824fedc4ae3c0"
+    },
+    {
+      "path": "assets/articles/goddess-return/07/tile-007-55baa4bafe53.webp",
+      "bytes": 158390,
+      "sha256": "55baa4bafe538bfc01221ec8165f36fcaf45ec746b7502b33906d79e8cc2a2c3"
+    },
+    {
+      "path": "assets/articles/goddess-return/07/tile-007-mobile-7b35543cc007.webp",
+      "bytes": 258226,
+      "sha256": "7b35543cc00710e55ff2d7d4bb1f6d8643126617353b2da1f4c09c17964b2292"
+    },
+    {
+      "path": "assets/articles/goddess-return/07/tile-008-e89fe0f9ed74.webp",
+      "bytes": 149800,
+      "sha256": "e89fe0f9ed74a95978f0a326658ac6b9a28f977792ee89ece05c79e541f843bf"
+    },
+    {
+      "path": "assets/articles/goddess-return/07/tile-008-mobile-471ec51a00c5.webp",
+      "bytes": 245874,
+      "sha256": "471ec51a00c556b228f1badbd192390e5d6c2fbf0c831e16c4782f4ded66d2c3"
+    },
+    {
+      "path": "assets/articles/goddess-return/07/tile-009-c3f9bd6b3bf1.webp",
+      "bytes": 148512,
+      "sha256": "c3f9bd6b3bf1e258643754fcb519d936e3d1a4fc2684db5b43d2c3c3ba637af8"
+    },
+    {
+      "path": "assets/articles/goddess-return/07/tile-009-mobile-1d2a053ffdbd.webp",
+      "bytes": 240690,
+      "sha256": "1d2a053ffdbdc52637f0ba2bd9ed2f65e7e1158625bcd3751c684616b46fd74c"
+    },
+    {
+      "path": "assets/articles/goddess-return/07/tile-010-f759cf4424f1.webp",
+      "bytes": 161006,
+      "sha256": "f759cf4424f11897d6f406f54315ff9d53ba8e8d289a24bc30e5aa49085f7e9b"
+    },
+    {
+      "path": "assets/articles/goddess-return/07/tile-010-mobile-80d9b8948fe3.webp",
+      "bytes": 251434,
+      "sha256": "80d9b8948fe386bee57caa97c18e41a810912f9ddff0e81147cc9cda4cf64546"
+    },
+    {
+      "path": "assets/articles/goddess-return/07/tile-011-1183f1951e34.webp",
+      "bytes": 522402,
+      "sha256": "1183f1951e342ddd840c17183f28a3c4b8283cc442e4b8e94c3767320d8ad95e"
+    },
+    {
+      "path": "assets/articles/goddess-return/07/tile-011-mobile-3e6c11d9e877.webp",
+      "bytes": 631900,
+      "sha256": "3e6c11d9e877af60bc64a12290cf31c36bc5d1c4c5143b288d03f461d0935fc6"
+    },
+    {
+      "path": "assets/articles/goddess-return/07/tile-012-aeccb4a47b1f.webp",
+      "bytes": 553314,
+      "sha256": "aeccb4a47b1f890113a0a0d9724512647efcd5ebccb4db345d93949b3b5f08ab"
+    },
+    {
+      "path": "assets/articles/goddess-return/07/tile-012-mobile-417248fa4600.webp",
+      "bytes": 502768,
+      "sha256": "417248fa46005b9288af9ae2a24eb213e50d5f8f71ba9340d321fc4c42617dff"
+    },
+    {
+      "path": "assets/articles/goddess-return/07/tile-013-5c05761180ff.webp",
+      "bytes": 183864,
+      "sha256": "5c05761180ffa5ef411cf75ffb90cf862cbb22e1bb9a8011a5adecb8d35a2591"
+    },
+    {
+      "path": "assets/articles/goddess-return/07/tile-013-mobile-8bf7ce28c5f6.webp",
+      "bytes": 291930,
+      "sha256": "8bf7ce28c5f623a4e2397567275eccaf7bdbccb0851784a2337f0a41b51f07d4"
+    },
+    {
+      "path": "assets/articles/goddess-return/07/tile-014-44c9833f2cab.webp",
+      "bytes": 174362,
+      "sha256": "44c9833f2cab9ee131a937361dd303387b2713dd8c814d9797e4f8cd1d721453"
+    },
+    {
+      "path": "assets/articles/goddess-return/07/tile-014-mobile-6c29de1e8d64.webp",
+      "bytes": 277062,
+      "sha256": "6c29de1e8d64c018a079141ebf9a540b7aae058e6ff9369965990108d9e227ee"
+    },
+    {
+      "path": "assets/articles/goddess-return/07/tile-015-d51cd90fcdf7.webp",
+      "bytes": 602310,
+      "sha256": "d51cd90fcdf792d916185629efcfe153c9bf42804e6d132750bd4cfc688abf63"
+    },
+    {
+      "path": "assets/articles/goddess-return/07/tile-015-mobile-f69c134cc593.webp",
+      "bytes": 743860,
+      "sha256": "f69c134cc593bcf4d4d707eb364dc62969add31f898f761919c64ec158c79b55"
+    },
+    {
+      "path": "assets/articles/goddess-return/07/tile-016-7e5903e474d4.webp",
+      "bytes": 425978,
+      "sha256": "7e5903e474d498ca143552499e9f46720b6fc3a2d19a3ec3ffbe6bd1832ee02f"
+    },
+    {
+      "path": "assets/articles/goddess-return/07/tile-016-mobile-91d22adb57c8.webp",
+      "bytes": 470868,
+      "sha256": "91d22adb57c8303dbd4629ab457f72683ee33c7a625944262c124f2f580039c6"
+    },
+    {
+      "path": "assets/articles/goddess-return/07/tile-017-81f01f0afcd3.webp",
+      "bytes": 1321896,
+      "sha256": "81f01f0afcd388c6c4aef1524bab3200eeb6f11bbb934a5d15f08f18e52624dd"
+    },
+    {
+      "path": "assets/articles/goddess-return/07/tile-017-mobile-cfd5af0b6131.webp",
+      "bytes": 613336,
+      "sha256": "cfd5af0b6131852c3b4882266c6b63a1ec425074694652246bfc3a7fd31dac30"
+    },
+    {
+      "path": "assets/articles/goddess-return/07/tile-018-9c195565fcad.webp",
+      "bytes": 137178,
+      "sha256": "9c195565fcad56c12bce177b3e977f11ff2b612f02dce5b061547c6c3ec023dd"
+    },
+    {
+      "path": "assets/articles/goddess-return/07/tile-018-mobile-db025fc5930c.webp",
+      "bytes": 61904,
+      "sha256": "db025fc5930c2bc2902d1c21f893757a75f5d9676c1f9843f68f1503486c8e48"
+    },
+    {
+      "path": "content/goddess-return/06/original.pdf",
+      "bytes": 10471508,
+      "sha256": "cfe1b4955e56e5636808f602ef91f58e7275c8a48564ca1b56f577b23ca4bbf8"
+    },
+    {
+      "path": "assets/articles/goddess-return/06/cover.webp",
+      "bytes": 93642,
+      "sha256": "7c6b51f2b22db96bceb601639c98c086d06e0588523cf1bd0c8043a41cb53308"
+    },
+    {
+      "path": "assets/articles/goddess-return/06/cover-mobile.webp",
+      "bytes": 90048,
+      "sha256": "3c7f9630b9e66145fd1e5e9efd27f5e18a745e4651019cd378d84c64f0daa84c"
+    },
+    {
+      "path": "assets/articles/goddess-return/06/reader-0f1ae0accd23.json",
+      "bytes": 48509,
+      "sha256": "050d90c5375d26dd627b1c0bd3766cb167366b7d95e5ec168a1ee4ed84223e43"
+    },
+    {
+      "path": "assets/articles/goddess-return/06/tile-001-92915b2b727e.webp",
+      "bytes": 335790,
+      "sha256": "92915b2b727e9c941e0b6124a997f176224cfce5cb95d7a1284cf192a98ddeca"
+    },
+    {
+      "path": "assets/articles/goddess-return/06/tile-001-mobile-97c31f0e6d3b.webp",
+      "bytes": 187660,
+      "sha256": "97c31f0e6d3b4fd6f2d079b970b9462085661704e6c289668073ee7fce8c0720"
+    },
+    {
+      "path": "assets/articles/goddess-return/06/tile-002-3141edddd78e.webp",
+      "bytes": 766132,
+      "sha256": "3141edddd78ed9aeabe3fbc0536066153256545110c6b8659cfc8a943868ae97"
+    },
+    {
+      "path": "assets/articles/goddess-return/06/tile-002-mobile-4eaae360075f.webp",
+      "bytes": 560878,
+      "sha256": "4eaae360075f9c222e34a606bbef08f84fb848fa12a8f627751b34555b89a1ba"
+    },
+    {
+      "path": "assets/articles/goddess-return/06/tile-003-a99d62dc239a.webp",
+      "bytes": 693738,
+      "sha256": "a99d62dc239a268af60f0977d7bfb79dc7c6c1ff7d12915d498eb0d4084ea680"
+    },
+    {
+      "path": "assets/articles/goddess-return/06/tile-003-mobile-dccaf6e04eb2.webp",
+      "bytes": 892358,
+      "sha256": "dccaf6e04eb2eac1bc599bb3c7ddd06c620af6c1b403e56cb38d68ac563141b3"
+    },
+    {
+      "path": "assets/articles/goddess-return/06/tile-004-617fa6856fd9.webp",
+      "bytes": 296150,
+      "sha256": "617fa6856fd9e2ba9f1d06ff805855735393d91840329339d0352ec0becac965"
+    },
+    {
+      "path": "assets/articles/goddess-return/06/tile-004-mobile-0bec89308bce.webp",
+      "bytes": 535896,
+      "sha256": "0bec89308bce70748911fe7167c318c248ef8d23828e16a3005d881f25154f06"
+    },
+    {
+      "path": "assets/articles/goddess-return/06/tile-005-493b80997912.webp",
+      "bytes": 443718,
+      "sha256": "493b80997912b55523d95f4a90feabeabf023fc58e7488a405b732dc37ff3dcf"
+    },
+    {
+      "path": "assets/articles/goddess-return/06/tile-005-mobile-0c11cf2f95bf.webp",
+      "bytes": 622660,
+      "sha256": "0c11cf2f95bf17a38f861b71b456d9e5cdf924eef158642ad1e5a609e844d1de"
+    },
+    {
+      "path": "assets/articles/goddess-return/06/tile-006-1da615aba812.webp",
+      "bytes": 169412,
+      "sha256": "1da615aba812e5fc262d03f1de5b2d99ef6429e2ee3aad2b06550e2b3c8f62f5"
+    },
+    {
+      "path": "assets/articles/goddess-return/06/tile-006-mobile-43ad5ffe49bb.webp",
+      "bytes": 280204,
+      "sha256": "43ad5ffe49bbd6246054bf1978bf9f834ccfa8e045911beb61fc78628abffd04"
+    },
+    {
+      "path": "assets/articles/goddess-return/06/tile-007-03a7226f5efb.webp",
+      "bytes": 566654,
+      "sha256": "03a7226f5efb63035e92b796bab63820694205d4e57c6c469404d8ee16fde8a1"
+    },
+    {
+      "path": "assets/articles/goddess-return/06/tile-007-mobile-b890bb1d7ee4.webp",
+      "bytes": 491628,
+      "sha256": "b890bb1d7ee4f25f2ce300cde172fc3b8ddfb85737b12da6a9a2a31c0da22490"
+    },
+    {
+      "path": "assets/articles/goddess-return/06/tile-008-6920541253e7.webp",
+      "bytes": 423422,
+      "sha256": "6920541253e73eb7f1f4c0498d6a43e105215ccf26a6f8e41094df9ef9e05f2a"
+    },
+    {
+      "path": "assets/articles/goddess-return/06/tile-008-mobile-54fa7595b223.webp",
+      "bytes": 410796,
+      "sha256": "54fa7595b223d74fec136ee9bfaeef7d4ef25e625101754a9f486cfd06a2e1fb"
+    },
+    {
+      "path": "assets/articles/goddess-return/06/tile-009-ae2101262673.webp",
+      "bytes": 450024,
+      "sha256": "ae210126267318776f25c137bb275df13f4a6fa8560259021003642247c3cee4"
+    },
+    {
+      "path": "assets/articles/goddess-return/06/tile-009-mobile-2de06022f332.webp",
+      "bytes": 446872,
+      "sha256": "2de06022f332d11973ac31553035ea3c4fc936dc8a8c48eff663751447f0cd6b"
+    },
+    {
+      "path": "assets/articles/goddess-return/06/tile-010-50cecf7f478f.webp",
+      "bytes": 373614,
+      "sha256": "50cecf7f478f344f79f703a23f0d3d78c44d09794394ad569937c8644417601e"
+    },
+    {
+      "path": "assets/articles/goddess-return/06/tile-010-mobile-231239902941.webp",
+      "bytes": 424636,
+      "sha256": "23123990294171d0ed62c8aeaf5b74f12c1fbf6f50e80ed6d8baef88ed816b70"
+    },
+    {
+      "path": "assets/articles/goddess-return/06/tile-011-2d669dcb95ba.webp",
+      "bytes": 685520,
+      "sha256": "2d669dcb95baba483a29252b2bf65c93fb6777ccf74504bea16bdb4941d05db7"
+    },
+    {
+      "path": "assets/articles/goddess-return/06/tile-011-mobile-8e69a256e402.webp",
+      "bytes": 728550,
+      "sha256": "8e69a256e402085419714dbd46fb8870854708776bf5e7504d4eb94ca341d872"
+    },
+    {
+      "path": "assets/articles/goddess-return/06/tile-012-c57d823d7618.webp",
+      "bytes": 1018098,
+      "sha256": "c57d823d76183ddeaf42b325d4dd82cd41286d80cf0ac14fc1abe7f13249f0d7"
+    },
+    {
+      "path": "assets/articles/goddess-return/06/tile-012-mobile-1a3deeee9ad7.webp",
+      "bytes": 1051054,
+      "sha256": "1a3deeee9ad7a7625697adbe766683ae575758b401c3b523172865d869def837"
+    },
+    {
+      "path": "assets/articles/goddess-return/06/tile-013-c4c8be50b4c2.webp",
+      "bytes": 499660,
+      "sha256": "c4c8be50b4c2c0fd24d7e6893a2324ae18e80e50596c46b3353d1b9ef85d0a1f"
+    },
+    {
+      "path": "assets/articles/goddess-return/06/tile-013-mobile-9973ae1c714c.webp",
+      "bytes": 608196,
+      "sha256": "9973ae1c714c5079ce0afcbc2feeeaa4c1b7c21bd732f2cfb1dd0e011c9e89d7"
+    },
+    {
+      "path": "assets/articles/goddess-return/06/tile-014-08d0feab493e.webp",
+      "bytes": 601776,
+      "sha256": "08d0feab493e303bb16d819ed95774e2fd911843db12693bc8cdbdaf3eed10fe"
+    },
+    {
+      "path": "assets/articles/goddess-return/06/tile-014-mobile-3ca8573db189.webp",
+      "bytes": 762632,
+      "sha256": "3ca8573db1890a1cca6362d0c07c39e0e62cabc6c200c094bd37234810b8de85"
+    },
+    {
+      "path": "assets/articles/goddess-return/06/tile-015-6b9686700d5d.webp",
+      "bytes": 1045832,
+      "sha256": "6b9686700d5d43497a5a2cddc88f1ec088e7acafad47b501ce64abd2affb27aa"
+    },
+    {
+      "path": "assets/articles/goddess-return/06/tile-015-mobile-034e94bcdf8a.webp",
+      "bytes": 422048,
+      "sha256": "034e94bcdf8a807346d4abd04f4353c2ed0335b4b43b09431736a8043c648d2b"
+    },
+    {
+      "path": "content/goddess-return/05/original.pdf",
+      "bytes": 6695611,
+      "sha256": "c3a62ff9dfb501535cda35e907005d6fc3a3818789060cf4812fcf1828a100ba"
+    },
+    {
+      "path": "assets/articles/goddess-return/05/cover.webp",
+      "bytes": 30276,
+      "sha256": "5b715e0dd759ae10827aec3e701c8061db5b886a7a341e7a0fc2cf4cddc63e2c"
+    },
+    {
+      "path": "assets/articles/goddess-return/05/cover-mobile.webp",
+      "bytes": 21668,
+      "sha256": "afd70de4f876e0df0d3f480a5383ff9236b47033385ca41e6c11c052a54acf81"
+    },
+    {
+      "path": "assets/articles/goddess-return/05/reader-aac4b4552ede.json",
+      "bytes": 76435,
+      "sha256": "6aae6c51cd5f66ef83db1313bbedcdfd8f55496e24188cf4aa45c998ff76c74f"
+    },
+    {
+      "path": "assets/articles/goddess-return/05/tile-001-221ef51b9292.webp",
+      "bytes": 326246,
+      "sha256": "221ef51b92923db000fe9e847d63e03d246fea1f239b556060e9a3ce76239947"
+    },
+    {
+      "path": "assets/articles/goddess-return/05/tile-001-mobile-70dc0d0c9094.webp",
+      "bytes": 183476,
+      "sha256": "70dc0d0c909458a80cf82dc0324b259a1db705a541b4f918fa6a18604059ad97"
+    },
+    {
+      "path": "assets/articles/goddess-return/05/tile-002-abbdb7aec7e6.webp",
+      "bytes": 626386,
+      "sha256": "abbdb7aec7e6fc75bcbe9d058ef0553305999628ca8ae0a086af7d70d63f113a"
+    },
+    {
+      "path": "assets/articles/goddess-return/05/tile-002-mobile-033c5b0367e2.webp",
+      "bytes": 420824,
+      "sha256": "033c5b0367e2a2779312d114fdd280580e3c1844a86d66fb4926f6655a60f679"
+    },
+    {
+      "path": "assets/articles/goddess-return/05/tile-003-3ccee8eb2715.webp",
+      "bytes": 573830,
+      "sha256": "3ccee8eb2715ce3ba63b5cfc70b65fc66bd570727a235e208622ff534329c07b"
+    },
+    {
+      "path": "assets/articles/goddess-return/05/tile-003-mobile-0d3874e70d06.webp",
+      "bytes": 509870,
+      "sha256": "0d3874e70d065ac664a50b37615b3c26809c66e7e255e99b9b12b35ccd8e65de"
+    },
+    {
+      "path": "assets/articles/goddess-return/05/tile-004-0b5821f444aa.webp",
+      "bytes": 473098,
+      "sha256": "0b5821f444aa11c2789ed62f8f129c5c82110ac9b811de8876e4af9b87b2dbb3"
+    },
+    {
+      "path": "assets/articles/goddess-return/05/tile-004-mobile-9309974ae4f2.webp",
+      "bytes": 422346,
+      "sha256": "9309974ae4f2add9025b670704a0d7019b060447851e729bf90aee8f6b60fc8d"
+    },
+    {
+      "path": "assets/articles/goddess-return/05/tile-005-cf74561d3291.webp",
+      "bytes": 383514,
+      "sha256": "cf74561d3291b0fc53423de3ede67b06cc5f3638254fc815588ca52a3b1195e1"
+    },
+    {
+      "path": "assets/articles/goddess-return/05/tile-005-mobile-dca19ad55222.webp",
+      "bytes": 449436,
+      "sha256": "dca19ad552223237a0613625585befe3d3b040e7b647e68f058c64fd84a7b368"
+    },
+    {
+      "path": "assets/articles/goddess-return/05/tile-006-e7c4e7a659da.webp",
+      "bytes": 398216,
+      "sha256": "e7c4e7a659da5d582bc1f648127bf3c89eabf1265540477b02c10da075c03ebc"
+    },
+    {
+      "path": "assets/articles/goddess-return/05/tile-006-mobile-d30458846e2a.webp",
+      "bytes": 478264,
+      "sha256": "d30458846e2a7734a2e0b0bbda58905c04424b18cf12b61a77c7cb4ade12af0a"
+    },
+    {
+      "path": "assets/articles/goddess-return/05/tile-007-34007d823877.webp",
+      "bytes": 695188,
+      "sha256": "34007d823877a1cd75b9515748ef70bb0f4d00d8f29571c25827fffa1231bbe6"
+    },
+    {
+      "path": "assets/articles/goddess-return/05/tile-007-mobile-354f78405129.webp",
+      "bytes": 671704,
+      "sha256": "354f7840512974a3ce09de8c79b73f229912738e76dd6f73c6e6113420f066ea"
+    },
+    {
+      "path": "assets/articles/goddess-return/05/tile-008-f35333bc1300.webp",
+      "bytes": 543726,
+      "sha256": "f35333bc1300b49d3171471f3dcf37bb9fd9e825b4bb9787058c585b02a469a4"
+    },
+    {
+      "path": "assets/articles/goddess-return/05/tile-008-mobile-b20cbdcce567.webp",
+      "bytes": 566712,
+      "sha256": "b20cbdcce5675cade81c351a69ab085595b1ec4a3ed4fd9cb13471207aa4429d"
+    },
+    {
+      "path": "assets/articles/goddess-return/05/tile-009-a8f128009c94.webp",
+      "bytes": 167010,
+      "sha256": "a8f128009c941c9ff33a01215048f0f5765ae521892388111ff42b90abee6f69"
+    },
+    {
+      "path": "assets/articles/goddess-return/05/tile-009-mobile-d4f0843be57f.webp",
+      "bytes": 263610,
+      "sha256": "d4f0843be57f2e3e55360910bec755835fc5f6a2f154f371b5f0457037752963"
+    },
+    {
+      "path": "assets/articles/goddess-return/05/tile-010-9f891c26b7e9.webp",
+      "bytes": 155650,
+      "sha256": "9f891c26b7e9defa661ff6f401a62d31bced3faaf801d35df29e91339cccb52e"
+    },
+    {
+      "path": "assets/articles/goddess-return/05/tile-010-mobile-b00516bc6436.webp",
+      "bytes": 267288,
+      "sha256": "b00516bc6436a24c795094bd2b463683123bee2ecf1f7bdbeeb92632e857433f"
+    },
+    {
+      "path": "assets/articles/goddess-return/05/tile-011-f41621ef6c3f.webp",
+      "bytes": 159314,
+      "sha256": "f41621ef6c3fde34fbbf8d50fa6013726d94198483c79700263637153fd6a000"
+    },
+    {
+      "path": "assets/articles/goddess-return/05/tile-011-mobile-c55cb470a106.webp",
+      "bytes": 264538,
+      "sha256": "c55cb470a106cfcbbe7bda8b40e1edf732dd8652515260fcc16a61da313b74e4"
+    },
+    {
+      "path": "assets/articles/goddess-return/05/tile-012-f1c96ed242d5.webp",
+      "bytes": 180632,
+      "sha256": "f1c96ed242d5b8dcc9c8329350cbb00e18cdcc41857149f9547a3b0deb091c16"
+    },
+    {
+      "path": "assets/articles/goddess-return/05/tile-012-mobile-9b40ce9fb1d2.webp",
+      "bytes": 298182,
+      "sha256": "9b40ce9fb1d297ef83550b3349524c15e7fdb4014bb81877f2b35c0201e5b288"
+    },
+    {
+      "path": "assets/articles/goddess-return/05/tile-013-c1f96e304c41.webp",
+      "bytes": 171952,
+      "sha256": "c1f96e304c4145d9cdd4a0106a00ba3f08fbab08b49fc6722448b79466c7b946"
+    },
+    {
+      "path": "assets/articles/goddess-return/05/tile-013-mobile-63f26ff15183.webp",
+      "bytes": 279332,
+      "sha256": "63f26ff1518309aa2b7578df010202cb5518ff7c630819e1ff45f59874a19111"
+    },
+    {
+      "path": "assets/articles/goddess-return/05/tile-014-fb503ebc03dd.webp",
+      "bytes": 172002,
+      "sha256": "fb503ebc03dd1880daf9b633d2491799eeee2c96ec9e978fc7d9a8c76ab08267"
+    },
+    {
+      "path": "assets/articles/goddess-return/05/tile-014-mobile-c1d813f801d5.webp",
+      "bytes": 273176,
+      "sha256": "c1d813f801d5302c2679cd17f4027f91f290511694d2297bbbfb905613da4228"
+    },
+    {
+      "path": "assets/articles/goddess-return/05/tile-015-2aad57599579.webp",
+      "bytes": 229252,
+      "sha256": "2aad57599579193bff9af9af0d63e980ae6d526360ab96f0bcb8f8b3aa682006"
+    },
+    {
+      "path": "assets/articles/goddess-return/05/tile-015-mobile-794b4b88097a.webp",
+      "bytes": 280402,
+      "sha256": "794b4b88097a0b50468026a275ca686f72fd9e6dc75ad53f506b17c25dd67aa3"
+    },
+    {
+      "path": "assets/articles/goddess-return/05/tile-016-ee26cb3b634d.webp",
+      "bytes": 188024,
+      "sha256": "ee26cb3b634d439dc2bc37cb9a0c003a76122d89096ddec2ece8f5659c1119eb"
+    },
+    {
+      "path": "assets/articles/goddess-return/05/tile-016-mobile-98b4ff451800.webp",
+      "bytes": 283274,
+      "sha256": "98b4ff451800543f38522e8f8592ecafdb00267aae5fb1612592853545a3e6ff"
+    },
+    {
+      "path": "assets/articles/goddess-return/05/tile-017-c1d484b7affa.webp",
+      "bytes": 993992,
+      "sha256": "c1d484b7affa99a0efa819edbc133a7b6813fcf23529e639d46c9d261acc4e06"
+    },
+    {
+      "path": "assets/articles/goddess-return/05/tile-017-mobile-00de80159357.webp",
+      "bytes": 561934,
+      "sha256": "00de80159357face2a55c1908f65af186de3549ec80ea15fc145a000078f69f7"
+    },
+    {
+      "path": "assets/articles/goddess-return/05/tile-018-bc26d8fb35a1.webp",
+      "bytes": 249890,
+      "sha256": "bc26d8fb35a12fb31206d5c1e4c5957bb0aeeb1bf1161edb9de53655a7404f4b"
+    },
+    {
+      "path": "assets/articles/goddess-return/05/tile-018-mobile-5f8370e23430.webp",
+      "bytes": 102704,
+      "sha256": "5f8370e23430282f23b093c94daa033703031f8d1791f6c900e136f9c7798e0e"
+    },
+    {
+      "path": "content/goddess-return/04/original.pdf",
+      "bytes": 9028374,
+      "sha256": "193e53f2229e0e90d8bad76d83c587459c22648056773068206d79b72328c2da"
+    },
+    {
+      "path": "assets/articles/goddess-return/04/cover.webp",
+      "bytes": 128084,
+      "sha256": "5368aba46d1275f6a17abd30ac8d17cf513a5da3409b351804c3f1ea754df43a"
+    },
+    {
+      "path": "assets/articles/goddess-return/04/cover-mobile.webp",
+      "bytes": 47952,
+      "sha256": "2e33c4753d07477da60048e4cdbb934ee6f199a3ea15a27a0e6e4ead2e4ca555"
+    },
+    {
+      "path": "assets/articles/goddess-return/04/reader-c51bd05ca0b0.json",
+      "bytes": 65357,
+      "sha256": "e0b4cc04c3c1d4d8a4c981f00c056cebd1dd9b859de4ace04ac46842b8828252"
+    },
+    {
+      "path": "assets/articles/goddess-return/04/tile-001-a6de3c6137f2.webp",
+      "bytes": 372912,
+      "sha256": "a6de3c6137f22173b19320bb7e5b5aed16a8e77a241e3f5d404d09f1d5401dbf"
+    },
+    {
+      "path": "assets/articles/goddess-return/04/tile-001-mobile-ba578cdbe14a.webp",
+      "bytes": 230660,
+      "sha256": "ba578cdbe14a300fe6f7f82b4239ea94f26771174c9526f7b003cc14d8dc4066"
+    },
+    {
+      "path": "assets/articles/goddess-return/04/tile-002-d40a7953a599.webp",
+      "bytes": 787780,
+      "sha256": "d40a7953a5998a18d5b14d4cf66793c20c342c4f300942467d9e51a67d56d97a"
+    },
+    {
+      "path": "assets/articles/goddess-return/04/tile-002-mobile-1f40d4d393a3.webp",
+      "bytes": 668674,
+      "sha256": "1f40d4d393a3d00c6ddca0bf01d63d1932a36df88e8ed4cb45f34933ca2193c0"
+    },
+    {
+      "path": "assets/articles/goddess-return/04/tile-003-af40dedf0539.webp",
+      "bytes": 474604,
+      "sha256": "af40dedf053947cf1448ec73d61dfc13565ea455f90723fd3498159eb0602964"
+    },
+    {
+      "path": "assets/articles/goddess-return/04/tile-003-mobile-248db79545e3.webp",
+      "bytes": 579886,
+      "sha256": "248db79545e3cbc3911eab925a7d9f8cbd9697776d609604af1291b5dcd06db3"
+    },
+    {
+      "path": "assets/articles/goddess-return/04/tile-004-a625dc60ee44.webp",
+      "bytes": 1317998,
+      "sha256": "a625dc60ee44a100c5f30eabf0ce15f67b9df02bd654c17d95e700d134cf9170"
+    },
+    {
+      "path": "assets/articles/goddess-return/04/tile-004-mobile-ac6cf3db5272.webp",
+      "bytes": 791422,
+      "sha256": "ac6cf3db52724059c74f5b9946b3a9cd2125baa1353481a5309b3e2a41f4c6f6"
+    },
+    {
+      "path": "assets/articles/goddess-return/04/tile-005-9d4648c0ad29.webp",
+      "bytes": 613056,
+      "sha256": "9d4648c0ad29d74865f909624f6d35f453a9ac8f7675a41d37bf2b07473d7472"
+    },
+    {
+      "path": "assets/articles/goddess-return/04/tile-005-mobile-f82e33d90e19.webp",
+      "bytes": 492956,
+      "sha256": "f82e33d90e1987a5ebb5f2bfeab956f3188e93d4e7301cce6ebefc61d5a7e9dc"
+    },
+    {
+      "path": "assets/articles/goddess-return/04/tile-006-9eb9c8104547.webp",
+      "bytes": 159158,
+      "sha256": "9eb9c8104547109d297deba948357b899fd708dadb7f41b6906e36a080ca7995"
+    },
+    {
+      "path": "assets/articles/goddess-return/04/tile-006-mobile-430bd45b3067.webp",
+      "bytes": 256872,
+      "sha256": "430bd45b30679a2a024fc0fd13b3e4ab2c053f9605d363f5474a926bfcabc677"
+    },
+    {
+      "path": "assets/articles/goddess-return/04/tile-007-a4f18080706a.webp",
+      "bytes": 186570,
+      "sha256": "a4f18080706af9c1c72b36434c49896489c3212b1af020fc6f7cf3ab847b90a5"
+    },
+    {
+      "path": "assets/articles/goddess-return/04/tile-007-mobile-80ce025fb0f0.webp",
+      "bytes": 289170,
+      "sha256": "80ce025fb0f09311d094cdddccd1b5459c6135dd7d798c1eb3247693283bef1a"
+    },
+    {
+      "path": "assets/articles/goddess-return/04/tile-008-f51e4ea108a2.webp",
+      "bytes": 141930,
+      "sha256": "f51e4ea108a29bf5953b90642ff6969e73459386761c9fbeedd4235dd34f0151"
+    },
+    {
+      "path": "assets/articles/goddess-return/04/tile-008-mobile-64aa46451112.webp",
+      "bytes": 241828,
+      "sha256": "64aa46451112adbc3de0e63a01dc825ec5a2df03f8d6b74e81a94ce8b239e939"
+    },
+    {
+      "path": "assets/articles/goddess-return/04/tile-009-6b1a5c1fc192.webp",
+      "bytes": 676200,
+      "sha256": "6b1a5c1fc192ddb3806f0042d442bda797a4858660234302c8863aa65dc0bab9"
+    },
+    {
+      "path": "assets/articles/goddess-return/04/tile-009-mobile-2b67e2b99d28.webp",
+      "bytes": 870004,
+      "sha256": "2b67e2b99d2806309e9cc306d82e2c121c48620958b6ca1bd80572171ed8f625"
+    },
+    {
+      "path": "assets/articles/goddess-return/04/tile-010-f3cb68b41623.webp",
+      "bytes": 173850,
+      "sha256": "f3cb68b41623bf7654d4b8050eb5c5225fbdca7a15a05dda4587b351284a782d"
+    },
+    {
+      "path": "assets/articles/goddess-return/04/tile-010-mobile-c96df6570f03.webp",
+      "bytes": 271548,
+      "sha256": "c96df6570f030698718205f12edb65ad2736c6f25bcc55886e39182495565643"
+    },
+    {
+      "path": "assets/articles/goddess-return/04/tile-011-683c58814e86.webp",
+      "bytes": 161428,
+      "sha256": "683c58814e86fc9c06c1031d23119a63b17c48d7592ea0ffcfafaf0340e06ca9"
+    },
+    {
+      "path": "assets/articles/goddess-return/04/tile-011-mobile-ebd184a6445e.webp",
+      "bytes": 270788,
+      "sha256": "ebd184a6445e33b94b3eb38a3e56d6d1df232a659ad7147e4b2170719efc35cb"
+    },
+    {
+      "path": "assets/articles/goddess-return/04/tile-012-1aed985ef7f9.webp",
+      "bytes": 491186,
+      "sha256": "1aed985ef7f951297c3ebec9bfa5d1f98a234a126f4fe2a97d277fd8ccfedcf2"
+    },
+    {
+      "path": "assets/articles/goddess-return/04/tile-012-mobile-9bb93c976d1e.webp",
+      "bytes": 618704,
+      "sha256": "9bb93c976d1e804917663670a2eb6bd8c17ab38652dc79775a19f21b8866297b"
+    },
+    {
+      "path": "assets/articles/goddess-return/04/tile-013-f1f62111b395.webp",
+      "bytes": 141440,
+      "sha256": "f1f62111b395f6c587dc0ae88695cbae3af19fcf79f7a5fe9b1a30706c2de6a5"
+    },
+    {
+      "path": "assets/articles/goddess-return/04/tile-013-mobile-8b1f03be416f.webp",
+      "bytes": 226626,
+      "sha256": "8b1f03be416fd665cb3f6dc63ba154e0228aec8b002bebb4b14b31fae8004449"
+    },
+    {
+      "path": "assets/articles/goddess-return/04/tile-014-9a9874b8cce3.webp",
+      "bytes": 772410,
+      "sha256": "9a9874b8cce3a0def2953dd1802afab57e4e0a2ded30e5b5fed71742be5751ad"
+    },
+    {
+      "path": "assets/articles/goddess-return/04/tile-014-mobile-eeaedfe10660.webp",
+      "bytes": 500650,
+      "sha256": "eeaedfe1066038881461368f1f37c9f032e2992645bb5659971ff077fc26d65b"
+    },
+    {
+      "path": "assets/articles/goddess-return/04/tile-015-3722dea535c6.webp",
+      "bytes": 502070,
+      "sha256": "3722dea535c6429ad808c968df123da2b436055e5caf5bd30a8ab0729294f9a2"
+    },
+    {
+      "path": "assets/articles/goddess-return/04/tile-015-mobile-39ffebc5d87f.webp",
+      "bytes": 190678,
+      "sha256": "39ffebc5d87fbc9c06ab81d8f4d50e35b0761a534acb007b0f2ae986db6f72b6"
+    },
+    {
+      "path": "content/goddess-return/03/original.pdf",
+      "bytes": 6602555,
+      "sha256": "900ec0716a6764698cdd30afffcad05ab7b47883f2af916eeb2a2de206c99223"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/cover.webp",
+      "bytes": 78946,
+      "sha256": "b424b5a6798867b2b550a1808b73f4b03efbebe463dac921639f9eee80e65e92"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/cover-mobile.webp",
+      "bytes": 51340,
+      "sha256": "2527ea363a1242d4b306097fef8c9f52ed4697e2f5e86a25122dc1ee12bce86f"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/reader-988779931c33.json",
+      "bytes": 88658,
+      "sha256": "235fd5e1b39ab97c0b96e6a906723916f0689eedcdd980802b66ebe54bab6f38"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-001-acf094038cac.webp",
+      "bytes": 348626,
+      "sha256": "acf094038cacaf98a5b946214ee9dbbeae8f50b767e2951bc8d96aaacb900e3f"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-001-mobile-e7001df2293a.webp",
+      "bytes": 217840,
+      "sha256": "e7001df2293a13fcfbc48300fba75d73d0f05057b9860576017304fb100795fb"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-002-a76165d17fcc.webp",
+      "bytes": 447318,
+      "sha256": "a76165d17fcc798d7ed49bfc1bb948c13060be79246c0a7e12ce8f6cac5c67ca"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-002-mobile-435d6bd226dd.webp",
+      "bytes": 421108,
+      "sha256": "435d6bd226dd2cc342b8b45a4ba8cdf066f55e93209ed95df0b71919d0f79f8c"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-003-53cab8871271.webp",
+      "bytes": 160624,
+      "sha256": "53cab8871271460018bd7ef683edb73f43b0e5e657aa6a7d2b551142f35e3a5b"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-003-mobile-9c7e8723e950.webp",
+      "bytes": 259046,
+      "sha256": "9c7e8723e9507264d6c5316877c66e2c157820142273c88515b4f7fa7d67bc90"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-004-45e00da28b00.webp",
+      "bytes": 368690,
+      "sha256": "45e00da28b00bf912884fa41b4adf4146cf79ef8e2d71c8d22d66e365e652379"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-004-mobile-ed517ebed1d5.webp",
+      "bytes": 456496,
+      "sha256": "ed517ebed1d505717f2876b9980e267d080b66b597f2360e0d6234459754332f"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-005-42aff66296d2.webp",
+      "bytes": 141928,
+      "sha256": "42aff66296d251ee0e667eae3f8321492c34a2b86392026443c5b5d051e33905"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-005-mobile-189128c42c6a.webp",
+      "bytes": 227774,
+      "sha256": "189128c42c6ace10477fb6b7c4eedc8dc646163d5a1857891a5c53924fe28ce4"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-006-d070f860794f.webp",
+      "bytes": 221710,
+      "sha256": "d070f860794f2ba256a0fd570485fa51adff7b802470dd248e6b4cc6dd8ac2e7"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-006-mobile-1010418a4d1a.webp",
+      "bytes": 308490,
+      "sha256": "1010418a4d1a7ce19fce9cd3814e093fee1eb1291ccaeacbb03f4181d9ac7b64"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-007-76e5de32aa25.webp",
+      "bytes": 284732,
+      "sha256": "76e5de32aa25d88d8199ee4474d6d24292e0f38b289a21b0401c44a08e77cbb7"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-007-mobile-1484f1ba24c5.webp",
+      "bytes": 453520,
+      "sha256": "1484f1ba24c5fdedb79abe9f5ee4291874c4c078d2ba37e3ef7582be66d2b0d0"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-008-c0cc6088ba3a.webp",
+      "bytes": 309974,
+      "sha256": "c0cc6088ba3ab8728410c3d01b2c6321795b43679b908e01e87cd86012dccb88"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-008-mobile-c96e0d8bab34.webp",
+      "bytes": 382400,
+      "sha256": "c96e0d8bab34735e59c6169190728a4768153957a64fb397790f1564d16ace46"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-009-1804c8e50323.webp",
+      "bytes": 142996,
+      "sha256": "1804c8e5032387e81b9fff596bf36e05b142671f0b3fb942030630f73711cc5b"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-009-mobile-b959efe58f84.webp",
+      "bytes": 241848,
+      "sha256": "b959efe58f845c3e6b26c2f3841ac62322b5cad5dc736c8b457a0d75529ca201"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-010-a205b7684840.webp",
+      "bytes": 286608,
+      "sha256": "a205b768484053e30493f3500a95d00f1e756fc59c2fed1588a56964184c424f"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-010-mobile-cd483a968259.webp",
+      "bytes": 232460,
+      "sha256": "cd483a968259d1b0983f92ce37cc87c3ca1debe2a6dc7c00379f02306f1249bb"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-011-c466cc4f6c96.webp",
+      "bytes": 415576,
+      "sha256": "c466cc4f6c969c11d464a69faccea22f42894ad76fe4dea56b55e3df5e1f44f4"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-011-mobile-51d65ea00033.webp",
+      "bytes": 295982,
+      "sha256": "51d65ea000332d0dbf474713786662978c4ceb575940d22a749715e78d97454a"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-012-cc2954434218.webp",
+      "bytes": 331402,
+      "sha256": "cc29544342180911ce7d15db8849f87d9e5a23bf1a64b58d15de8e2316c9436e"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-012-mobile-25517b0b06c2.webp",
+      "bytes": 313336,
+      "sha256": "25517b0b06c274ea79b5ad0066ea88dfbe1caa4f56899bb8267c366c758453d4"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-013-88393a4b2175.webp",
+      "bytes": 328252,
+      "sha256": "88393a4b2175ea88a703cc5cb0b66c2d20036f83bd824fcd566896ac2b5797d0"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-013-mobile-f941e89899be.webp",
+      "bytes": 329002,
+      "sha256": "f941e89899be2067d0e9581c67b910a1b2ee272bd27c280f00a3cbede9235c8f"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-014-d984f716941c.webp",
+      "bytes": 150680,
+      "sha256": "d984f716941c66d828f2d53c194f3c650f8bb5e31de647bd166be46e10e295cb"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-014-mobile-27fd15eeaf6f.webp",
+      "bytes": 239970,
+      "sha256": "27fd15eeaf6f430a3385423bb055442a96984cb38b5cc3a2f31d279330268fd4"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-015-fe7b8e6917a4.webp",
+      "bytes": 466598,
+      "sha256": "fe7b8e6917a4a32650c42e276fd1b46a904290f40b05b6c70eaacfba36716455"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-015-mobile-4b5d508b1526.webp",
+      "bytes": 423876,
+      "sha256": "4b5d508b1526d1665d0b20db2a4c9630c9140551f31e2ae1b42b80901f926d17"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-016-2d4e4c2a5293.webp",
+      "bytes": 539258,
+      "sha256": "2d4e4c2a5293d5ec706c4884d9b9ceff96c5faf38067dabbcaa8555521d15cde"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-016-mobile-e173a0bed0c8.webp",
+      "bytes": 404782,
+      "sha256": "e173a0bed0c8d7d0914a89478f9d19f5e9414983470a6db5c398dea69e05c18d"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-017-70a30f3e37d1.webp",
+      "bytes": 249134,
+      "sha256": "70a30f3e37d1b8fa0d764a88e0fd308d7d2ab3dac8d386fea4d46f17ea99bfb3"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-017-mobile-b2805f3674f5.webp",
+      "bytes": 305978,
+      "sha256": "b2805f3674f582af33103360b1c7e6a30ea93b7ddf7e11e5c70cc893be9f6de0"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-018-c963acc778f0.webp",
+      "bytes": 170594,
+      "sha256": "c963acc778f095466ac272db2133b1160bf129d8b819335872f54a17a2e113d0"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-018-mobile-765ab2117342.webp",
+      "bytes": 282498,
+      "sha256": "765ab2117342ce17dc14f9ca29a34c03bcce7cc3e233b15f3bbf9803f0cb4965"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-019-bb084127227d.webp",
+      "bytes": 170240,
+      "sha256": "bb084127227d2bf6f9388c1dbd3da331b45c5338282cfb03ec705062754a41e1"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-019-mobile-95856e5d4985.webp",
+      "bytes": 283032,
+      "sha256": "95856e5d49854c4789b537b5fb6223f1718132b61f933cca653eef80019482ac"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-020-2c37cc0e4edc.webp",
+      "bytes": 410876,
+      "sha256": "2c37cc0e4edcff6adafc361f42a2c42f206743636debc7ccc9184a2475b656ea"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-020-mobile-04363e62fc5c.webp",
+      "bytes": 509464,
+      "sha256": "04363e62fc5c6356b4abe397c8e90395cdda5c3cb05b349f300bf2ccb80a1e60"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-021-ba2d21b3dab3.webp",
+      "bytes": 167200,
+      "sha256": "ba2d21b3dab303cf29bff3bce4b4ce66a0711e78442ea5c7ba9c646ced78161b"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-021-mobile-7b01b7f09772.webp",
+      "bytes": 270976,
+      "sha256": "7b01b7f09772d676715eeebb37b301327a9c91186d0635526abe685f7af1f2c6"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-022-cc765f1f060a.webp",
+      "bytes": 1031468,
+      "sha256": "cc765f1f060af70a3e33f80eacdaf409da5f1f667115c83cf82f730ca50bd52a"
+    },
+    {
+      "path": "assets/articles/goddess-return/03/tile-022-mobile-919c7e60ed5c.webp",
+      "bytes": 409590,
+      "sha256": "919c7e60ed5c3aaa1db93533b0fd6b54eae1a416825585171e26f3bf81f9e99f"
+    },
+    {
+      "path": "content/goddess-return/02/original.pdf",
+      "bytes": 22522066,
+      "sha256": "1dee898461c7310d7d0f7f97f4b828a7056a8b3eea72b2ce561393f494924eb4"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/cover.webp",
+      "bytes": 103662,
+      "sha256": "2fa0f0bb9e64f27eead1fcb302c5eb226ba4c197f6037cecfeb2705913b3ca59"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/cover-mobile.webp",
+      "bytes": 48504,
+      "sha256": "6820a34d54f9ea74277394b5bd2c71c15b0d489fe23a12dd603b10c3abd90588"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/reader-882fcbe0807e.json",
+      "bytes": 56585,
+      "sha256": "a2f6ff299bb0d01d27fd8cb14391ef13fd6a1fd7bc9a1202763547658b588a19"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/tile-001-e9aae36389fd.webp",
+      "bytes": 282562,
+      "sha256": "e9aae36389fd5e662b0612b63498188d7e6c6ea458ed931aa82f0273dc894bb7"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/tile-001-mobile-6a4212f05c2f.webp",
+      "bytes": 161330,
+      "sha256": "6a4212f05c2fb13f72193646246fd1f19cba49493a73f8b385d84b90a6d9d95b"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/tile-002-69d53a171fb9.webp",
+      "bytes": 409342,
+      "sha256": "69d53a171fb98efc41936bfe110a9ff9df18ebde836b8490945a76d743b40acd"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/tile-002-mobile-ed73f8ef4cdd.webp",
+      "bytes": 376928,
+      "sha256": "ed73f8ef4cdd5f425d36f7f49c1c207b3384b34ebe27c4f0ca99c291ad3316f4"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/tile-003-91aa0bea53d9.webp",
+      "bytes": 925040,
+      "sha256": "91aa0bea53d90b620c303353b40d8c6aac9c29e284a40e8d329e4b32b5e7c99f"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/tile-003-mobile-58da24e3ee82.webp",
+      "bytes": 592214,
+      "sha256": "58da24e3ee826c1fbb13ba647122f0c6984b69f5a120de371c4443891e397265"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/tile-004-d3ec95d82b07.webp",
+      "bytes": 728904,
+      "sha256": "d3ec95d82b07e7dc28855a88e4d1b308babaabf873c339350e22df30771c6934"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/tile-004-mobile-15394c07d929.webp",
+      "bytes": 583806,
+      "sha256": "15394c07d929c237871786c8eefb392c229fa376891c4ec9f167a64d3620a882"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/tile-005-58d354109008.webp",
+      "bytes": 1216658,
+      "sha256": "58d354109008792a42b0f2b6da29f0bde0f2404a42b5f909847a5c1751fee4e5"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/tile-005-mobile-507339a1b183.webp",
+      "bytes": 742088,
+      "sha256": "507339a1b183bf76b8cf7238deb010409de2a12c63bb7f7d91b385a6e3853daa"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/tile-006-d800ebed73c5.webp",
+      "bytes": 724188,
+      "sha256": "d800ebed73c59369e9ec9a9fef7f788e21463ebe0e35c23b796c9a1f14e6ec25"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/tile-006-mobile-02487abc752b.webp",
+      "bytes": 700126,
+      "sha256": "02487abc752b35e3fce34781536920297022fdd018813a730a200297982be3d5"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/tile-007-a5cc5b286857.webp",
+      "bytes": 1024282,
+      "sha256": "a5cc5b286857056f97230305e2a91f107103f3b8b9493beab512396c9a3a8d09"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/tile-007-mobile-7d1b101a6309.webp",
+      "bytes": 768682,
+      "sha256": "7d1b101a6309029dcb34c6c040cbbcefc1f462c047575c79e697d3f47f1b4680"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/tile-008-393ff48c6ce8.webp",
+      "bytes": 935024,
+      "sha256": "393ff48c6ce8ae7672aa67bae393db064309fb0ad6700c2d0f800bf6250d3659"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/tile-008-mobile-e25aa005cb67.webp",
+      "bytes": 625682,
+      "sha256": "e25aa005cb67a16d7549751fc97be113657ab01bd5c27cba2bc1e5cde6dfb4cf"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/tile-009-1112d6edf8c5.webp",
+      "bytes": 465528,
+      "sha256": "1112d6edf8c5a105e0aab1f909320343c0f5fc974af59ea5732b5e2358b562d7"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/tile-009-mobile-18874389949e.webp",
+      "bytes": 473950,
+      "sha256": "18874389949e304549777579699ad5f076820fb10bd445bfbfa8c5aeb28382af"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/tile-010-8298fa4de9fe.webp",
+      "bytes": 172284,
+      "sha256": "8298fa4de9fe7ac061a9c183a14fb9412746030b0c1a23bcab77b3de0ded5115"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/tile-010-mobile-5cc0ae800b95.webp",
+      "bytes": 261524,
+      "sha256": "5cc0ae800b953fcd8d0f0de30b595b4635bd79660fae50d8bd054ce3f33ba998"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/tile-011-60f02c749523.webp",
+      "bytes": 165882,
+      "sha256": "60f02c749523d4696e5f7b2942e044d12927998b9ecd310b16a87a751742d335"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/tile-011-mobile-b09ef3401a16.webp",
+      "bytes": 271662,
+      "sha256": "b09ef3401a16db0c45c8c293aa8ccc91b1d8b9dcf94518c57e92e55544b7b56b"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/tile-012-4a40c2e8923e.webp",
+      "bytes": 903368,
+      "sha256": "4a40c2e8923ec6c58088c9952bcbe368195fe044f9878c5513bb32ebdf7f317b"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/tile-012-mobile-2222881d1e0d.webp",
+      "bytes": 622692,
+      "sha256": "2222881d1e0daa80d63938f931657fd6e8296eb76a45a372e9967d6cbea603fe"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/tile-013-8824991597c0.webp",
+      "bytes": 966690,
+      "sha256": "8824991597c0f527487e949e606ad5c3d416052a71a93a8f8202488a98da3aff"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/tile-013-mobile-a9dee1d684d5.webp",
+      "bytes": 668274,
+      "sha256": "a9dee1d684d553ce7eea62ad9346d88739c21cf599c66ae27a17e0815f535b25"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/tile-014-7b92b77fb137.webp",
+      "bytes": 1054288,
+      "sha256": "7b92b77fb13768d0f95e9e988e92bd44dd54b3f9db7354e9fa750275863160c8"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/tile-014-mobile-fb1a7d487f38.webp",
+      "bytes": 682242,
+      "sha256": "fb1a7d487f3893973c2b4baa04339b191ce4f00f849d25b7fa0e0b6419ab6804"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/tile-015-c09f5c4bb937.webp",
+      "bytes": 942754,
+      "sha256": "c09f5c4bb9370a74b5f063e0c3e6aae270cb319febccd1c2bd19e0c13d47daa0"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/tile-015-mobile-c770f2d49e8a.webp",
+      "bytes": 641086,
+      "sha256": "c770f2d49e8a15636380100e2299c7f09b72508f31b4f93e79118d4f08df640f"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/tile-016-30f8a999b0dc.webp",
+      "bytes": 635634,
+      "sha256": "30f8a999b0dc4a72babed783cc8d06da1bde67c7c1facfe851f4ca4ae6851039"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/tile-016-mobile-6b11b0356dde.webp",
+      "bytes": 512140,
+      "sha256": "6b11b0356ddea8d451fd9a4a9d9c6d06bd64cd5de8289f1efbfd365ff1ab8f04"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/tile-017-c6917c5cc3cf.webp",
+      "bytes": 1080120,
+      "sha256": "c6917c5cc3cf7bc8957c8d8f944e832e15c9eff11ac58faf37dfc66def11aded"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/tile-017-mobile-c15fe1f2a3c8.webp",
+      "bytes": 681710,
+      "sha256": "c15fe1f2a3c87ed90d2552a773beb7c8515c3eef3093bce51d89bab62f64f3c6"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/tile-018-509c5ff0a629.webp",
+      "bytes": 503892,
+      "sha256": "509c5ff0a6297ff0c5000b0258b4f1493b63e419167e94f8d970077c64897bf4"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/tile-018-mobile-ca9a33420e66.webp",
+      "bytes": 415930,
+      "sha256": "ca9a33420e660a8eb94e5ff94f2cbe034a4877c82c3bfaa6740ef75a48b62f57"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/tile-019-c62938c255de.webp",
+      "bytes": 154018,
+      "sha256": "c62938c255de6da5d678c1228a24435b5aaa784552301ff54a9d76c306acec38"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/tile-019-mobile-fa7709ff3386.webp",
+      "bytes": 249802,
+      "sha256": "fa7709ff3386adf34279d624b00bedd5916e88a74ed24e0f9776e3a047882e40"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/tile-020-64232812dfc2.webp",
+      "bytes": 1060670,
+      "sha256": "64232812dfc2e34132fedec8259d43c76e7f877b0dd9558eae1830b0acda3a77"
+    },
+    {
+      "path": "assets/articles/goddess-return/02/tile-020-mobile-baecacfc1ca6.webp",
+      "bytes": 435146,
+      "sha256": "baecacfc1ca6102a32dc25abbe50ee8090da5604d9e1bdb4665caa2893e669f3"
+    },
+    {
+      "path": "content/goddess-return/01/original.pdf",
+      "bytes": 45869840,
+      "sha256": "29fc539c8d2efb29a3c905fe04dffcac29f7fdc21c9c3ec5ef86ca5341f143fa"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/cover.webp",
+      "bytes": 166846,
+      "sha256": "5bc23009552931e56496c517687caaf248b7b730c16a1919eda1ecdfc484eda4"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/cover-mobile.webp",
+      "bytes": 61332,
+      "sha256": "d1c245c67a945374e24452f8970606458172ee8232b5dc999ac4976b83175745"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/reader-7b38db17a581.json",
+      "bytes": 129166,
+      "sha256": "b33246ea0e4d8669dc1dde0776d71691107b2e7a819a969a24b52885757711f9"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-001-34b408c58c26.webp",
+      "bytes": 313894,
+      "sha256": "34b408c58c2642d088a832a394c17c2d96ffb810e3ad4a03a876fe5572b892ee"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-001-mobile-84c10ceed555.webp",
+      "bytes": 199990,
+      "sha256": "84c10ceed555e06511781832aa38f9baf0875d01387fa778de1f883a45700654"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-002-24a996634802.webp",
+      "bytes": 109252,
+      "sha256": "24a9966348025efbfef693a41932f6ec1b7840d48b2bfc4d5cf33fde6d12ba66"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-002-mobile-aab24e45e189.webp",
+      "bytes": 140608,
+      "sha256": "aab24e45e18995e7300b433eeeb094e0994e286cf58f53707785f2c7d12321f2"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-003-3e0ff8e8667f.webp",
+      "bytes": 662414,
+      "sha256": "3e0ff8e8667fac5ec0181a8ad22cc3bde8ca58e789e5f7fbf5b7cad1b38c3dfa"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-003-mobile-6017a55dce7b.webp",
+      "bytes": 378920,
+      "sha256": "6017a55dce7b9df3c7118551c58f1b4930d40e5cb0b329043ede5fb27f55deb1"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-004-e7782c96d604.webp",
+      "bytes": 679080,
+      "sha256": "e7782c96d6041fc3c9cd14dceefb850d778f13d28397330d1750a4f507a335b6"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-004-mobile-a8fc1e50967a.webp",
+      "bytes": 618910,
+      "sha256": "a8fc1e50967a73f2eb55296eeca0c37761d54bc6378a97c2fa12007f6f0c9ddd"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-005-a49e2b5cc7e2.webp",
+      "bytes": 1317264,
+      "sha256": "a49e2b5cc7e26e2bf5184319a35e39c00bf28684bc3e83ed7259c415fceff643"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-005-mobile-caccf5e1f070.webp",
+      "bytes": 1016858,
+      "sha256": "caccf5e1f070f09e3926b7ec04d218d9c0993e72f290e57b6031fa13d0a47f52"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-006-3f05ed651f98.webp",
+      "bytes": 1306510,
+      "sha256": "3f05ed651f9869bf4f40ea23e39b846bdac9a6065f9608eda125bbe832c7f701"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-006-mobile-9b5c5b021a4d.webp",
+      "bytes": 1047176,
+      "sha256": "9b5c5b021a4dee93cae3c0e2659a63accc549ef8f691c4daa2c3509b8e9d623a"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-007-402b4e4ae289.webp",
+      "bytes": 1449550,
+      "sha256": "402b4e4ae289b69574250f3554d6757ee8c12055e61705e8c6a4e573fe1ebd6a"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-007-mobile-4990ac421edf.webp",
+      "bytes": 922342,
+      "sha256": "4990ac421edf073de2c2f89c862a660ed81c507c318f225d8cfc590f65237e50"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-008-18d45df55f19.webp",
+      "bytes": 708902,
+      "sha256": "18d45df55f19aff56b39d7647640e7ad1ed6f6a46ccf0344c2cd05167fdd11cf"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-008-mobile-1e9370b03542.webp",
+      "bytes": 768526,
+      "sha256": "1e9370b03542b2522d4f1169c146c91c608afc9eb7706421b8ac07877c127729"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-009-24303c15e046.webp",
+      "bytes": 531904,
+      "sha256": "24303c15e0467deac052652c633998fc0428f2e8cabc1a42e685a97fe82a67a2"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-009-mobile-379e708b2095.webp",
+      "bytes": 679710,
+      "sha256": "379e708b2095843948b26900a330c42f5f8cc93e2031d12fad7c29915926700f"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-010-4ee8699d0ba8.webp",
+      "bytes": 435860,
+      "sha256": "4ee8699d0ba8a9d180f7e56d29885de0244e098320be87d9fe7888670b23a278"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-010-mobile-7d0095ce1d12.webp",
+      "bytes": 714150,
+      "sha256": "7d0095ce1d120467e0f628f435371ba4bbcb96ea7ba644e8911d4e80664a7e00"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-011-64411f0b0538.webp",
+      "bytes": 1223868,
+      "sha256": "64411f0b0538fe5b9177cd0282d9d3ad5e3bf81279ca8f384d2952a0e6a4e658"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-011-mobile-9b8792ed9e1d.webp",
+      "bytes": 767260,
+      "sha256": "9b8792ed9e1da7d7abc9a7c7fb4e9e5f01dfde5afa5b0817e2f67d64daf37827"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-012-15d23de15693.webp",
+      "bytes": 912874,
+      "sha256": "15d23de15693a63f52f80928c1478395bd0ee06ed5c4ba87361592d002bd015d"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-012-mobile-e83fd00edd13.webp",
+      "bytes": 579232,
+      "sha256": "e83fd00edd13a2e23c6771894b68700b8906d48126037dac13b704c92ac15b75"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-013-355ce35a80ff.webp",
+      "bytes": 170232,
+      "sha256": "355ce35a80ffa65ddf4e975c51f8aeb3f92ba7e566f7833b4f0460572f6e6022"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-013-mobile-c6031238e59c.webp",
+      "bytes": 282942,
+      "sha256": "c6031238e59c02afb8a41899fce3d8200df913eea38bdbb0e59582d5df73d0a7"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-014-d1547ef2d54b.webp",
+      "bytes": 356092,
+      "sha256": "d1547ef2d54bca4c7052f56ff7a84dc0b0ae250518e3cb6904a144032bdcc56d"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-014-mobile-782a8332f094.webp",
+      "bytes": 440962,
+      "sha256": "782a8332f09402c89cbe9d433cf404cf17ed3b35feeb764714e7966074a4e8e3"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-015-a2a6e04dda41.webp",
+      "bytes": 667066,
+      "sha256": "a2a6e04dda41a873cf37878cba3205cab766afcfeca5f52889432a522b686496"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-015-mobile-849cf95f2eca.webp",
+      "bytes": 562846,
+      "sha256": "849cf95f2eca4c73868b56e1a4e0872ccfd76361b475f222c1b59e368018264e"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-016-ead5bff7b662.webp",
+      "bytes": 1378950,
+      "sha256": "ead5bff7b6629c18005c4c75c15e42a6265b3a8de7db32185d3971305214b8c1"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-016-mobile-27ec5ddbaa09.webp",
+      "bytes": 816266,
+      "sha256": "27ec5ddbaa090031b563c94628e32a4a5fba69a36f4b0f3d81bfb4c7be07fa62"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-017-553b680505a4.webp",
+      "bytes": 1071960,
+      "sha256": "553b680505a48f87e6f196ca492f6b6f636dd0da9f7a49626008a67c50e340b5"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-017-mobile-36a37ca06d92.webp",
+      "bytes": 668218,
+      "sha256": "36a37ca06d924692dec5418de95c01c24abf5b305cc47a192e4713c645d5441b"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-018-f1906f333e87.webp",
+      "bytes": 886942,
+      "sha256": "f1906f333e87f69b43428da23872df926a8be79943fbbf297536e1ea200fa44f"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-018-mobile-ec615d0b0d46.webp",
+      "bytes": 581180,
+      "sha256": "ec615d0b0d460245434facc36491e2d9c674d681e7edd5573d8047071a6a0151"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-019-614f2dd346b7.webp",
+      "bytes": 174324,
+      "sha256": "614f2dd346b751941d977ff3272b9ddfc6efa2b48f8d7b79dae4a6df92fbdba0"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-019-mobile-4e5b5282283a.webp",
+      "bytes": 285900,
+      "sha256": "4e5b5282283a535e1931f69650179e4f34c5ce7092450e923301f82976bee755"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-020-ae20fd6cf221.webp",
+      "bytes": 182702,
+      "sha256": "ae20fd6cf221b9ea543f6cd46a45920ecf659256d66a103f0237351c8e85f9b0"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-020-mobile-90f6e99e87a4.webp",
+      "bytes": 288086,
+      "sha256": "90f6e99e87a46024757f627fbb43a05ddedca5dedba56bb0e61d39aca2dd0cb8"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-021-1ddc2d386473.webp",
+      "bytes": 619364,
+      "sha256": "1ddc2d3864738191db63f3664175eae167ab8f5a506ce241e2ecc28a5bfe69b6"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-021-mobile-4939c262e30b.webp",
+      "bytes": 513858,
+      "sha256": "4939c262e30bd72f9c230c56c6a141537129427d386d5ab46c15fce104d27d4f"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-022-768f9f23a714.webp",
+      "bytes": 894254,
+      "sha256": "768f9f23a714a8f2128545abfaf9f52425c614edeef05180dfe4556ba8c3121c"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-022-mobile-29d6cb893f36.webp",
+      "bytes": 644238,
+      "sha256": "29d6cb893f36eeb344e91c524909c6436df0299813c4f4613b4a42948887109f"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-023-36c6e4c3a6dd.webp",
+      "bytes": 1689740,
+      "sha256": "36c6e4c3a6dd9e9e4d3dc0921cb5b185b687149428c480fcd4298a96abd95fb3"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-023-mobile-14dfc35266d9.webp",
+      "bytes": 964094,
+      "sha256": "14dfc35266d9fbb7038e010c18eea6524ce72c3fe0fdaae7d267c4d34adba436"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-024-e19275007d21.webp",
+      "bytes": 802224,
+      "sha256": "e19275007d21d9ff1967e810d9254851a3b630ab513b3a5d18b2abbe93a5fafa"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-024-mobile-d1aaad2b8e72.webp",
+      "bytes": 536862,
+      "sha256": "d1aaad2b8e72e3acd58447ac8e4282d1aca492098452818ebfc073b1cf2d6418"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-025-2f39cb8e8453.webp",
+      "bytes": 396126,
+      "sha256": "2f39cb8e845327712d7a4a40aec343bd08472fb81e49b12c3d7dbad2551400f0"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-025-mobile-51fccc03b2ab.webp",
+      "bytes": 437316,
+      "sha256": "51fccc03b2ab8c8f3a5e10fa729446ad2675baef908613e2f3a23a6622ad70ae"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-026-2cc646e941c3.webp",
+      "bytes": 697066,
+      "sha256": "2cc646e941c3f02072eae91c1814a9df4967be3e2722216a89297ae04f96dbdf"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-026-mobile-a1e4f580e44d.webp",
+      "bytes": 879574,
+      "sha256": "a1e4f580e44dd85fd2a2e05da837e9a186c1c5a965bfa9eced5d4f6aafdd1086"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-027-0889dc68bfd4.webp",
+      "bytes": 281082,
+      "sha256": "0889dc68bfd48c5ccc88f942d881aa505eb7591f37cb48e8b1bdcd804ef6ec3a"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-027-mobile-b6840edc228b.webp",
+      "bytes": 469442,
+      "sha256": "b6840edc228be7f869749f8528e401a1998d1a35c10fd869470db50e89a9c344"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-028-ffc58b12658e.webp",
+      "bytes": 1151840,
+      "sha256": "ffc58b12658ef52ab1f0e9c964f216614d6219a3d8728b835227c5d74d985ba4"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-028-mobile-2f2eb75d786a.webp",
+      "bytes": 716956,
+      "sha256": "2f2eb75d786a81e98a95b9ae08652cb2cfc41919474f820180bcec6e41cacb1b"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-029-9be726561fc7.webp",
+      "bytes": 503842,
+      "sha256": "9be726561fc75a381e67bc6cbc15e458f8da8f03747bf4638a23d36aac9f0c3b"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-029-mobile-64967a69827b.webp",
+      "bytes": 504050,
+      "sha256": "64967a69827b3b58c7d9cf9878b59ea4026ff2e37114dce5c1510fa594cd0572"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-030-548600619a8c.webp",
+      "bytes": 1116240,
+      "sha256": "548600619a8cdf10dd9e8a47ff9da5eb7de33555764532ec06a2b8ff25114cd3"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-030-mobile-e2440de6539e.webp",
+      "bytes": 704374,
+      "sha256": "e2440de6539ebd33fc8ec293085d6056ae436466b2aec97ab2feb14cdcde1bde"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-031-43f0cadb2512.webp",
+      "bytes": 1099024,
+      "sha256": "43f0cadb251234c8f62eca831c54d92912ef75edfc97fb8b954b6cdfba8d1871"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-031-mobile-719ad748f79d.webp",
+      "bytes": 699222,
+      "sha256": "719ad748f79daaecd825443b1b379e91f7ccc5b4713f82bc39c2fe4b30c1a08c"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-032-3fba2d23ce64.webp",
+      "bytes": 182762,
+      "sha256": "3fba2d23ce644711e44fcec79ffafb1d654a618a9fa7cf2bac01ca0dafe9dad3"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-032-mobile-2012923daa9c.webp",
+      "bytes": 298120,
+      "sha256": "2012923daa9cdd0be8e056bf1b46859a44ae57301b61ac799ba34fdc9169df5f"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-033-16daabe2cb9f.webp",
+      "bytes": 430954,
+      "sha256": "16daabe2cb9fe6c192c28ce593446d2bef43b45ba95815165ef48f13c6d1d94f"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-033-mobile-000bab481211.webp",
+      "bytes": 515616,
+      "sha256": "000bab481211fbabb6dc3f59875b18af433e164c6960dd44adc98fc2119a35e4"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-034-3c3a128af372.webp",
+      "bytes": 450424,
+      "sha256": "3c3a128af37226d22af77a65e28ef0ef14fee08167ed3d14727338c5942326df"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-034-mobile-72af96f3f319.webp",
+      "bytes": 542912,
+      "sha256": "72af96f3f31927bd9ae640ce59d47fed9867a8f4a476c68e34811bcc1a441868"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-035-6e741438603e.webp",
+      "bytes": 742942,
+      "sha256": "6e741438603e03e7dd7f3d070970bb827fc6581cf7291b8e9f6a8d54605e7be9"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-035-mobile-62dba6b29a8a.webp",
+      "bytes": 968008,
+      "sha256": "62dba6b29a8a43368869bdcdf4ed831edd45371f420bb74fd3fd7c04f9ec98fb"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-036-1a30978cbb36.webp",
+      "bytes": 471898,
+      "sha256": "1a30978cbb3679d62bb25967aa07994309e012befb39bb90cfcebedb1b3119e6"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-036-mobile-ec6c5cf8f3f1.webp",
+      "bytes": 576538,
+      "sha256": "ec6c5cf8f3f1963fe53fde3484bef3b221bcb07a7be7d9a83feaaeabf1a9b71b"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-037-a24acd3c01a1.webp",
+      "bytes": 1000136,
+      "sha256": "a24acd3c01a16a2ebd6d190d4eb35dc8522a85841ec7d48530f50197fa072137"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-037-mobile-6ea32c4f16a2.webp",
+      "bytes": 723696,
+      "sha256": "6ea32c4f16a2c583a1c1ecc457cb68e2ce004146e213f9dcb60d8ab631c7fb30"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-038-a665dbb0ec43.webp",
+      "bytes": 634482,
+      "sha256": "a665dbb0ec43345e11c41c6a8115941606dce8722209e4edf402178b53d69253"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-038-mobile-d7779af33739.webp",
+      "bytes": 528230,
+      "sha256": "d7779af33739160f0899362f173ca6b42b8e09dfd52510d9f007b2a356d9308e"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-039-31a21031e10b.webp",
+      "bytes": 700760,
+      "sha256": "31a21031e10b2a77fb2c50b7c28a463e384ca57f08d0b3c68cc74cb2c3e6e33a"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-039-mobile-a70aa67500b6.webp",
+      "bytes": 574786,
+      "sha256": "a70aa67500b66b15a4f35e8f6e71fea7f64cb11be331c30c0aa288be327cce0b"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-040-0e7e985c40c1.webp",
+      "bytes": 650890,
+      "sha256": "0e7e985c40c14cac767efa7a40e8edbee7929de5f72ebd9629b956bb1c3e027f"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-040-mobile-d8c9f9b52377.webp",
+      "bytes": 852870,
+      "sha256": "d8c9f9b52377d6ed91b9298d8950a8c0398258540fdedaba23e3d89061c944c4"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-041-c7dac118c0cc.webp",
+      "bytes": 1059000,
+      "sha256": "c7dac118c0cc32d917400b8041e1c3a514eee2acf1f0415d86b27ead32c330f2"
+    },
+    {
+      "path": "assets/articles/goddess-return/01/tile-041-mobile-ae07cf8c3176.webp",
+      "bytes": 437510,
+      "sha256": "ae07cf8c3176161e97c45fcc5f73d5de139c951af0d79393c858b9bbf473167f"
+    },
+    {
+      "path": "content/goddess-return/01/original.part-01.bin",
+      "bytes": 16777216,
+      "sha256": "77a59a34bc6212a4f3abed6cf576ab888984b8884247ed4642ad446005184af2"
+    },
+    {
+      "path": "content/goddess-return/01/original.part-02.bin",
+      "bytes": 16777216,
+      "sha256": "e0354cf859c374e521d855226c9005637da6fabca1dcf92ac7eda6c0d8180eb0"
+    },
+    {
+      "path": "content/goddess-return/01/original.part-03.bin",
+      "bytes": 12315408,
+      "sha256": "69bb5b12b7865ba7dbf0ab55ffa1c4c00035feab053e6377d165f959d90b3314"
+    }
+  ],
+  "originalDownload": {
+    "bytes": 45869840,
+    "sha256": "29fc539c8d2efb29a3c905fe04dffcac29f7fdc21c9c3ec5ef86ca5341f143fa",
+    "parts": [
+      {
+        "path": "/content/goddess-return/01/original.part-01.bin",
+        "offset": 0,
+        "bytes": 16777216,
+        "sha256": "77a59a34bc6212a4f3abed6cf576ab888984b8884247ed4642ad446005184af2"
+      },
+      {
+        "path": "/content/goddess-return/01/original.part-02.bin",
+        "offset": 16777216,
+        "bytes": 16777216,
+        "sha256": "e0354cf859c374e521d855226c9005637da6fabca1dcf92ac7eda6c0d8180eb0"
+      },
+      {
+        "path": "/content/goddess-return/01/original.part-03.bin",
+        "offset": 33554432,
+        "bytes": 12315408,
+        "sha256": "69bb5b12b7865ba7dbf0ab55ffa1c4c00035feab053e6377d165f959d90b3314"
+      }
+    ]
+  }
+}

@@ -286,3 +286,69 @@ body:is(.page-articles,.page-meditation) .site-disclaimer :is(#motionTitle,.site
   .page-home .hero-copy h1,.sirius-halo,.matrix-progress span { animation: none; }
   .constellation-tab,.journey-link { transition: none; }
 }
+
+/* Goddess Return: rose-gold framing outside the unaltered PDF artwork.
+   Full cover compositions are contained, never cropped to a face/centre. */
+.page-articles .article-card.series-goddess-return {
+  border-color: #f4c9df; border-radius: 28px 6px;
+}
+.page-articles .series-goddess-return :is(.meta-row,#readerMeta) {
+  color: #ffe9f5;
+}
+.page-articles .article-card.series-goddess-return h3 {
+  font-family: var(--art-font); color: #fff0f8; letter-spacing: .06em;
+}
+.page-articles .article-card.series-goddess-return > img {
+  object-fit: contain; object-position: center; padding: 4px;
+  border: 1px solid #f4c9df80; border-radius: 24px 5px;
+}
+.page-articles .reader.series-goddess-return :is(.reader-hero,.reader-body) {
+  border-color: #f4c9df; border-radius: 30px 6px;
+}
+.page-articles .reader.series-goddess-return :is(.reader-hero,.reader-body)::before {
+  border-color: #f5c8de90;
+}
+.page-articles .reader.series-goddess-return #readerTitle {
+  font-family: var(--art-font); color: #fff0f8;
+  -webkit-text-fill-color: currentColor; letter-spacing: .08em;
+}
+.page-articles .reader.series-goddess-return #readerCover {
+  height: auto; max-height: 430px; object-fit: contain; object-position: center;
+  border: 1px solid #f4c9df80; padding: 8px;
+}
+/* Contiguous tiles are one original page, not new pages or white cards. */
+.goddess-original-document .pdf-rendered-pages { gap: 0; }
+.goddess-original-document.pdf-prepared-document,
+.goddess-original-document.pdf-prepared-document .pdf-live-page { background: transparent !important; }
+.pdf-prepared-tile { position: relative; container-type: inline-size; overflow: hidden; }
+.reader-body .pdf-prepared-tile .pdf-prepared-image {
+  display: block; width: 100%; height: 100%; max-width: none; margin: 0; padding: 0;
+  border: 0; border-radius: 0; box-shadow: none; object-fit: fill;
+  /* Tight paper-coloured halos keep source black glyphs readable, not a white sheet. */
+  filter: drop-shadow(0 0 .7px #fff) drop-shadow(0 0 .7px #fff);
+  user-select: none; -webkit-user-drag: none;
+}
+.pdf-prepared-text,.pdf-prepared-links { position: absolute; inset: 0; }
+.pdf-prepared-text span {
+  position: absolute; display: block; color: transparent !important; -webkit-text-fill-color: transparent;
+  text-shadow: none !important; font-family: serif; white-space: pre; line-height: 1;
+  user-select: text; cursor: text;
+}
+.pdf-prepared-text ::selection { background: #ef8ac260; }
+.pdf-prepared-links { pointer-events: none; }
+.pdf-prepared-links a { position: absolute; display: block; pointer-events: auto; }
+.pdf-prepared-links a:focus-visible { outline: 2px solid #f6aad1; background: #f6aad130; }
+.goddess-original-document .pdf-live-page {
+  margin-block: 0; border: 0; border-radius: 0; box-shadow: none;
+}
+.page-articles .reader.series-goddess-return .article-source-pdf {
+  margin: 24px auto 12px; text-align: center;
+}
+.page-articles .reader.series-goddess-return .article-source-pdf a {
+  display: inline-block; padding: 10px 20px; min-height: 44px;
+  border: 1px solid #f4c9df; border-radius: 20px 5px;
+  color: #ffe9f5; text-shadow: var(--star-text);
+}
+@media (max-width: 760px) {
+  .page-articles .reader.series-goddess-return #readerCover { max-height: 300px; }
+}

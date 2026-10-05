@@ -6,6 +6,9 @@ node_modules/
 content/待补充/
 content/articles/
 exports/*.zip
+# Original retained locally and in the backup ZIP. Pages serves identical
+# bytes through the chunked-PDF function because this file exceeds 25 MiB.
+content/goddess-return/01/original.pdf
 tools/__pycache__/
 output/
 tmp/

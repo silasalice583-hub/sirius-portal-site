@@ -1,0 +1,5 @@
+# Keep original documents and immutable, hash-named reader assets byte-exact.
+content/goddess-return/** -text
+assets/articles/goddess-return/*.webp -text
+assets/articles/goddess-return/**/*.webp -text
+assets/articles/goddess-return/**/*.json text eol=lf

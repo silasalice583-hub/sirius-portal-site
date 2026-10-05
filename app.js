@@ -115,6 +115,14 @@
     const isLegacyLocalImport = saved
       && saved.cover === "assets/logo-vector-web.png"
       && !saved.coverMobile;
+    // Upgrade an earlier import of this exact original PDF to the prepared
+    // reader. Preserve metadata and never replace a separately edited body.
+    const withoutPreview = (html) => String(html || "").replace(/ data-pdf-preview-src="[^"]*"/g, "").trim();
+    if (saved && /^goddess-return-\d{2}$/.test(article.id)
+      && saved.sourcePdf === article.sourcePdf
+      && withoutPreview(saved.html) === withoutPreview(article.html)) {
+      return { ...saved, html: article.html };
+    }
     return saved && !(isCobraArchive && isLegacyLocalImport)
       ? saved
       : { ...article, category: normalizeCategory(article.category) };
@@ -278,6 +286,7 @@
   }
 
   function authorThemeClass(article) {
+    if (/^goddess-return-\d{2}$/.test(String(article?.id || ""))) return "series-goddess-return";
     if (isGekaArticle(article)) return "translator-geka";
     if (isCangyanArticle(article)) return "author-cangyan";
     if (isXiangmingArticle(article)) return "author-xiangming";
@@ -344,7 +353,7 @@
     if (window.SiriusAPI?.isLocalMediaURL?.(cover)) {
       return `src="${escapeHTML(defaultPage.logoImage)}" data-local-media-src="${escapeHTML(cover)}"`;
     }
-    const mobileCover = mobileCoverPath(cover);
+    const mobileCover = String(article.coverMobile || mobileCoverPath(cover));
     if (mobileLayout.matches && mobileCover) return `src="${escapeHTML(mobileCover)}"`;
     return `src="${escapeHTML(cover)}"${mobileCover ? ` srcset="${escapeHTML(mobileCover)} 480w, ${escapeHTML(cover)} 1080w" sizes="${sizes}"` : ""}`;
   }
@@ -706,12 +715,13 @@
     reader.classList.toggle("author-cangyan", themeClass === "author-cangyan");
     reader.classList.toggle("author-xiangming", themeClass === "author-xiangming");
     reader.classList.toggle("translator-geka", themeClass === "translator-geka");
+    reader.classList.toggle("series-goddess-return", themeClass === "series-goddess-return");
     const hasCover = Boolean(String(article.cover || "").trim());
     const coverOnly = hasCover && ["门户更新", "访谈", "会议"].includes(article.category);
     reader.classList.toggle("reader-cover-only", coverOnly);
     reader.classList.toggle("reader-no-cover", !hasCover);
     reader.dataset.articleId = article.id;
-    const readerMobileCover = mobileCoverPath(article.cover);
+    const readerMobileCover = String(article.coverMobile || mobileCoverPath(article.cover));
     const readerCover = $("#readerCover");
     // Wide cover headers need the full asset, not the small list thumbnail.
     const preferredCover = !coverOnly && mobileLayout.matches && readerMobileCover ? readerMobileCover : article.cover;
@@ -783,7 +793,7 @@
     $("#readerBody")?.replaceChildren();
     $("#inlineMusic")?.replaceChildren();
     if (reader) reader.hidden = true;
-    reader?.classList.remove("author-cangyan", "author-xiangming", "translator-geka");
+    reader?.classList.remove("author-cangyan", "author-xiangming", "translator-geka", "series-goddess-return");
     document.documentElement.classList.remove("article-reading");
     document.body.classList.remove("article-reading");
     if (articleBand) articleBand.hidden = false;
