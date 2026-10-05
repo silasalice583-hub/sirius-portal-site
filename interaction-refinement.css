@@ -3,7 +3,7 @@
 .page-home .home-hero::before { display: none !important; }
 .page-home main,.page-home .site-header { position: relative; z-index: 2; }
 .page-home .site-disclaimer { z-index: 2; }
-.page-home .site-header { position: absolute; }
+.page-home .site-header { position: absolute; z-index: 20; }
 .page-home :is(.site-disclaimer,.site-disclaimer-shell,.site-disclaimer-copy,.site-disclaimer-mark,.site-disclaimer-halo) { background: transparent !important; backdrop-filter: none !important; }
 .page-home :is(.site-header,.site-disclaimer,.site-disclaimer #motionTitle,.site-disclaimer-mark,.site-disclaimer-kicker,.top-nav,.music-pill) { color: #eefbff !important; text-shadow: var(--star-text); }
 .page-home .hero-art-card { width: clamp(210px,25vw,340px); }
@@ -78,4 +78,33 @@ img { user-select: none; -webkit-user-select: none; -webkit-user-drag: none; -we
 @media(prefers-reduced-motion:reduce) {
   .page-home .hero-copy h1.has-code-title { animation: none; }
   .music-pill.playing::before,.music-pill.playing::after { animation: none; opacity: 1; transform: translateY(-24px); }
+}
+
+/* Supplied October artwork: keep the original colours and transparent edges. */
+.page-home .hero-inner { width: 100%; min-width: 0; }
+.page-home .hero-copy h1.has-artwork-title {
+  width: min(1040px, 100%); margin: 0; line-height: 1; font-size: 0 !important;
+  letter-spacing: 0; text-indent: 0; background: none; -webkit-text-stroke: 0;
+  text-shadow: none; animation: none; filter: none;
+}
+.portal-title-image { display: block; width: 100%; height: auto; filter: drop-shadow(0 2px 3px #072c51) drop-shadow(0 0 8px #8bcaff88); }
+.top-nav .supplied-nav-icon { width: 30px; height: 30px; object-fit: contain; filter: drop-shadow(0 1px 2px #091c2c); }
+body:is(.page-home,.page-articles,.page-meditation,.page-about) .site-header .top-nav a { color: #fff; text-shadow: 0 1px 3px #18354f; }
+.cosmic-sword { width: 24px; height: 52px; filter: drop-shadow(0 0 2px #badeff); }
+.cosmic-sword img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.sirius-sacred-symbol::before,.sirius-sacred-symbol::after { display: none; }
+.sirius-sacred-symbol .sirius-emblem { filter: drop-shadow(0 0 10px #d5eeffb3); }
+.portal-code-signal {
+  position: fixed; z-index: 0; pointer-events: none; user-select: none; opacity: 0;
+  transform: translate(-50%, -50%); color: #80ffbc; white-space: nowrap;
+  font: 600 clamp(17px, 2vw, 28px)/1 Consolas, "Courier New", monospace;
+  letter-spacing: .16em; text-shadow: 0 0 7px #12f294, 0 0 16px #07a765;
+}
+.portal-code-signal.is-visible { animation: portalSignal 3.6s ease-in-out both !important; }
+@keyframes portalSignal { 0%,100% { opacity: 0; } 22%,72% { opacity: .65; } }
+@media(max-width:760px) {
+  .page-home .hero-copy h1.has-artwork-title { width: min(100%, 620px); }
+  .top-nav .supplied-nav-icon { width: 24px; height: 26px; }
+  body:is(.page-home,.page-articles,.page-meditation,.page-about) .top-nav a { min-height: 44px; }
+  .portal-code-signal { font-size: 15px; letter-spacing: .08em; }
 }

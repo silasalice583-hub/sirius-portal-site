@@ -89,21 +89,22 @@ test('decoding never lets a stale background replace the current category, even 
   assert.ok(scene.body.backdrop.children.every((layer) => layer.style.transition === ''));
 });
 
-test('about uses the Paris photograph behind the existing vector Flower of Life', () => {
+test('about rotates the supplied Sakura and Paris photographs behind the supplied Flower of Life', () => {
   for (const mobile of [false, true]) {
     const scene = background({ about: true, mobile });
-    assert.equal(scene.images[0].url, `assets/space/notre-dame-paris${mobile ? '-mobile' : ''}.webp`);
-    if (!mobile) { scene.tick(); assert.equal(scene.images.length, 1); }
+    assert.equal(scene.images[0].url, `assets/space/about-sakura${mobile ? '-mobile' : ''}.webp`);
+    if (!mobile) { scene.tick(); assert.equal(scene.images[1].url, 'assets/space/about-paris.webp'); }
     assert.ok(fs.existsSync(path.join(root, scene.images[0].url)));
   }
   const html = fs.readFileSync(path.join(root, 'about.html'), 'utf8');
-  assert.match(html, /data-flower-of-life/);
-  assert.match(html, /flower-of-life.css\?v=20260926-scene2/);
+  assert.match(html, /assets\/artwork-october\/flower-spectrum.webp/);
+  assert.doesNotMatch(html, /data-flower-of-life/);
+  assert.match(html, /flower-of-life.css\?v=20261005-art1/);
   const css = fs.readFileSync(path.join(root, 'flower-of-life.css'), 'utf8');
   assert.match(css, /flower-of-life-stage::before\s*\{\s*display: none;/);
   assert.match(css, /width: max\(100svh, 76vw\)/);
-  assert.match(css, /width: max\(145vw, 82svh\)/);
-  assert.match(css, /\.life-petals \{ opacity: \.72;/);
+  assert.match(css, /width: max\(140vw, 80svh\)/);
+  assert.match(css, /mask: url\("assets\/artwork-october\/flower-spectrum.webp"\)/);
   assert.doesNotMatch(css, /background: linear-gradient\(90deg, #04152c/);
   assert.match(css, /prefers-reduced-motion/);
   assert.match(css, /\.page-about \.about-page-hero p,[^}]+color: #eef8ff/s);

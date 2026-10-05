@@ -246,7 +246,7 @@ function motionPage(reducedMotion = false) {
     runBinaryRain(canvas, options) { const rain = { options, stopped: false }; rains.push(rain); return () => { rain.stopped = true; }; },
     IntersectionObserver: class { constructor(fn) { intersect = fn; } observe(node) { assert.equal(node, hero); } },
   };
-  vm.runInNewContext(ui.slice(ui.indexOf('\n  if (!reducedMotion)'), ui.indexOf('\n  if (!isMobile && !reducedMotion)')), scope);
+  vm.runInNewContext(ui.slice(ui.indexOf('\n  if (!reducedMotion)'), ui.indexOf('\n  // One lightweight, intermittent')), scope);
   const click = (href, extras = {}) => {
     const link = { href, target: '', hasAttribute: () => false, closest: () => null };
     let prevented = false;

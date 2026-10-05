@@ -7,52 +7,17 @@
     <link rel="stylesheet" href="styles.css?v=20261005-seams1" />
     <link rel="stylesheet" href="cosmic-theme.css?v=20260926-final3" />
     <link rel="stylesheet" href="cosmic-refinement.css?v=20261005-seams1" />
-    <link rel="stylesheet" href="interaction-refinement.css?v=20260927-matrix3" />
-    <link rel="preload" as="image" href="assets/space/notre-dame-paris-mobile.webp" media="(max-width: 760px), (pointer: coarse)" fetchpriority="high" />
-    <link rel="preload" as="image" href="assets/space/notre-dame-paris.webp" media="(min-width: 761px) and (pointer: fine)" fetchpriority="high" />
-    <link rel="stylesheet" href="flower-of-life.css?v=20260926-scene2" />
+    <link rel="stylesheet" href="interaction-refinement.css?v=20261005-art1" />
+    <link rel="preload" as="image" href="assets/space/about-sakura-mobile.webp" media="(max-width: 760px), (pointer: coarse)" fetchpriority="high" />
+    <link rel="preload" as="image" href="assets/space/about-sakura.webp" media="(min-width: 761px) and (pointer: fine)" fetchpriority="high" />
+    <link rel="stylesheet" href="flower-of-life.css?v=20261005-art1" />
   </head>
   <body class="page-about">
     <div class="flower-of-life-stage" aria-hidden="true">
-      <div class="flower-atmosphere"></div>
-      <svg class="flower-of-life-vector" viewBox="-300 -300 600 600" xmlns="http://www.w3.org/2000/svg" focusable="false" data-flower-of-life>
-        <defs>
-          <radialGradient id="lifePetalSpectrum" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="275">
-            <stop offset="0" stop-color="#ba3bff"/>
-            <stop offset=".22" stop-color="#5667ff"/>
-            <stop offset=".43" stop-color="#16cfff"/>
-            <stop offset=".61" stop-color="#22efb4"/>
-            <stop offset=".77" stop-color="#d0ee46"/>
-            <stop offset=".9" stop-color="#ffbd42"/>
-            <stop offset="1" stop-color="#ff6dab"/>
-          </radialGradient>
-          <radialGradient id="lifeLineSpectrum" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="284">
-            <stop offset="0" stop-color="#cd74ff"/>
-            <stop offset=".28" stop-color="#91adff"/>
-            <stop offset=".54" stop-color="#64e8ef"/>
-            <stop offset=".78" stop-color="#ffdf7b"/>
-            <stop offset="1" stop-color="#ff94d0"/>
-          </radialGradient>
-          <linearGradient id="lifePearl" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stop-color="#fffde7"/>
-            <stop offset=".45" stop-color="#edffff"/>
-            <stop offset="1" stop-color="#fff1fd"/>
-          </linearGradient>
-          <clipPath id="lifeDiskClip"><circle r="270"/></clipPath>
-        </defs>
-        <g class="life-spectrum" clip-path="url(#lifeDiskClip)">
-          <circle class="life-disk" r="270" fill="url(#lifePetalSpectrum)"/>
-          <g class="life-petals" fill="url(#lifePetalSpectrum)"></g>
-          <g class="life-lattice" fill="none" stroke="url(#lifeLineSpectrum)"></g>
-          <g class="life-light-paths" fill="none" stroke="url(#lifePearl)"></g>
-        </g>
-        <g class="life-boundary" fill="none" stroke="url(#lifeLineSpectrum)">
-          <circle r="271.5"/><circle r="282"/>
-        </g>
-        <g class="life-boundary-glints" fill="none" stroke="url(#lifePearl)">
-          <circle r="271.5" pathLength="1000"/><circle r="282" pathLength="1000"/>
-        </g>
-      </svg>
+      <div class="supplied-flower">
+        <img src="assets/artwork-october/flower-spectrum.webp" width="1400" height="1400" alt="" decoding="async" />
+        <span class="supplied-flower-shimmer"></span>
+      </div>
     </div>
     <header class="site-header">
       <a class="brand" href="index.html" aria-label="天狼星门户首页">
@@ -118,10 +83,10 @@
     </footer>
 
     <audio id="backgroundAudio" preload="none"></audio>
-    <script defer src="cosmic-ui.js?v=20260927-matrix3"></script>
+    <script defer src="cosmic-ui.js?v=20261005-art1"></script>
     <script defer src="config.js?v=20260926-final3"></script>
     <script defer src="api-client.js?v=20260926-touch1"></script>
-    <script defer src="app.js?v=20261005-fast1"></script>
-    <script defer src="flower-of-life.js?v=20260926-final3"></script>
+    <script defer src="app.js?v=20261005-art1"></script>
+    <script defer src="flower-of-life.js?v=20261005-art1"></script>
   </body>
 </html>

@@ -1,6 +1,13 @@
 /* Exact equal-radius hexagonal geometry, built once; motion is handled by CSS. */
 (() => {
   "use strict";
+  const supplied = document.querySelector(".supplied-flower");
+  if (supplied) {
+    const pause = () => supplied.closest(".flower-of-life-stage").classList.toggle("is-paused", document.hidden);
+    document.addEventListener("visibilitychange", pause);
+    pause();
+    return;
+  }
   const svg = document.querySelector("[data-flower-of-life]");
   if (!svg) return;
   const NS = "http://www.w3.org/2000/svg";

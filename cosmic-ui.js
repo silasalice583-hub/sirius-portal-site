@@ -65,7 +65,7 @@
       sceneRevision += 1;
       activePair = body.classList.contains("page-home") ? ["earth", "sirius-artwork"] : body.classList.contains("page-articles")
         ? scenePairs[body.dataset.categoryTheme] || scenePairs["全部"]
-        : body.classList.contains("page-about") ? ["notre-dame-paris"]
+        : body.classList.contains("page-about") ? ["about-sakura", "about-paris"]
           : ["sirius-sky", "andromeda-m31", "milky-way-mountains", "milky-way-nevada", "milky-way-spitzer", "milky-way-panorama"];
       photoIndex = 0;
       showPhoto(activePair[0], sceneRevision);
@@ -86,6 +86,7 @@
   // A dense phosphor-green 0/1 curtain with independently advancing columns.
   // It renders at a restrained frame rate so the 4K photographs remain responsive.
   function runBinaryRain(canvas, { fps, spacing, opacity, fluid = false }) {
+    const binarySequence = "0010110";
     const context = canvas.getContext("2d", { alpha: true });
     if (!context) return () => {};
     let frame = 0;
@@ -134,7 +135,7 @@
           const fading = 1 - (y / Math.max(height, column.depth)) * (fluid ? .35 : .52);
           const head = column.depth - y < lineHeight * 1.5;
           const alpha = Math.min(1, opacity * column.brightness * fading * (head ? 1.08 : .86));
-          const digit = (index * 17 + row * 29 + column.phase + Math.floor(time / 180)) % 11 < 5 ? "1" : "0";
+          const digit = binarySequence[(row + column.phase + Math.floor(time / 130)) % binarySequence.length];
           context.fillStyle = head ? `rgba(174, 255, 218, ${alpha})` : `rgba(24, 235, 146, ${alpha})`;
           context.shadowColor = "#20ff9e";
           // Bright emerald everywhere; glow only the mobile leading glyphs
@@ -241,18 +242,51 @@
     }
   }
 
+  // One lightweight, intermittent background signal. Never intercept reading.
+  if (!reducedMotion && body.matches(".page-home, .page-articles, .page-meditation, .page-about")) {
+    const signal = document.createElement("span");
+    signal.className = "portal-code-signal";
+    signal.textContent = "11:11:83";
+    signal.setAttribute("aria-hidden", "true");
+    body.append(signal);
+    let signalTimer;
+    let signalPosition = 0;
+    const positions = [[82, 18], [12, 72], [86, 84]];
+    const scheduleSignal = () => {
+      clearTimeout(signalTimer);
+      if (!document.hidden) signalTimer = setTimeout(showSignal, 10000 + Math.random() * 9000);
+    };
+    const showSignal = () => {
+      if (document.hidden) return;
+      const [x, y] = positions[signalPosition++ % positions.length];
+      signal.style.left = `${x}%`;
+      signal.style.top = `${y}%`;
+      signal.classList.add("is-visible");
+      scheduleSignal();
+    };
+    signal.addEventListener("animationend", () => signal.classList.remove("is-visible"));
+    const pauseSignal = () => { clearTimeout(signalTimer); signal.classList.remove("is-visible"); };
+    document.addEventListener("visibilitychange", () => document.hidden ? pauseSignal() : scheduleSignal());
+    addEventListener("pagehide", pauseSignal);
+    addEventListener("pageshow", scheduleSignal);
+    scheduleSignal();
+  }
+
   if (!isMobile && !reducedMotion) {
     const pen = document.createElement("div");
-    pen.className = "cosmic-pen";
+    pen.className = "cosmic-pen cosmic-sword";
     pen.setAttribute("aria-hidden", "true");
-    pen.innerHTML = `<img src="assets/icons/iris-pen-illustration.webp" width="36" height="54" alt="" decoding="async">`;
+    pen.innerHTML = `<img src="assets/artwork-october/excalibur-cursor.webp" width="24" height="52" alt="" decoding="async">`;
     body.append(pen);
-    body.classList.add("cosmic-pointer");
+    // Keep the system cursor if the artwork cannot load.
+    const swordImage = pen.querySelector("img");
+    swordImage.addEventListener("load", () => body.classList.add("cosmic-pointer"), { once: true });
+    if (swordImage.complete && swordImage.naturalWidth) body.classList.add("cosmic-pointer");
     let lastSpark = 0;
     document.addEventListener("pointermove", (event) => {
       if (event.pointerType !== "mouse") return;
-      // The pen's upper nib, not its lower ornament, is the actual click point.
-      pen.style.transform = `translate(${event.clientX - 4}px, ${event.clientY - 4}px)`;
+      // The sword tip is centred at the pointer's actual hit position.
+      pen.style.transform = `translate(${event.clientX - 12}px, ${event.clientY}px)`;
       pen.classList.add("is-visible");
       const now = performance.now();
       if (now - lastSpark < 65) return;
@@ -294,14 +328,14 @@
   });
 
   const navPaths = {
-    "index.html": '<path d="M12 2.5 22 12l-10 9.5L2 12Z"/><circle cx="12" cy="12" r="5"/><path d="M12 5v14M5 12h14"/>',
-    "articles.html": '<path d="M3 5q5-2 9 1 4-3 9-1v15q-5-2-9 0-4-2-9 0Z M12 6v14M6 9h3m-3 4h3m6-4h3m-3 4h3"/>',
-    "meditation.html": '<path d="M12 3c5 5 5 10 0 15-5-5-5-10 0-15Z M12 18C5 18 2 13 2 8c6 0 10 4 10 10Zm0 0c7 0 10-5 10-10-6 0-10 4-10 10Z M4 21h16"/>',
-    "about.html": '<circle cx="12" cy="12" r="9"/><circle cx="9" cy="12" r="4.5"/><circle cx="15" cy="12" r="4.5"/><circle cx="12" cy="8" r="4.5"/><circle cx="12" cy="16" r="4.5"/>',
+    "index.html": "nav-home",
+    "articles.html": "nav-articles",
+    "meditation.html": "nav-meditation",
+    "about.html": "nav-about",
   };
   document.querySelectorAll(".top-nav a").forEach((link) => {
     const path = navPaths[link.getAttribute("href")];
-    if (path) link.insertAdjacentHTML("afterbegin", `<svg class="celestial-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" aria-hidden="true">${path}</svg>`);
+    if (path) link.insertAdjacentHTML("afterbegin", `<img class="celestial-nav-icon supplied-nav-icon" src="assets/artwork-october/${path}.webp" width="30" height="30" alt="" aria-hidden="true" decoding="async">`);
   });
   document.querySelectorAll(".category-joystick, .hot-arrow").forEach((button) => {
     button.classList.add("celestial-arrow");

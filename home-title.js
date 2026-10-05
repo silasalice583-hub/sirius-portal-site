@@ -1,6 +1,7 @@
 (() => {
   const title = document.getElementById("heroTitle");
   if (!title || !document.body.classList.contains("page-home")) return;
+  if (title.querySelector?.(".portal-title-image")) return;
   // Clip the code texture to the actual DOM glyphs. A separately drawn canvas
   // cannot reliably match mobile fallback fonts, wrapping or custom title text.
   title.classList.add("has-code-title");

@@ -309,6 +309,8 @@
   function applyPageText() {
     Object.entries(page).forEach(([key, value]) => {
       const target = document.getElementById(key) || document.querySelector(`[data-site="${key}"]`);
+      // The approved wordmark is an image, not replaceable background text.
+      if (key === "heroTitle" && target?.querySelector(".portal-title-image")) return;
       if (target) target.textContent = value;
     });
   }
