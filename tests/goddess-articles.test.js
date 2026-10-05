@@ -63,6 +63,7 @@ test('explicit mobile covers and scoped series styling survive reading and retur
   assert.match(css, /\.reader\.series-goddess-return #readerCover\s*\{[^}]*object-fit: contain/);
   const html = fs.readFileSync(path.join(root, 'articles.html'), 'utf8');
   for (const resource of ['articles-data.js', 'app.js', 'pdf-inline-viewer.js', 'cosmic-refinement.css']) {
-    assert.ok(html.includes(`${resource}?v=20261005-fast1`));
+    const version = resource === 'cosmic-refinement.css' ? '20261005-seams1' : '20261005-fast1';
+    assert.ok(html.includes(`${resource}?v=${version}`));
   }
 });

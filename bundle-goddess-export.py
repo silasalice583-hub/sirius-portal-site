@@ -8,7 +8,7 @@ base = root / 'exports' / '女神回归-2026-09-09至2026-09-21'
 manifest_path = Path(str(base) + '-校验清单.json')
 manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
 target = Path(str(base) + '-完整留存包.zip')
-support = ['pdf-inline-viewer.js', 'pdf-prepared-reader.js', 'app.js', 'cosmic-refinement.css',
+support = ['pdf-inline-viewer.js', 'pdf-prepared-reader.js', 'app.js', 'styles.css', 'cosmic-refinement.css',
            'pdf-chunk-response.mjs', 'goddess-pdf-parts.mjs', 'functions/content/goddess-return/01/original.pdf.js',
            'build-goddess-reader.cjs', 'prepare-goddess-deployment.cjs', 'bundle-goddess-export.py']
 with zipfile.ZipFile(target, 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=3) as archive:

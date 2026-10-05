@@ -26,6 +26,21 @@ function fixture() {
   return { ...scope, scope, pending, owner, observers };
 }
 const tick = () => new Promise(resolve => setImmediate(resolve));
+test('PDF slices override the legacy 760px important cap and fill their reserved geometry', () => {
+  // Important declarations inside site-base outrank even more specific
+  // unlayered rules: exclude prepared slices from ordinary illustration caps.
+  const base = fs.readFileSync(path.join(root, 'styles.css'), 'utf8');
+  assert.match(base, /\.reader-body img:not\(\.pdf-prepared-image\),\s*\.reader-body \.article-content-image:not\(\.pdf-prepared-image\)\s*\{[^}]*max-width:\s*min\(100%, 760px\)\s*!important/);
+  const css = fs.readFileSync(path.join(root, 'cosmic-refinement.css'), 'utf8');
+  const rule = /\.reader-body \.pdf-prepared-tile \.pdf-prepared-image\s*\{([^}]+)\}/.exec(css)?.[1];
+  assert.ok(rule);
+  assert.match(rule, /position:\s*absolute/);
+  assert.match(rule, /inset:\s*0/);
+  assert.match(rule, /(?:^|;)\s*width:\s*100%\s*!important/);
+  assert.match(rule, /(?:^|;)\s*height:\s*100%\s*!important/);
+  assert.match(rule, /max-width:\s*none\s*!important/);
+  assert.match(css, /\.pdf-prepared-tile\s*\{[^}]*position:\s*relative/);
+});
 test('prepared reader uses mobile tiles, limits concurrent loading and releases distant images', async () => {
   const f = fixture(); await f.reader.render(f.owner);
   const nodes = f.owner.children[0].children;

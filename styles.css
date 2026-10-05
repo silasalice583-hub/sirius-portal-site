@@ -1634,8 +1634,8 @@ button { cursor: pointer; }
 .reader-body picture {
   max-width: 100%;
 }
-.reader-body img,
-.reader-body .article-content-image {
+.reader-body img:not(.pdf-prepared-image),
+.reader-body .article-content-image:not(.pdf-prepared-image) {
   display: block;
   width: auto;
   max-width: min(100%, 760px) !important;

@@ -322,7 +322,12 @@ body:is(.page-articles,.page-meditation) .site-disclaimer :is(#motionTitle,.site
 .goddess-original-document.pdf-prepared-document .pdf-live-page { background: transparent !important; }
 .pdf-prepared-tile { position: relative; container-type: inline-size; overflow: hidden; }
 .reader-body .pdf-prepared-tile .pdf-prepared-image {
-  display: block; width: 100%; height: 100%; max-width: none; margin: 0; padding: 0;
+  /* Unlike ordinary article illustrations, a PDF slice must fill its entire
+     reserved rectangle. Override the legacy 760px/auto !important image cap
+     or an 820px slice leaves a 90px hole and splits lines at its boundary. */
+  position: absolute; inset: 0; display: block;
+  width: 100% !important; height: 100% !important; max-width: none !important;
+  max-height: none; aspect-ratio: auto; margin: 0; padding: 0;
   border: 0; border-radius: 0; box-shadow: none; object-fit: fill;
   /* Tight paper-coloured halos keep source black glyphs readable, not a white sheet. */
   filter: drop-shadow(0 0 .7px #fff) drop-shadow(0 0 .7px #fff);
