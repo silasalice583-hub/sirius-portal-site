@@ -244,39 +244,38 @@
 
   // One lightweight, intermittent background signal. Never intercept reading.
   if (!reducedMotion && body.matches(".page-home, .page-articles, .page-meditation, .page-about")) {
-    const signal = document.createElement("span");
-    signal.className = "portal-code-signal";
-    signal.textContent = "11:11:83";
-    signal.setAttribute("aria-hidden", "true");
-    body.append(signal);
-    let signalTimer;
-    let signalPosition = 0;
-    const positions = [[82, 18], [12, 72], [86, 84]];
-    const scheduleSignal = () => {
-      clearTimeout(signalTimer);
-      if (!document.hidden) signalTimer = setTimeout(showSignal, 10000 + Math.random() * 9000);
-    };
-    const showSignal = () => {
-      if (document.hidden) return;
-      const [x, y] = positions[signalPosition++ % positions.length];
+    const field = document.createElement("div");
+    field.className = "portal-code-field";
+    field.setAttribute("aria-hidden", "true");
+    // Stationary inscriptions, not floating labels: same 15px/13px glyph size
+    // as the binary canvas, with more fixed sites and staggered opacity only.
+    const positions = isMobile
+      ? [[35, 18], [65, 31], [35, 45], [65, 60], [35, 75], [65, 89]]
+      : [[16, 18], [72, 16], [43, 33], [82, 44], [17, 53], [62, 66], [33, 82], [81, 92]];
+    positions.forEach(([x, y], index) => {
+      const signal = document.createElement("span");
+      signal.className = "portal-code-signal";
+      signal.textContent = "11:11:83";
       signal.style.left = `${x}%`;
       signal.style.top = `${y}%`;
-      signal.classList.add("is-visible");
-      scheduleSignal();
-    };
-    signal.addEventListener("animationend", () => signal.classList.remove("is-visible"));
-    const pauseSignal = () => { clearTimeout(signalTimer); signal.classList.remove("is-visible"); };
-    document.addEventListener("visibilitychange", () => document.hidden ? pauseSignal() : scheduleSignal());
-    addEventListener("pagehide", pauseSignal);
-    addEventListener("pageshow", scheduleSignal);
-    scheduleSignal();
+      signal.style.setProperty("--signal-delay", `${1.1 + index * .7}s`);
+      field.append(signal);
+    });
+    // Before content in paint order: same-level main/reader surfaces stay above it.
+    body.prepend(field);
+    const pauseSignals = () => field.classList.add("is-paused");
+    const resumeSignals = () => field.classList.toggle("is-paused", document.hidden);
+    document.addEventListener("visibilitychange", resumeSignals);
+    addEventListener("pagehide", pauseSignals);
+    addEventListener("pageshow", resumeSignals);
+    resumeSignals();
   }
 
   if (!isMobile && !reducedMotion) {
     const pen = document.createElement("div");
     pen.className = "cosmic-pen cosmic-sword";
     pen.setAttribute("aria-hidden", "true");
-    pen.innerHTML = `<img src="assets/artwork-october/excalibur-cursor.webp" width="24" height="52" alt="" decoding="async">`;
+    pen.innerHTML = `<img src="assets/artwork-october/excalibur-cursor.webp" width="60" height="100" alt="" decoding="async">`;
     body.append(pen);
     // Keep the system cursor if the artwork cannot load.
     const swordImage = pen.querySelector("img");
@@ -286,7 +285,7 @@
     document.addEventListener("pointermove", (event) => {
       if (event.pointerType !== "mouse") return;
       // The sword tip is centred at the pointer's actual hit position.
-      pen.style.transform = `translate(${event.clientX - 12}px, ${event.clientY}px)`;
+      pen.style.transform = `translate(${event.clientX - 30}px, ${event.clientY}px)`;
       pen.classList.add("is-visible");
       const now = performance.now();
       if (now - lastSpark < 65) return;

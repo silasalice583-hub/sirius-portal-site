@@ -60,7 +60,7 @@ body.page-about {
 .page-about .about-page-hero h1 { letter-spacing: .12em; }
 .page-about .about-page-hero p, .page-about .about-cards article p,
 .page-about .site-disclaimer #motionTitle {
-  color: #eef8ff; text-shadow: 0 1px 3px #031529, 0 0 5px #031529;
+  color: #fff; text-shadow: 0 1px 3px #031529, 0 0 5px #031529;
 }
 .page-about .about-page-hero .eyebrow, .page-about .about-cards .eyebrow,
 .page-about .site-disclaimer-kicker { color: #e6fbff; text-shadow: 0 1px 4px #031529; }
@@ -104,7 +104,7 @@ body.page-about {
 .page-about .site-disclaimer :is(#motionEyebrow,#motionTitle,.site-disclaimer-kicker,.site-disclaimer-mark) {
   color: #fff !important; text-shadow: 0 1px 4px #18354f, 0 0 5px #18354f88;
 }
-body.page-about .brand img,body.page-about .site-disclaimer-mark img { filter: grayscale(1) brightness(1.8) contrast(1.1) drop-shadow(0 1px 2px #234) !important; }
+body.page-about .brand img,body.page-about .site-disclaimer-mark img { filter: drop-shadow(0 1px 2px #234) !important; }
 .page-about .cosmic-photo[data-scene="about-sakura"] { background-position: 62% center; }
 .page-about .cosmic-photo[data-scene="about-paris"] { background-position: 50% center; }
 @media(max-width:760px) {

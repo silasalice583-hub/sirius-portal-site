@@ -23,8 +23,8 @@ test('supplied title survives saved page text and never receives the old code te
   vm.runInNewContext(read('home-title.js'), {document:{getElementById:()=>target,body:{classList:{contains:()=>true}}}});
 });
 test('navigation symbols, sword and flower use compact local assets', () => {
-  for (const name of ['nav-home','nav-articles','nav-meditation','nav-about','portal-title','flower-spectrum','excalibur-cursor']) {
-    assert.ok(fs.statSync(path.join(root,`assets/artwork-october/${name}.webp`)).size < (name==='flower-spectrum' ? 650000 : 60000));
+  for (const name of ['nav-home','nav-articles','nav-meditation','nav-about','portal-title','flower-spectrum','excalibur-cursor','sirius-three-stars']) {
+    assert.ok(fs.statSync(path.join(root,`assets/artwork-october/${name}.webp`)).size < (name==='flower-spectrum' ? 650000 : 100000));
   }
   for (const name of ['nav-home','nav-articles','nav-meditation','nav-about']) assert.ok(ui.includes(`"${name}"`));
   assert.match(ui,/excalibur-cursor.webp/); assert.doesNotMatch(ui,/iris-pen-illustration/);
@@ -43,20 +43,50 @@ test('rain uses only the requested repeating binary sequence', () => {
   vm.runInNewContext(fn+'\nrunBinaryRain(canvas,{fps:12,spacing:20,opacity:.94});',scope);
   assert.equal(chars.slice(0,14).join(''),'00101100010110');
 });
-test('ambient signal pauses in hidden pages and respects reduced motion', () => {
+test('sword is enlarged and tilted, blue three-star emblem replaces the purple emblem', () => {
+  const css=read('interaction-refinement.css');
+  assert.match(css,/\.cosmic-sword \{ width: 60px; height: 100px/);
+  assert.match(css,/transform: rotate\(-28deg\); transform-origin: 50% 0/);
+  assert.match(ui,/event.clientX - 30/);
+  assert.match(read('articles.html'),/assets\/artwork-october\/sirius-three-stars.webp/);
+  assert.doesNotMatch(read('articles.html'),/skywalker-emblem.webp/);
+});
+
+test('about keeps coloured artwork and white declaration with natural enumeration marks', () => {
+  const about=read('about.html'), css=read('flower-of-life.css');
+  assert.doesNotMatch(about,/丶/);
+  assert.match(about,/资讯、图像、音频、影片/);
+  assert.match(about,/「探索」、「学习」和「思想交流」/);
+  assert.doesNotMatch(css,/grayscale\(1\) brightness\(1.8\)/);
+  assert.match(css,/site-disclaimer-mark img \{ filter: drop-shadow/);
+});
+
+test('background inscriptions match rain glyph size and never animate position', () => {
+  const css=read('interaction-refinement.css');
+  assert.match(css,/\.portal-code-field \{ position: fixed; inset: 0; height: 100svh; z-index: 1/);
+  assert.match(css,/font: 400 15px\/18px Consolas/);
+  assert.match(css,/\.portal-code-signal \{ font-size: 13px; line-height: 17px/);
+  const keyframes=css.slice(css.indexOf('@keyframes portalSignal'),css.indexOf('@media(max-width:760px)',css.indexOf('@keyframes portalSignal')));
+  assert.match(keyframes,/opacity: .95/);
+  assert.doesNotMatch(keyframes,/transform|left|top|font-size/);
+});
+
+test('denser fixed background inscriptions pause in hidden pages and respect reduced motion', () => {
   const code=ui.slice(ui.indexOf('  // One lightweight, intermittent'),ui.indexOf('\n  if (!isMobile && !reducedMotion)'));
-  for (const reducedMotion of [false,true]) {
-    const timers=new Map(), events={}, docEvents={}, classes=new Set(); let appended=0,id=0;
-    const signal={style:{},setAttribute(){},classList:{add:x=>classes.add(x),remove:x=>classes.delete(x)},addEventListener(){}};
-    const document={hidden:false,createElement:()=>signal,addEventListener:(k,v)=>docEvents[k]=v};
-    vm.runInNewContext(code,{reducedMotion,document,body:{matches:()=>true,append(){appended++;}},
-      addEventListener:(k,v)=>events[k]=v,setTimeout:fn=>{timers.set(++id,fn);return id;},clearTimeout:key=>timers.delete(key)});
+  for (const reducedMotion of [false,true]) for (const isMobile of [false,true]) {
+    const events={}, docEvents={}, classes=new Set(), signals=[]; let appended=0;
+    const field={setAttribute(){},append:s=>signals.push(s),classList:{add:x=>classes.add(x),toggle:(x,on)=>on?classes.add(x):classes.delete(x)}};
+    const document={hidden:false,createElement:tag=>tag==='div'?field:{style:{setProperty(k,v){this[k]=v;}}},addEventListener:(k,v)=>docEvents[k]=v};
+    vm.runInNewContext(code,{reducedMotion,isMobile,document,body:{matches:()=>true,prepend(){appended++;}},addEventListener:(k,v)=>events[k]=v});
     assert.equal(appended,reducedMotion?0:1);
-    if(reducedMotion) {assert.equal(timers.size,0);continue;}
-    const show=timers.values().next().value;timers.clear();show();
-    assert.equal(signal.textContent,'11:11:83'); assert.ok(classes.has('is-visible'));
-    document.hidden=true;docEvents.visibilitychange();assert.equal(timers.size,0);assert.ok(!classes.size);
-    document.hidden=false;docEvents.visibilitychange();assert.equal(timers.size,1);
-    events.pagehide();assert.equal(timers.size,0);
+    assert.equal(signals.length,reducedMotion?0:isMobile?6:8);
+    if(reducedMotion) continue;
+    signals.forEach(s=>assert.equal(s.textContent,'11:11:83'));
+    assert.equal(signals[0].style['--signal-delay'],'1.1s');
+    const initialPositions=JSON.stringify(signals.map(s=>[s.style.left,s.style.top]));
+    document.hidden=true;docEvents.visibilitychange();assert.ok(classes.has('is-paused'));
+    document.hidden=false;docEvents.visibilitychange();assert.ok(!classes.size);
+    events.pagehide();assert.ok(classes.has('is-paused'));events.pageshow();assert.ok(!classes.size);
+    assert.equal(JSON.stringify(signals.map(s=>[s.style.left,s.style.top])),initialPositions);
   }
 });

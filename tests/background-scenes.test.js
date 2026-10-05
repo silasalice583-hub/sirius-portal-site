@@ -99,7 +99,7 @@ test('about rotates the supplied Sakura and Paris photographs behind the supplie
   const html = fs.readFileSync(path.join(root, 'about.html'), 'utf8');
   assert.match(html, /assets\/artwork-october\/flower-spectrum.webp/);
   assert.doesNotMatch(html, /data-flower-of-life/);
-  assert.match(html, /flower-of-life.css\?v=20261005-art1/);
+  assert.match(html, /flower-of-life.css\?v=20261005-art2/);
   const css = fs.readFileSync(path.join(root, 'flower-of-life.css'), 'utf8');
   assert.match(css, /flower-of-life-stage::before\s*\{\s*display: none;/);
   assert.match(css, /width: max\(100svh, 76vw\)/);
@@ -107,7 +107,7 @@ test('about rotates the supplied Sakura and Paris photographs behind the supplie
   assert.match(css, /mask: url\("assets\/artwork-october\/flower-spectrum.webp"\)/);
   assert.doesNotMatch(css, /background: linear-gradient\(90deg, #04152c/);
   assert.match(css, /prefers-reduced-motion/);
-  assert.match(css, /\.page-about \.about-page-hero p,[^}]+color: #eef8ff/s);
+  assert.match(css, /\.page-about \.about-page-hero p,[^}]+color: #fff/s);
 });
 
 test('portrait scenes retain their full height on wide screens and have independent phone focal points', () => {
